@@ -45,7 +45,6 @@
     </bean>
 
     <bean id="extractorService" class="org.sakaiproject.lap.service.ExtractorService">
-        <property name="messageSource" ref="messageSource" />
         <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
         <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
         <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />

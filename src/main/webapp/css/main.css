@@ -13,22 +13,29 @@
  * permissions and limitations under the License.
  */
 
-.generateButton, .selectDateRange {
+.form-table {
     margin: 0 0 2em 0;
+    width: 400px !important;
+    float: left;
 }
 
-.selectDateRange .form-control {
+.form-table > tbody > tr > td {
+    border-top: #fff !important;
+}
+
+.form-table .form-control {
     width: auto;
+    display: inline;
 }
 
-.formFieldset {
+.form-fieldset {
     width: 90%;
     border: 3px solid #666;
     margin: 20px auto;
     padding: 20px;
 }
 
-.formLegend {
+.form-legend {
     border: none;
     width: auto;
     padding: 5px;

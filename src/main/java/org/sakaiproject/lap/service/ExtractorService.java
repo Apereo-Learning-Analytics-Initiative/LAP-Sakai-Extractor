@@ -23,9 +23,6 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
-
 /**
  * 
  * @author Robert E. Long (rlong @ unicon.net)
@@ -42,6 +39,7 @@ public class ExtractorService {
 
     /**
      * Check to see if the session is for a super admin
+     * 
      * @param sessionId the id of the session
      * @return true, if the session is owned by a super admin, false otherwise
      */
@@ -59,23 +57,6 @@ public class ExtractorService {
         }
     }
 
-    /**
-     * Get a translated string from a code and replacement args
-     * 
-     * @param code
-     * @param args
-     * @return the translated string
-     */
-    public String getMessage(String code, Object[] args) {
-        String msg;
-        try {
-            msg = getMessageSource().getMessage(code, args, null);
-        } catch (NoSuchMessageException e) {
-            msg = "Missing message for code: "+code;
-        }
-        return msg;
-    }
-
     private SessionManager sessionManager;
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
@@ -89,14 +70,6 @@ public class ExtractorService {
     UserDirectoryService userDirectoryService;
     public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
         this.userDirectoryService = userDirectoryService;
-    }
-
-    private MessageSource messageSource;
-    public void setMessageSource(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
-    public MessageSource getMessageSource() {
-        return messageSource;
     }
 
 }

@@ -24,6 +24,8 @@ public class Constants {
 
     public final static String DATE_FORMAT_FILE_NAME = "yyyyMMdd_HHmmss";
     public final static String DATE_FORMAT_DROPDOWN = "MMMM dd, yyyy HH:mm:ss";
+    public final static String DATE_START_TIME = " 00:00:00";
+    public final static String DATE_END_TIME = " 23:59:59";
 
     public final static String MIME_TYPE_CSV = "text/csv";
 

@@ -20,8 +20,11 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -135,6 +138,8 @@ public class FileService {
             }
         }
 
+        Collections.sort(folders, new FilenameComparatorByDate());
+
         return folders;
     }
 
@@ -183,6 +188,25 @@ public class FileService {
         }
 
         return path;
+    }
+
+    /**
+     * Compare directory names by converting name to date
+     */
+    public class FilenameComparatorByDate implements Comparator<String> {
+        @Override
+        public int compare(String arg0, String arg1) {
+            SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
+
+            try {
+                Date date1 = fileNameDateFormat.parse(arg0);
+                Date date2 = fileNameDateFormat.parse(arg1);
+                return date2.compareTo(date1);
+            } catch (ParseException e) {
+                log.error("Error comparing dates of files: " + e, e);
+                return 0;
+            }
+        }
     }
 
 }

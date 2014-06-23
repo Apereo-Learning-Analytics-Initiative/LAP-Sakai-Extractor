@@ -13,6 +13,11 @@
  * permissions and limitations under the License.
  */
 
+// hack for MSIE browser look-up error
+$.browser={};(function(){$.browser.msie=false;
+$.browser.version=0;if(navigator.userAgent.match(/MSIE ([0-9]+)\./)){
+$.browser.msie=true;$.browser.version=RegExp.$1;}})();
+
 $(document).ready(function() {
     var url = "/direct/lap-sakai-extractor/";
 
@@ -22,9 +27,10 @@ $(document).ready(function() {
     });
 
     $("#generate").click(function() {
-        var criteria = $("#criteria").serialize();
-        generateNewData(this.id, criteria, function(data) {
-            outputResponse(data);
+        var filterData = $("#generate-form").serialize();
+        console.log(filterData);
+        generateNewData(this.id, filterData, function(success, data) {
+            //outputMessage(success, data);
         });
     });
 
@@ -44,25 +50,37 @@ $(document).ready(function() {
         });
     }*/
 
-    function generateNewData(endpoint, criteria, callback) {
-        console.log(criteria);
-        var request = $.ajax({ 
+    function generateNewData(endpoint, filterData, callback) {
+        console.log(filterData);
+        var request = $.ajax({
             type: "POST",
             url:  url + endpoint,
-            data: criteria
+            data: filterData
          });
 
         request.success(function(data, status, jqXHR) {
-            callback(data);
+            callback(true, "Sakai data CSVs created successfully.");
         });
 
         request.error(function(jqXHR, textStatus, errorThrown) {
-            callback("Request failed: " + textStatus + ", error : " + errorThrown);
+            callback(false, "Request failed: " + textStatus + ", error : " + errorThrown);
         });
     }
 
     // temp function for testing
-    function outputResponse(data) {
-        $("#jsonResponse").html(JSON.stringify(data, null, 2));
-    }
+    /*function outputMessage(success, data) {
+        $message = null;
+        if (success) {
+            $message = $(".success-message");
+        } else {
+            $message = $(".error-message");
+        }
+        $message.html(data);
+        $message.show();
+        //$("#jsonResponse").html(JSON.stringify(data, null, 2));
+    }*/
+
+    $(function() {
+        $(".datePicker").datepicker({dateFormat: "yy-mm-dd"});
+    });
 });

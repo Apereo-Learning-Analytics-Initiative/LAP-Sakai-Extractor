@@ -16,7 +16,7 @@ package org.sakaiproject.lap.dao;
 
 public class Queries {
 
-    public String getSqlEvents() {
+    public String getSqlEvents(boolean hasStartDate, boolean hasEndDate) {
         String sql = "SELECT " +
                 "se.EVENT_ID ALTERNATIVE_ID," +
                 "ss.SITE_ID COURSE_ID," +
@@ -32,6 +32,14 @@ public class Queries {
                     "ON se.CONTEXT = ss.SITE_ID " +
             "WHERE " +
                 "ss.TITLE LIKE ?";
+
+        if (hasStartDate) {
+            sql += " AND se.EVENT_DATE >= ?";
+        }
+
+        if (hasEndDate) {
+            sql += " AND se.EVENT_DATE <= ?";
+        }
 
         return sql;
     }

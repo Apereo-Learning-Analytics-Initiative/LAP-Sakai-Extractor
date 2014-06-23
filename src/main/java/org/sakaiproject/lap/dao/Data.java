@@ -20,11 +20,12 @@ import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.lap.Constants;
@@ -38,19 +39,35 @@ public class Data extends Db {
     /**
      * Create the usage.csv file, store it on file system
      * 
-     * @param searchTerm the site title search term to use
+     * @param criteria the site title search term to use
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
      */
-    public boolean prepareUsageCsv(String searchTerm, String directory) {
-        String csvData = "";
-        String sql = queries.getSqlEvents();
-        PreparedStatement preparedStatement = null;
+    public boolean prepareUsageCsv(String criteria, String startDate, String endDate, String directory) {
+        boolean hasStartDate = StringUtils.isNotBlank(startDate);
+        boolean hasEndDate = StringUtils.isNotBlank(endDate);
         boolean success = false;
+        PreparedStatement preparedStatement = null;
 
         try {
+            String sql = queries.getSqlEvents(hasStartDate, hasEndDate);
+
             preparedStatement = createPreparedStatement(preparedStatement, sql);
-            preparedStatement.setString(1, "%" + searchTerm + "%");
+            preparedStatement.setString(1, "%" + criteria + "%");
+
+            if (hasStartDate) {
+                startDate += Constants.DATE_START_TIME;
+                preparedStatement.setString(2, startDate);
+            }
+
+            if (hasEndDate) {
+                endDate += Constants.DATE_END_TIME;
+                if (hasStartDate) {
+                    preparedStatement.setString(3, endDate);
+                } else {
+                    preparedStatement.setString(2, endDate);
+                }
+            }
 
             ResultSet results = executePreparedStatement(preparedStatement);
 
@@ -62,7 +79,7 @@ public class Data extends Db {
             for (int i = 1;i <=numberOfColumns;i++) {
                 header.add(metadata.getColumnName(i));
             }
-            csvData += csvService.setAsCsvRow(header);
+            String csvData = csvService.setAsCsvRow(header);
 
             // data rows
             while (results.next()) {
@@ -91,7 +108,7 @@ public class Data extends Db {
 
     public Map<String, String> getDirectoryListing() {
         List<String> directoryNames = fileService.parseDirectory();
-        Map<String, String> directories = new HashMap<String, String>(directoryNames.size());
+        Map<String, String> directories = new LinkedHashMap<String, String>(directoryNames.size());
         SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
         SimpleDateFormat dropdownDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_DROPDOWN, Locale.ENGLISH);
 
