@@ -1,0 +1,54 @@
+<!--
+
+    Copyright 2008 Sakaiproject Licensed under the
+    Educational Community License, Version 2.0 (the "License"); you may
+    not use this file except in compliance with the License. You may
+    obtain a copy of the License at
+
+    http://www.osedu.org/licenses/ECL-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS"
+    BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+    or implied. See the License for the specific language governing
+    permissions and limitations under the License.
+
+-->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <!-- the i18n messages source -->
+    <bean id="messageSource" class="org.sakaiproject.lap.service.ResourceLoaderMessageSource">
+        <property name="basename" value="classpath:i18n/Messages"/>
+    </bean>
+
+    <bean id="csvService" class="org.sakaiproject.lap.service.CsvService"></bean>
+
+    <bean id="queries" class="org.sakaiproject.lap.dao.Queries"></bean>
+
+    <bean id="data" class="org.sakaiproject.lap.dao.Data" parent="db">
+        <property name="csvService" ref="csvService" />
+        <property name="fileService" ref="fileService" />
+        <property name="queries" ref="queries" />
+    </bean>
+
+    <bean id="db" class="org.sakaiproject.lap.dao.Db">
+        <property name="sqlService" ref="org.sakaiproject.db.api.SqlService" />
+    </bean>
+
+    <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init"></bean>
+
+    <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" class="org.sakaiproject.lap.provider.LapExtractorProvider">
+        <property name="data" ref="data" />
+        <property name="fileService" ref="fileService" />
+        <property name="extractorService" ref="extractorService" />
+    </bean>
+
+    <bean id="extractorService" class="org.sakaiproject.lap.service.ExtractorService">
+        <property name="messageSource" ref="messageSource" />
+        <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+        <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+        <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
+    </bean>
+
+</beans>
