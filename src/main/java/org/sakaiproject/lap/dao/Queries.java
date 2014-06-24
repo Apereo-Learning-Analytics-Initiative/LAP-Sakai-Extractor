@@ -44,4 +44,42 @@ public class Queries {
         return sql;
     }
 
+    public String getSqlGrades() {
+        String sql = "SELECT " +
+                "gr.ID ALTERNATIVE_ID," +
+                "ss.SITE_ID COURSE_ID," +
+                "go.NAME GRADABLE_OBJECT," +
+                "c.NAME CATEGORY," +
+                "go.POINTS_POSSIBLE MAX_POINTS," +
+                "gr.POINTS_EARNED EARNED_POINTS," +
+                "c.WEIGHT WEIGHT," +
+                "gr.DATE_RECORDED GRADE_DATE " +
+            "FROM " +
+                "GB_GRADABLE_OBJECT_T go " +
+            "LEFT JOIN " +
+                "GB_CATEGORY_T c " +
+                    "ON go.CATEGORY_ID = c.ID " +
+            "LEFT JOIN " +
+                "GB_GRADE_RECORD_T gr " +
+                    "ON go.ID = gr.GRADABLE_OBJECT_ID " +
+            "LEFT JOIN " +
+                "GB_GRADEBOOK_T g " +
+                    "ON g.ID = go.GRADEBOOK_ID " +
+            "LEFT JOIN " +
+                "SAKAI_SITE ss " +
+                    "ON g.GRADEBOOK_UID = ss.SITE_ID " +
+            "WHERE " +
+                "ss.TITLE LIKE ? AND " +
+                "go.OBJECT_TYPE_ID = 1 AND " +
+                "go.NOT_COUNTED <> 1 AND " +
+                "(c.REMOVED IS NULL or c.REMOVED <> 1) AND " +
+                "(go.REMOVED IS NULL or go.REMOVED <> 1) " +
+            "ORDER BY " +
+                "go.DUE_DATE ASC, " +
+                "go.NAME ASC, " +
+                "gr.STUDENT_ID ASC";
+
+        return sql;
+    }
+
 }

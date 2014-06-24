@@ -40,6 +40,8 @@ public class Data extends Db {
      * Create the usage.csv file, store it on file system
      * 
      * @param criteria the site title search term to use
+     * @param startDate the date to start the inclusion of data
+     * @param endDate the date to end the inclusion of data
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
      */
@@ -71,24 +73,7 @@ public class Data extends Db {
 
             ResultSet results = executePreparedStatement(preparedStatement);
 
-            ResultSetMetaData metadata = results.getMetaData();
-            int numberOfColumns = metadata.getColumnCount();
-
-            // header row
-            List<String> header = new ArrayList<String>();
-            for (int i = 1;i <=numberOfColumns;i++) {
-                header.add(metadata.getColumnName(i));
-            }
-            String csvData = csvService.setAsCsvRow(header);
-
-            // data rows
-            while (results.next()) {
-                List<String> row = new ArrayList<String>();
-                for (int i = 1;i <=numberOfColumns;i++) {
-                    row.add(results.getString(i));
-                }
-                csvData += csvService.setAsCsvRow(row);
-            }
+            String csvData = writeResultsToCsvString(results);
 
             success = fileService.saveStringToFile(csvData, directory, Constants.CSV_FILE_USAGE);
         } catch (Exception e) {
@@ -98,6 +83,60 @@ public class Data extends Db {
         }
 
         return success;
+    }
+
+    /**
+     * Create the grades.csv file, store it on file system
+     * 
+     * @param criteria the site title search term to use
+     * @param directory the name of the date-specific directory to store the .csv file
+     * @return true, if creation and storage successful
+     */
+    public boolean prepareGradesCsv(String criteria, String directory) {
+        boolean success = false;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            String sql = queries.getSqlGrades();
+
+            preparedStatement = createPreparedStatement(preparedStatement, sql);
+            preparedStatement.setString(1, "%" + criteria + "%");
+
+            ResultSet results = executePreparedStatement(preparedStatement);
+
+            String csvData = writeResultsToCsvString(results);
+
+            success = fileService.saveStringToFile(csvData, directory, Constants.CSV_FILE_GRADES);
+        } catch (Exception e) {
+            log.error("Error preparing grades csv: " + e, e);
+        } finally {
+            closePreparedStatement(preparedStatement);
+        }
+
+        return success;
+    }
+
+    private String writeResultsToCsvString(ResultSet results) throws Exception {
+        ResultSetMetaData metadata = results.getMetaData();
+        int numberOfColumns = metadata.getColumnCount();
+
+        // header row
+        List<String> header = new ArrayList<String>();
+        for (int i = 1;i <=numberOfColumns;i++) {
+            header.add(metadata.getColumnLabel(i));
+        }
+        String csvData = csvService.setAsCsvRow(header);
+
+        // data rows
+        while (results.next()) {
+            List<String> row = new ArrayList<String>();
+            for (int i = 1;i <=numberOfColumns;i++) {
+                row.add(results.getString(i));
+            }
+            csvData += csvService.setAsCsvRow(row);
+        }
+
+        return csvData;
     }
 
     public String getCsvData(String datedDirectory, String fileName) {

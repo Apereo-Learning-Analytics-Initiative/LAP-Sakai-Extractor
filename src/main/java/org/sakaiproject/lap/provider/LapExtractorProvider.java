@@ -139,8 +139,9 @@ public class LapExtractorProvider extends AbstractEntityProvider implements Enti
         String directory = fileService.createDatedDirectoryName();
 
         boolean usageCsvCreated = data.prepareUsageCsv(criteria, startDate, endDate, directory);
+        boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory);
 
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, Boolean.toString(usageCsvCreated));
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, "");
     }
 
     public String[] getHandledOutputFormats() {
