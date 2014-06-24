@@ -18,7 +18,7 @@ public class Queries {
 
     public String getSqlEvents(boolean hasStartDate, boolean hasEndDate) {
         String sql = "SELECT " +
-                "se.EVENT_ID ALTERNATIVE_ID," +
+                "sn.SESSION_USER ALTERNATIVE_ID," +
                 "ss.SITE_ID COURSE_ID," +
                 "se.EVENT EVENT," +
                 "se.EVENT_DATE EVENT_DATE " +
@@ -46,7 +46,7 @@ public class Queries {
 
     public String getSqlGrades() {
         String sql = "SELECT " +
-                "gr.ID ALTERNATIVE_ID," +
+                "gr.STUDENT_ID ALTERNATIVE_ID," +
                 "ss.SITE_ID COURSE_ID," +
                 "go.NAME GRADABLE_OBJECT," +
                 "c.NAME CATEGORY," +
