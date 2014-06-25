@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
@@ -140,8 +141,11 @@ public class LapExtractorProvider extends AbstractEntityProvider implements Enti
 
         boolean usageCsvCreated = data.prepareUsageCsv(criteria, startDate, endDate, directory);
         boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory);
+        boolean studentsCsvCreated = data.prepareStudentsCsv(criteria, directory);
+        boolean coursesCsvCreated = data.prepareCoursesCsv(criteria, directory);
+        String success = Boolean.toString((usageCsvCreated && gradesCsvCreated && studentsCsvCreated && coursesCsvCreated));
 
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, "");
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, success);
     }
 
     public String[] getHandledOutputFormats() {

@@ -71,11 +71,7 @@ public class Data extends Db {
                 }
             }
 
-            ResultSet results = executePreparedStatement(preparedStatement);
-
-            String csvData = writeResultsToCsvString(results);
-
-            success = fileService.saveStringToFile(csvData, directory, Constants.CSV_FILE_USAGE);
+            success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_USAGE);
         } catch (Exception e) {
             log.error("Error preparing usage csv: " + e, e);
         } finally {
@@ -102,11 +98,7 @@ public class Data extends Db {
             preparedStatement = createPreparedStatement(preparedStatement, sql);
             preparedStatement.setString(1, "%" + criteria + "%");
 
-            ResultSet results = executePreparedStatement(preparedStatement);
-
-            String csvData = writeResultsToCsvString(results);
-
-            success = fileService.saveStringToFile(csvData, directory, Constants.CSV_FILE_GRADES);
+            success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_GRADES);
         } catch (Exception e) {
             log.error("Error preparing grades csv: " + e, e);
         } finally {
@@ -116,7 +108,62 @@ public class Data extends Db {
         return success;
     }
 
-    private String writeResultsToCsvString(ResultSet results) throws Exception {
+    /**
+     * Create the courses.csv file, store it on file system
+     * 
+     * @param criteria the site title search term to use
+     * @param directory the name of the date-specific directory to store the .csv file
+     * @return true, if creation and storage successful
+     */
+    public boolean prepareCoursesCsv(String criteria, String directory) {
+        boolean success = false;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            String sql = queries.getSqlCourses();
+
+            /*preparedStatement = createPreparedStatement(preparedStatement, sql);
+            preparedStatement.setString(1, "%" + criteria + "%");
+
+            success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_COURSES);*/
+        } catch (Exception e) {
+            log.error("Error preparing courses csv: " + e, e);
+        } finally {
+            closePreparedStatement(preparedStatement);
+        }
+
+        return success;
+    }
+
+    /**
+     * Create the students.csv file, store it on file system
+     * 
+     * @param criteria the site title search term to use
+     * @param directory the name of the date-specific directory to store the .csv file
+     * @return true, if creation and storage successful
+     */
+    public boolean prepareStudentsCsv(String criteria, String directory) {
+        boolean success = false;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            String sql = queries.getSqlStudents();
+
+            /*preparedStatement = createPreparedStatement(preparedStatement, sql);
+            preparedStatement.setString(1, "%" + criteria + "%");
+
+            success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_STUDENTS);*/
+        } catch (Exception e) {
+            log.error("Error preparing students csv: " + e, e);
+        } finally {
+            closePreparedStatement(preparedStatement);
+        }
+
+        return success;
+    }
+
+    private boolean saveToFile(PreparedStatement preparedStatement, String directory, String fileName) throws Exception {
+        ResultSet results = executePreparedStatement(preparedStatement);
         ResultSetMetaData metadata = results.getMetaData();
         int numberOfColumns = metadata.getColumnCount();
 
@@ -136,7 +183,9 @@ public class Data extends Db {
             csvData += csvService.setAsCsvRow(row);
         }
 
-        return csvData;
+        boolean success = fileService.saveStringToFile(csvData, directory, fileName);
+
+        return success;
     }
 
     public String getCsvData(String datedDirectory, String fileName) {

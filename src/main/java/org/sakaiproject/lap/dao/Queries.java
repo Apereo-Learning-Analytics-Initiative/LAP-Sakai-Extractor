@@ -82,4 +82,15 @@ public class Queries {
         return sql;
     }
 
+    public String getSqlCourses() {
+        String sql = "";
+
+        return sql;
+    }
+
+    public String getSqlStudents() {
+        String sql = "";
+
+        return sql;
+    }
 }

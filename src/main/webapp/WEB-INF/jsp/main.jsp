@@ -40,7 +40,7 @@
 </div>
 <fieldset class="form-fieldset">
     <legend class="form-legend">Download a data report</legend>
-    <form id="download-form" method="post" action="download.htm">
+    <form id="download-form" method="post" action="download.htm" target="_blank">
         <table class="table table-hover form-table">
             <tr>
                 <td><label for="directory"><spring:message code="lap.label.select.directory" /></label></td>
@@ -66,7 +66,7 @@
 </fieldset>
 <fieldset class="form-fieldset">
     <legend class="form-legend">Generate a new set of data reports</legend>
-    <form id="generate-form">
+    <form id="generate-form" method="post" action="main.htm">
         <table class="table table-hover form-table">
             <tr>
                 <td><label for="criteria"><spring:message code="lap.label.criteria" /></label></td>

@@ -28,57 +28,30 @@ $(document).ready(function() {
 
     $("#generate").click(function() {
         var filterData = $("#generate-form").serialize();
-        console.log(filterData);
+
         generateNewData(this.id, filterData, function(success, data) {
-            //outputMessage(success, data);
+            console.log(data);
+            $("#generate-form").submit();
         });
     });
 
-    /*function getData(endpoint, directory, callback) {
-        var request = $.ajax({ 
-            type: "GET",
-            url:  url + endpoint + "/" + directory,
-            data: {}
-         });
-
-        request.success(function(data, status, jqXHR) {
-            callback(data);
-        });
-
-        request.error(function(jqXHR, textStatus, errorThrown) {
-            callback("Request failed: " + textStatus + ", error : " + errorThrown);
-        });
-    }*/
-
     function generateNewData(endpoint, filterData, callback) {
-        console.log(filterData);
         var request = $.ajax({
             type: "POST",
             url:  url + endpoint,
-            data: filterData
+            data: filterData,
+            cache: false,
+            async: false
          });
 
         request.success(function(data, status, jqXHR) {
             callback(true, "Sakai data CSVs created successfully.");
         });
 
-        request.error(function(jqXHR, textStatus, errorThrown) {
+        request.fail(function(jqXHR, textStatus, errorThrown) {
             callback(false, "Request failed: " + textStatus + ", error : " + errorThrown);
         });
     }
-
-    // temp function for testing
-    /*function outputMessage(success, data) {
-        $message = null;
-        if (success) {
-            $message = $(".success-message");
-        } else {
-            $message = $(".error-message");
-        }
-        $message.html(data);
-        $message.show();
-        //$("#jsonResponse").html(JSON.stringify(data, null, 2));
-    }*/
 
     $(function() {
         $(".datePicker").datepicker({dateFormat: "yy-mm-dd"});
