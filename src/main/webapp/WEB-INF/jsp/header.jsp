@@ -44,6 +44,7 @@
 <script src="<c:url value='/js/scripts.js'/>" language="JavaScript" type="text/javascript"></script>
 
 <!-- Twitter Bootstrap -->
+<script src="<c:url value='/js/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
 <link media="all" href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css" />
 
 <title><spring:message code="lap.title" /></title>

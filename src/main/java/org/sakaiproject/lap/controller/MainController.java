@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.lap.dao.Data;
@@ -38,6 +39,17 @@ public class MainController extends AbstractController {
 
         Map<String, String> directoryListing = data.getDirectoryListing();
         model.put("directories", directoryListing);
+
+        if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
+            if (request.getParameter("statusMessageType") != null && request.getParameter("statusMessage") != null) {
+                String messageType = request.getParameter("statusMessageType");
+                if (StringUtils.equalsIgnoreCase("success", messageType)) {
+                    model.put("success", request.getParameter("statusMessage"));
+                } else {
+                    model.put("error", "There was an error processing the CSV files. Error: " + request.getParameter("statusMessage"));
+                }
+            }
+        }
 
         return new ModelAndView("main", model);
     }

@@ -23,14 +23,17 @@ $(document).ready(function() {
 
     $(".csv").click(function() {
         $("#action").val(this.id);
-        $("#downloadForm").submit();
+        $("#download-form").submit();
     });
 
     $("#generate").click(function() {
         var filterData = $("#generate-form").serialize();
 
         generateNewData(this.id, filterData, function(success, data) {
-            console.log(data);
+            var status = (success) ? "success" : "error";
+            $("#statusMessageType").val(status);
+            $("#statusMessage").val(data);
+
             $("#generate-form").submit();
         });
     });
@@ -49,7 +52,7 @@ $(document).ready(function() {
         });
 
         request.fail(function(jqXHR, textStatus, errorThrown) {
-            callback(false, "Request failed: " + textStatus + ", error : " + errorThrown);
+            callback(false, errorThrown);
         });
     }
 

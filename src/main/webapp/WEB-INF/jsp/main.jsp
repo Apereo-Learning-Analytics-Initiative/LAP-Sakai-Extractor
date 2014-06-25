@@ -24,14 +24,18 @@
 
 <div class="portletBody">
 
-<div class="alert alert-danger" style="display:none;">
-    <a class="close" data-dismiss="alert">x</a>
-    <span class="error-message"></span>
-</div>
-<div class="alert alert-success" style="display:none;">
-    <a class="close" data-dismiss="alert">x</a>
-    <span class="success-message"></span>
-</div>
+<c:if test="${not empty(error)}">
+    <div class="alert alert-danger">
+        <a class="close" data-dismiss="alert">x</a>
+        <span class="error-message">${error}</span>
+    </div>
+</c:if>
+<c:if test="${not empty(success)}">
+    <div class="alert alert-success">
+        <a class="close" data-dismiss="alert">x</a>
+        <span class="success-message">${success}</span>
+    </div>
+</c:if>
 
 <h2><spring:message code="lap.title" /></h2>
 
@@ -84,6 +88,8 @@
                 <td colspan="2"><button class="btn btn-danger" id="generate"><spring:message code="lap.button.generate" /></button></td>
             </tr>
         </table>
+        <input type="hidden" id="statusMessageType" name="statusMessageType" value="" />
+        <input type="hidden" id="statusMessage" name="statusMessage" value="" />
     </form>
 </fieldset>
 
