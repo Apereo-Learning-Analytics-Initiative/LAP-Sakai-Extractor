@@ -214,6 +214,17 @@ public class Data extends Db {
         return directories;
     }
 
+    public String getLatestRunDate(Map<String, String> directoryListing) {
+        if (directoryListing == null || directoryListing.isEmpty()) {
+            return "Never";
+        }
+
+        String firstDirectory = directoryListing.keySet().iterator().next();
+        String latestRundate = directoryListing.get(firstDirectory);
+
+        return latestRundate;
+    }
+
     private CsvService csvService;
     public void setCsvService(CsvService csvService) {
         this.csvService = csvService;

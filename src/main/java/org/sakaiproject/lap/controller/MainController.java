@@ -37,8 +37,13 @@ public class MainController extends AbstractController {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String,Object> model = new HashMap<String,Object>();
 
+        // drop-down of existing directories
         Map<String, String> directoryListing = data.getDirectoryListing();
         model.put("directories", directoryListing);
+
+        // last date the data generation was run
+        String latestRunDate = data.getLatestRunDate(directoryListing);
+        model.put("latestRunDate", latestRunDate);
 
         if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
             if (request.getParameter("statusMessageType") != null && request.getParameter("statusMessage") != null) {

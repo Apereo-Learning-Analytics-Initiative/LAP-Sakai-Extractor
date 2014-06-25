@@ -42,6 +42,9 @@
 <div class="instructions clear">
     <spring:message code="lap.instructions" />
 </div>
+<div class="instructions clear">
+    <label><spring:message code="lap.latest.data.generation" /> ${latestRunDate}</label>
+</div>
 <fieldset class="form-fieldset">
     <legend class="form-legend">Download a data report</legend>
     <form id="download-form" method="post" action="download.htm" target="_blank">
