@@ -17,17 +17,21 @@ package org.sakaiproject.lap.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.service.CsvService;
 import org.sakaiproject.lap.service.FileService;
@@ -197,13 +201,11 @@ public class Data extends Db {
     public Map<String, String> getDirectoryListing() {
         List<String> directoryNames = fileService.parseDirectory();
         Map<String, String> directories = new LinkedHashMap<String, String>(directoryNames.size());
-        SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
-        SimpleDateFormat dropdownDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_DROPDOWN, Locale.ENGLISH);
 
         for (String directoryName : directoryNames) {
             try {
-                Date date = fileNameDateFormat.parse(directoryName);
-                String formattedDate = dropdownDateFormat.format(date);
+                Date date = Constants.FORMAT_FILE_NAME.parse(directoryName);
+                String formattedDate = Constants.FORMAT_DROP_DOWN.format(date);
                 directories.put(directoryName, formattedDate);
             } catch (Exception e) {
                 log.error("Error parsing directory name: " + e, e);
@@ -212,6 +214,12 @@ public class Data extends Db {
         }
 
         return directories;
+    }
+
+    public String getLatestRunDate() {
+        Map<String, String> directoryListing = getDirectoryListing();
+
+        return getLatestRunDate(directoryListing);
     }
 
     public String getLatestRunDate(Map<String, String> directoryListing) {
@@ -223,6 +231,45 @@ public class Data extends Db {
         String latestRundate = directoryListing.get(firstDirectory);
 
         return latestRundate;
+    }
+
+    public String getNextScheduledRunDate() {
+        String nextScheduledRunDate = "";
+        String[] scheduledRunTimes = ServerConfigurationService.getStrings("lap.data.generation.times");
+        if (ArrayUtils.isEmpty(scheduledRunTimes)) {
+            scheduledRunTimes = Constants.DEFAULT_DATA_GENERATION_TIMES;
+        }
+
+        try {
+            List<String> scheduledDateStrings = new ArrayList<String>(scheduledRunTimes.length);
+            
+            Date currentTime = new Date();
+            String currentTimeDateOnly = Constants.FORMAT_DATE_ONLY.format(currentTime);
+            String currentTimeString = Constants.FORMAT_FILE_NAME.format(currentTime);
+
+            scheduledDateStrings.add(currentTimeString);
+            for (String runTime : scheduledRunTimes) {
+                scheduledDateStrings.add(currentTimeDateOnly + "_" + runTime.replaceAll(":", ""));
+            }
+
+            Collections.sort(scheduledDateStrings, new DateComparator());
+
+            int position = scheduledDateStrings.indexOf(currentTimeString);
+            if (position < scheduledDateStrings.size() - 1) {
+                Date nextDate = Constants.FORMAT_FILE_NAME.parse(scheduledDateStrings.get(position + 1));
+                nextScheduledRunDate = Constants.FORMAT_DROP_DOWN.format(nextDate);
+            } else {
+                String firstTime = scheduledDateStrings.get(0);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(Constants.FORMAT_FILE_NAME.parse(firstTime));
+                calendar.add(Calendar.DATE, 1);
+                nextScheduledRunDate = Constants.FORMAT_DROP_DOWN.format(calendar.getTime());
+            }
+        } catch (Exception e) {
+            log.error("Error getting scheduled run time: " + e, e);
+        }
+
+        return nextScheduledRunDate;
     }
 
     private CsvService csvService;
@@ -240,4 +287,20 @@ public class Data extends Db {
         this.queries = queries;
     }
 
+    /**
+     * Compare directory names by converting name to date
+     */
+    public class DateComparator implements Comparator<String> {
+        @Override
+        public int compare(String arg0, String arg1) {
+            try {
+                Date date1 = Constants.FORMAT_FILE_NAME.parse(arg0);
+                Date date2 = Constants.FORMAT_FILE_NAME.parse(arg1);
+                return date1.compareTo(date2);
+            } catch (ParseException e) {
+                log.error("Error comparing dates: " + e, e);
+                return 0;
+            }
+        }
+    }
 }

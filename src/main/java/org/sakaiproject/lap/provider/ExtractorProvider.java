@@ -15,11 +15,11 @@
 
 package org.sakaiproject.lap.provider;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
@@ -34,12 +34,14 @@ import org.sakaiproject.lap.dao.Data;
 import org.sakaiproject.lap.service.ExtractorService;
 import org.sakaiproject.lap.service.FileService;
 
+import com.google.gson.Gson;
+
 /**
  * @author Robert Long (rlong @ unicon.net)
  */
-public class LapExtractorProvider extends AbstractEntityProvider implements EntityProvider, Outputable, Describeable, ActionsExecutable {
+public class ExtractorProvider extends AbstractEntityProvider implements EntityProvider, Outputable, Describeable, ActionsExecutable {
 
-    private final Log log = LogFactory.getLog(LapExtractorProvider.class);
+    private final Log log = LogFactory.getLog(ExtractorProvider.class);
 
     public static String PREFIX = "lap-sakai-extractor";
     public String getEntityPrefix() {
@@ -108,6 +110,31 @@ public class LapExtractorProvider extends AbstractEntityProvider implements Enti
         }
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"usage\":\"usage1\"}");
+    }
+
+    /**
+     * GET /direct/lap-sakai-extractor/usage
+     * 
+     * @param view
+     * @return
+     */
+    @EntityCustomAction(action="statistics", viewKey=EntityView.VIEW_LIST)
+    public ActionReturn generation(EntityView view) {
+        if (!extractorService.isAdminSession()){
+            throw new SecurityException("User not allowed to access generation statistics.", null);
+        }
+
+        String lastRunDate = data.getLatestRunDate();
+        String nextRunDate = data.getNextScheduledRunDate();
+        
+        Map<String, String> data = new HashMap<String, String>(2);
+        data.put("lastRunDate", lastRunDate);
+        data.put("nextRunDate", nextRunDate);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(data, HashMap.class);
+        
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, json);
     }
 
     /**

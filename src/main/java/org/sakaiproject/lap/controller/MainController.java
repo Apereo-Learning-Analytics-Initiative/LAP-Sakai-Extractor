@@ -45,6 +45,10 @@ public class MainController extends AbstractController {
         String latestRunDate = data.getLatestRunDate(directoryListing);
         model.put("latestRunDate", latestRunDate);
 
+        // next schedule date the data generation will run
+        String nextRunDate = data.getNextScheduledRunDate();
+        model.put("nextRunDate", nextRunDate);
+
         if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
             if (request.getParameter("statusMessageType") != null && request.getParameter("statusMessage") != null) {
                 String messageType = request.getParameter("statusMessageType");

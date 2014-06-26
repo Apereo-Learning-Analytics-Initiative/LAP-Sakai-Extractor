@@ -40,3 +40,7 @@
     width: auto;
     padding: 5px;
 }
+
+label .statistics {
+    color: #357ebd;
+}

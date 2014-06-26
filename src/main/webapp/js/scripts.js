@@ -21,11 +21,13 @@ $.browser.msie=true;$.browser.version=RegExp.$1;}})();
 $(document).ready(function() {
     var url = "/direct/lap-sakai-extractor/";
 
+    /* download a csv file */
     $(".csv").click(function() {
         $("#action").val(this.id);
         $("#download-form").submit();
     });
 
+    /* generate csv files */
     $("#generate").click(function() {
         var filterData = $("#generate-form").serialize();
 
@@ -48,7 +50,7 @@ $(document).ready(function() {
          });
 
         request.success(function(data, status, jqXHR) {
-            callback(true, "Sakai data CSVs created successfully.");
+            callback(true, "Data CSVs created successfully.");
         });
 
         request.fail(function(jqXHR, textStatus, errorThrown) {
@@ -56,7 +58,25 @@ $(document).ready(function() {
         });
     }
 
+    /* data picker for date range on generation */
     $(function() {
         $(".datePicker").datepicker({dateFormat: "yy-mm-dd"});
     });
+
+    /* get statistics */
+    $.ajax({
+        type: "GET",
+        url:  url + "statistics",
+        cache: false,
+        async: false,
+        success: (function(data, status, jqXHR) {
+            var lastRun = (data.lastRunDate != "Never") ? data.lastRunDate + " GMT" : data.lastRunDate;
+            $("#last-run-date").html(lastRun);
+            $("#next-run-date").html(data.nextRunDate + " GMT");
+        }),
+        fail: (function(jqXHR, textStatus, errorThrown) {
+            $("#last-run-date").html("Error getting data.");
+            $("#next-run-date").html("Error getting data.");
+        })
+     });
 });

@@ -40,10 +40,9 @@
 <h2><spring:message code="lap.title" /></h2>
 
 <div class="instructions clear">
-    <spring:message code="lap.instructions" />
-</div>
-<div class="instructions clear">
-    <label><spring:message code="lap.latest.data.generation" /> ${latestRunDate}</label>
+    <label><spring:message code="lap.latest.data.generation" /> <span id="last-run-date" class="statistics"></span></label>
+    <br />
+    <label><spring:message code="lap.next.data.generation" /> <span id="next-run-date" class="statistics"></span></label>
 </div>
 <fieldset class="form-fieldset">
     <legend class="form-legend">Download a data report</legend>

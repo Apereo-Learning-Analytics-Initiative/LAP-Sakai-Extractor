@@ -38,7 +38,7 @@
 
     <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init"></bean>
 
-    <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" class="org.sakaiproject.lap.provider.LapExtractorProvider">
+    <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" class="org.sakaiproject.lap.provider.ExtractorProvider">
         <property name="data" ref="data" />
         <property name="fileService" ref="fileService" />
         <property name="extractorService" ref="extractorService" />
