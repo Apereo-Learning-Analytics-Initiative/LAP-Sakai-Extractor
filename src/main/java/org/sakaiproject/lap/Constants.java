@@ -28,9 +28,13 @@ public class Constants {
     public final static String DATE_FORMAT_FILE_NAME = "yyyyMMdd_HHmmss";
     public final static String DATE_FORMAT_FILE_NAME_DATE_ONLY = "yyyyMMdd";
     public final static String DATE_FORMAT_DROPDOWN = "MMMM dd, yyyy HH:mm:ss";
+    public final static String DATE_FORMAT_TIME_ONLY = "HH:mm:ss";
+    public final static String DATE_FORMAT_DATE_TIME = "yyyyMMdd HH:mm:ss";
     public final static String DATE_START_TIME = " 00:00:00";
     public final static String DATE_END_TIME = " 23:59:59";
+    public final static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat(Constants.DATE_FORMAT_DATE_TIME, Locale.ENGLISH);
     public final static SimpleDateFormat FORMAT_DATE_ONLY = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME_DATE_ONLY, Locale.ENGLISH);
+    public final static SimpleDateFormat FORMAT_TIME_ONLY = new SimpleDateFormat(Constants.DATE_FORMAT_TIME_ONLY, Locale.ENGLISH);
     public final static SimpleDateFormat FORMAT_FILE_NAME = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
     public final static SimpleDateFormat FORMAT_DROP_DOWN = new SimpleDateFormat(Constants.DATE_FORMAT_DROPDOWN, Locale.ENGLISH);
 
@@ -41,4 +45,9 @@ public class Constants {
      * Default times for automatic generation of data reports (defaults to GMT midnight and noon each day)
      */
     public final static String[] DEFAULT_DATA_GENERATION_TIMES = new String[] {"00:00:00", "12:00:00"};
+
+    /**
+     * Default interval to check to see if the automatic generation should run (default is 60 seconds)
+     */
+    public final static int DEFAULT_DATA_GENERATION_CHECK_INTERVAL = 1000 * 60;
 }

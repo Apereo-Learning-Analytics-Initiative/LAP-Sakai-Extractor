@@ -40,6 +40,10 @@ public class Data extends Db {
 
     private final Log log = LogFactory.getLog(Data.class);
 
+    public boolean prepareUsageCsv(String directory) {
+        return prepareUsageCsv("", "", "", directory);
+    }
+
     /**
      * Create the usage.csv file, store it on file system
      * 
@@ -85,6 +89,10 @@ public class Data extends Db {
         return success;
     }
 
+    public boolean prepareGradesCsv(String directory) {
+        return prepareGradesCsv("", directory);
+    }
+
     /**
      * Create the grades.csv file, store it on file system
      * 
@@ -112,6 +120,10 @@ public class Data extends Db {
         return success;
     }
 
+    public boolean prepareCoursesCsv(String directory) {
+        return prepareCoursesCsv("", directory);
+    }
+
     /**
      * Create the courses.csv file, store it on file system
      * 
@@ -137,6 +149,10 @@ public class Data extends Db {
         }
 
         return success;
+    }
+
+    public boolean prepareStudentsCsv(String directory) {
+        return prepareStudentsCsv("", directory);
     }
 
     /**
