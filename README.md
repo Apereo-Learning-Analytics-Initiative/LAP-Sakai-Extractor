@@ -33,7 +33,6 @@ sakai.properties:
 #lap.data.storage.path=
 
 # Time of day that the automatic data report generation will run
-# Times are in GMT
 #lap.data.generation.times.count=2
 #lap.data.generation.times.1=00:00:00
 #lap.data.generation.times=12:00:00

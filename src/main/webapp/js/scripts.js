@@ -70,9 +70,8 @@ $(document).ready(function() {
         cache: false,
         async: false,
         success: (function(data, status, jqXHR) {
-            var lastRun = (data.lastRunDate != "Never") ? data.lastRunDate + " GMT" : data.lastRunDate;
-            $("#last-run-date").html(lastRun);
-            $("#next-run-date").html(data.nextRunDate + " GMT");
+            $("#last-run-date").html(data.lastRunDate);
+            $("#next-run-date").html(data.nextRunDate);
         }),
         fail: (function(jqXHR, textStatus, errorThrown) {
             $("#last-run-date").html("Error getting data.");
