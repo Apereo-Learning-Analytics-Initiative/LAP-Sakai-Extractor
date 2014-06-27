@@ -27,16 +27,16 @@
     
     <bean id="csvService" class="org.sakaiproject.lap.service.CsvService"></bean>
 
-    <bean id="data" class="org.sakaiproject.lap.dao.Data" parent="db">
+    <bean id="data" class="org.sakaiproject.lap.dao.Data" parent="database">
         <property name="csvService" ref="csvService" />
         <property name="dateService" ref="dateService" />
         <property name="fileService" ref="fileService" />
-        <property name="queries" ref="queries" />
+        <property name="sql" ref="sql" />
     </bean>
 
     <bean id="dateService" class="org.sakaiproject.lap.service.DateService" init-method="init"></bean>
 
-    <bean id="db" class="org.sakaiproject.lap.dao.Db">
+    <bean id="database" class="org.sakaiproject.lap.dao.Database">
         <property name="sqlService" ref="org.sakaiproject.db.api.SqlService" />
     </bean>
 
@@ -49,7 +49,6 @@
     <bean id="extractorService" class="org.sakaiproject.lap.service.ExtractorService">
         <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
         <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
-        <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
     </bean>
 
     <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init">
@@ -61,6 +60,6 @@
         <property name="basename" value="classpath:i18n/Messages"/>
     </bean>
 
-    <bean id="queries" class="org.sakaiproject.lap.dao.Queries"></bean>
+    <bean id="sql" class="org.sakaiproject.lap.dao.Sql"></bean>
 
 </beans>

@@ -31,6 +31,12 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
 
+/**
+ * Handles all needed date functionality
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class DateService {
 
     private final Log log = LogFactory.getLog(getClass());
@@ -44,7 +50,17 @@ public class DateService {
         processScheduledRunTimes();
     }
 
+    /**
+     * Sets the day string to the current one
+     * format: yyyyMMdd
+     * 
+     * @param date the current date object
+     */
     public void processCurrentDay(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+
         if (!StringUtils.equalsIgnoreCase(currentDay, SDF_DATE_ONLY.format(date))) {
             currentDay = SDF_DATE_ONLY.format(date);
 
@@ -52,59 +68,84 @@ public class DateService {
         }
     }
 
+    /**
+     * Sets all the configured run times from sakai.properties
+     * Defaults to coded times, if none specified in sakai.properties
+     */
     private void processScheduledRunTimes() {
         // get run dates from config
         String[] runTimes = ServerConfigurationService.getStrings("lap.data.generation.times");
+        // get hard-coded auto-generation times
         if (ArrayUtils.isEmpty(runTimes)) {
             runTimes = Constants.DEFAULT_DATA_GENERATION_TIMES;
         }
 
-        scheduledRunTimes = new ArrayList<String>(runTimes.length);
-        for (String runTime : runTimes) {
-            scheduledRunTimes.add(runTime);
+        if (runTimes != null) {
+            scheduledRunTimes = new ArrayList<String>(runTimes.length);
+
+            for (String runTime : runTimes) {
+                scheduledRunTimes.add(runTime);
+            }
+
+            Collections.sort(scheduledRunTimes);
+        } else {
+            scheduledRunTimes = new ArrayList<String>(0);
         }
-        Collections.sort(scheduledRunTimes);
     }
 
+    /**
+     * Sets all the remaining future times for the given date
+     * 
+     * @param date the date to set times
+     */
     private void processRemainingTimes(Date date) {
+        if (scheduledRunTimes == null) {
+            processScheduledRunTimes();
+        }
+        List<Date> dates = new ArrayList<Date>(scheduledRunTimes.size());
+        String dateString = SDF_DATE_ONLY.format(date);
+
         try {
-            List<Date> dates = new ArrayList<Date>();
-            String dateString = SDF_DATE_ONLY.format(date);
-
-            if (!remainingTimes.containsKey(dateString)) {
-                remainingTimes.put(dateString, new ArrayList<Date>());
-            }
-
-            if (scheduledRunTimes == null) {
-                processScheduledRunTimes();
-            }
-
             for (String s : scheduledRunTimes) {
                 Date scheduledDate = SDF_DATE_TIME.parse(dateString + " " + s);
+
                 // add the date to the schedule if it's after the current date or is next day
                 if (!StringUtils.equalsIgnoreCase(currentDay, dateString) || scheduledDate.after(date)) {
                     dates.add(scheduledDate);
                 }
             }
-            remainingTimes.put(dateString, dates);
         } catch (Exception e) {
             log.error("Error parsing scheduled dates. Error: " + e, e);
+        } finally {
+            remainingTimes.put(dateString, dates);
         }
     }
 
+    /**
+     * Gets the last data generation date from the listing of directories
+     * 
+     * @param directoryListing the directory listing map
+     * @return the last generation date
+     */
     public String getLatestRunDate(Map<String, String> directoryListing) {
         if (directoryListing == null || directoryListing.isEmpty()) {
-            return "Never";
+            return Constants.DEFAULT_NO_TIME;
         }
 
         String firstDirectory = directoryListing.keySet().iterator().next();
-        String latestRundate = directoryListing.get(firstDirectory);
+        String latestRunDate = directoryListing.get(firstDirectory);
 
-        return latestRundate;
+        return latestRunDate;
     }
 
+    /**
+     * Gets the next scheduled automatic generation date
+     * If none available for current date, calculates the next day's times
+     * 
+     * @return the next generation date
+     */
     public String getNextScheduledRunDate() {
-        String nextScheduledRunDate = "Never";
+        String nextScheduledRunDate =Constants.DEFAULT_NO_TIME;
         List<Date> times = remainingTimes.get(currentDay);
 
         if (times != null) {
@@ -130,10 +171,6 @@ public class DateService {
         return currentDay;
     }
 
-    public void setCurrentDay(String currentDay) {
-        this.currentDay = currentDay;
-    }
-
     public Map<String, List<Date>> getRemainingTimes() {
         return remainingTimes;
     }
@@ -144,10 +181,6 @@ public class DateService {
 
     public ArrayList<String> getScheduledRunTimes() {
         return scheduledRunTimes;
-    }
-
-    public void setScheduledRunTimes(ArrayList<String> scheduledRunTimes) {
-        this.scheduledRunTimes = scheduledRunTimes;
     }
 
     /*

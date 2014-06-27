@@ -25,6 +25,12 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
 
+/**
+ * Handles the automatic data report generation
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class AutomaticGeneratorService implements Runnable {
 
     final protected Log log = LogFactory.getLog(getClass());
@@ -41,6 +47,7 @@ public class AutomaticGeneratorService implements Runnable {
 
             // only run if scheduled times exist
             if (!scheduledRunTimes.isEmpty()) {
+                // set the thread sleep interval
                 interval = ServerConfigurationService.getInt("lap.data.generation.check.interval", Constants.DEFAULT_DATA_GENERATION_CHECK_INTERVAL) * 1000;
 
                 start();
@@ -54,6 +61,9 @@ public class AutomaticGeneratorService implements Runnable {
         stop();
     }
 
+    /**
+     * Start the thread
+     */
     protected void start() {
         threadStop = false;
 
@@ -65,7 +75,7 @@ public class AutomaticGeneratorService implements Runnable {
     }
 
     /**
-     * Stop the clean and report thread.
+     * Stop the thread.
      */
     protected void stop() {
         if (thread == null) return;
@@ -87,8 +97,10 @@ public class AutomaticGeneratorService implements Runnable {
             log.info("Thread running! " + new Date());
 
             if (isTimeToRun()) {
+                // create the file storage directory
                 String directory = fileService.createDatedDirectoryName();
 
+                // create all the reports
                 boolean coursesSuccess = data.prepareCoursesCsv(directory);
                 boolean gradesSuccess = data.prepareGradesCsv(directory);
                 boolean studentsSuccess = data.prepareStudentsCsv(directory);
@@ -98,28 +110,37 @@ public class AutomaticGeneratorService implements Runnable {
             }
 
             try{
+                // wait the configured period of time
                 Thread.sleep(interval);
             } catch (Exception e) {
             }
         }
     }
 
-    
+    /**
+     * Calculates if the current time is past the scheduled time
+     * 
+     * @return true, if current time is past the scheduled time
+     */
     private boolean isTimeToRun() {
         boolean isTimeToRun = false;
         Date currentDate = new Date();
         dateService.processCurrentDay(currentDate);
 
+        // get the remaining day's times
         Map<String, List<Date>> currentDayRemainingTimes = dateService.getRemainingTimes();
         List<Date> remainingTimes = currentDayRemainingTimes.get(dateService.getCurrentDay());
+
         if (remainingTimes != null) {
             List<Date> datesToRemove = new ArrayList<Date>();
             for (Date remainingTime : remainingTimes) {
+                // if this time is after the scheduled time, allow process to run and remove for remaining day's time listing
                 if (currentDate.after(remainingTime)) {
                     isTimeToRun = true;
                     datesToRemove.add(remainingTime);
                 }
             }
+
             remainingTimes.removeAll(datesToRemove);
             currentDayRemainingTimes.put(dateService.getCurrentDay(), remainingTimes);
             dateService.setRemainingTimes(currentDayRemainingTimes);

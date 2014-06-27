@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
+ * General methods for the application
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  */
@@ -31,6 +31,11 @@ public class ExtractorService {
 
     final protected Log log = LogFactory.getLog(ExtractorService.class);
 
+    /**
+     * Checks if the current session is for a super admin user
+     * 
+     * @return true, if the current user session is for an administrator
+     */
     public boolean isAdminSession() {
         String sessionId = sessionManager.getCurrentSession().getId();
 
@@ -65,11 +70,6 @@ public class ExtractorService {
     private SecurityService securityService;
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
-    }
-
-    UserDirectoryService userDirectoryService;
-    public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
-        this.userDirectoryService = userDirectoryService;
     }
 
 }

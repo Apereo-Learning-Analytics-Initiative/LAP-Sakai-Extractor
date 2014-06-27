@@ -26,6 +26,12 @@ import org.sakaiproject.lap.dao.Data;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/**
+ * Controller to handle file download requests
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class FileDownloadController {
 
     private final Log log = LogFactory.getLog(getClass());
@@ -35,10 +41,11 @@ public class FileDownloadController {
         String datedDirectory = request.getParameter("directory");
         String action = request.getParameter("action");
         String fileName = action + ".csv";
-        String csvData = data.getCsvData(datedDirectory, fileName);
+        String csvData = data.getCsvDataString(datedDirectory, fileName);
 
         response.setContentType(Constants.MIME_TYPE_CSV);
         response.setHeader("Content-Disposition", "attachment; filename='"+ fileName + "'");
+
         try {
             OutputStream outputStream = response.getOutputStream();
             outputStream.write(csvData.getBytes());

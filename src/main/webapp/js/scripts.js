@@ -77,5 +77,5 @@ $(document).ready(function() {
             $("#last-run-date").html("Error getting data.");
             $("#next-run-date").html("Error getting data.");
         })
-     });
+    });
 });

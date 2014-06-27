@@ -23,10 +23,21 @@ import org.apache.commons.logging.LogFactory;
 
 import org.sakaiproject.db.api.SqlService;
 
-public class Db {
+/**
+ * General database operations
+ * Uses the SqlService class from Sakai
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ */
+public class Database {
 
     private final Log log = LogFactory.getLog(getClass());
 
+    /**
+     * Borrows a connection from the pool
+     * 
+     * @return the connection object
+     */
     private Connection borrowConnection() {
         Connection connection = null;
 
@@ -39,6 +50,11 @@ public class Db {
         return connection;
     }
 
+    /**
+     * Returns the borrowed connection to the pool
+     * 
+     * @param connection the connection object
+     */
     private void returnConnection(Connection connection) {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -49,6 +65,13 @@ public class Db {
         }
     }
 
+    /**
+     * Prepares the prepared statement with the SQL provided
+     * 
+     * @param preparedStatement the prepared statement
+     * @param sql the SQL string
+     * @return the prepared statement
+     */
     protected PreparedStatement createPreparedStatement(PreparedStatement preparedStatement, String sql) {
         Connection connection = borrowConnection();
 
@@ -61,6 +84,11 @@ public class Db {
         return preparedStatement;
     }
 
+    /**
+     * Closes a prepared statement, after returning the borrowed connection
+     * 
+     * @param preparedStatement the prepared statement
+     */
     protected void closePreparedStatement(PreparedStatement preparedStatement) {
         try {
             if (preparedStatement != null && !preparedStatement.isClosed()) {
@@ -77,6 +105,12 @@ public class Db {
         }
     }
 
+    /**
+     * Executes the given prepared statement
+     * 
+     * @param preparedStatement the prepared statement
+     * @return the ResultSet from the query
+     */
     protected ResultSet executePreparedStatement(PreparedStatement preparedStatement) {
         ResultSet resultSet = null;
 

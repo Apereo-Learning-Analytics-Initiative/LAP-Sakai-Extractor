@@ -21,6 +21,12 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Handles all needed comparators for sorting data
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class ComparatorService {
 
     private final Log log = LogFactory.getLog(getClass());
@@ -58,4 +64,5 @@ public class ComparatorService {
             }
         }
     }
+
 }

@@ -28,6 +28,12 @@ import org.sakaiproject.lap.dao.Data;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+/**
+ * Controller to handle to main.jsp view
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class MainController extends AbstractController {
 
     final protected Log log = LogFactory.getLog(getClass());

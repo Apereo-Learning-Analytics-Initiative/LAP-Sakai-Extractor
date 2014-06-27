@@ -33,11 +33,16 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
 
+/**
+ * Handles all the needed file operations
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class FileService {
 
     private final Log log = LogFactory.getLog(FileService.class);
 
-    
     private String storagePath = "";
 
     public void init() {
@@ -48,6 +53,8 @@ public class FileService {
 
     /**
      * Creates a string representing the path to the storage directory
+     * If none is specified, use the ContentHostingService path
+     * 
      * @return the path string
      */
     private String createStoragePath() {
@@ -62,6 +69,12 @@ public class FileService {
         return storagePath;
     }
 
+    /**
+     * Creates a new directory for storing files
+     * 
+     * @param directoryName the name of the directory
+     * @return the path to the directory
+     */
     private String createNewDirectory(String directoryName) {
         File newDirectory = new File(storagePath + directoryName);
 
@@ -79,6 +92,12 @@ public class FileService {
         return path;
     }
 
+    /**
+     * Create a new directory name for storing files
+     * Format: yyyyMMdd_HHmmss
+     * 
+     * @return 
+     */
     public String createDatedDirectoryName() {
         Date date = new Date();
         String directoryName = DateService.SDF_FILE_NAME.format(date);
@@ -86,8 +105,16 @@ public class FileService {
         return directoryName;
     }
 
-    public File createNewFile(String datedDirectory, String fileName) {
-        if (StringUtils.isBlank(datedDirectory)) {
+    /**
+     * Creates a new file with the given name in a given directory
+     * If file exists, get the file instead
+     * 
+     * @param directory the directory to store the file
+     * @param fileName the name of the new file
+     * @return the new file
+     */
+    public File createNewFile(String directory, String fileName) {
+        if (StringUtils.isBlank(directory)) {
             throw new NullArgumentException("File directory cannot be null or blank");
         }
         if (StringUtils.isBlank(fileName)) {
@@ -96,12 +123,16 @@ public class FileService {
 
         File newFile = null;
 
-        String directory = createNewDirectory(datedDirectory);
-        directory = addTrailingSlash(directory);
+        String newDirectory = createNewDirectory(directory);
+        newDirectory = addTrailingSlash(directory);
 
         try {
-            newFile = new File(directory + fileName);
-            newFile.createNewFile();
+            newFile = new File(storagePath + newDirectory + fileName);
+            boolean exists = newFile.exists();
+
+            if (!exists) {
+                newFile.createNewFile();
+            }
         } catch (Exception e) {
             log.error("Error creating new file: " + e, e);
         }
@@ -109,55 +140,74 @@ public class FileService {
         return newFile;
     }
 
-    public boolean writeStringToFile(File file, String dataString) {
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
-            bufferedWriter.write(dataString);
-            bufferedWriter.close();
-
-            return true;
-        } catch (Exception e) {
-            log.error("Error writing string to file: " + e, e);
-
-            return false;
+    /**
+     * Method to parse a directory for subdirectories
+     * 
+     * @param directory the directory to parse
+     * @return a listing of the subdirectory names
+     */
+    public List<String> parseDirectory(String directory) {
+        if (StringUtils.isBlank(directory)) {
+            throw new NullArgumentException("Directory cannot be null or blank");
         }
-    }
 
-    public List<String> parseDirectory() {
-        List<String> folders = new ArrayList<String>();
-        File directory = new File(storagePath);
+        List<String> directories = new ArrayList<String>();
+        File fileDirectory = new File(directory);
 
-        for (File subDirectory : directory.listFiles()) {
+        for (File subDirectory : fileDirectory.listFiles()) {
+            // only store subdirectory names
             if (subDirectory.isDirectory()) {
-                folders.add(subDirectory.getName());
+                directories.add(subDirectory.getName());
             }
         }
 
-        Collections.sort(folders, comparatorService.new DateComparatorLatestToEarliest());
+        // sort the list, newest directories first
+        Collections.sort(directories, comparatorService.new DateComparatorLatestToEarliest());
 
-        return folders;
+        return directories;
     }
 
-    public File getFile(String datedDirectory, String fileName) {
-        if (StringUtils.isBlank(datedDirectory)) {
+    /**
+     * Retrieves a file with the given name from the given directory
+     * 
+     * @param directory the directory
+     * @param fileName
+     * @return
+     */
+    public File getFile(String directory, String fileName) {
+        if (StringUtils.isBlank(directory)) {
             throw new NullArgumentException("File directory cannot be null or blank");
         }
         if (StringUtils.isBlank(fileName)) {
             throw new NullArgumentException("File name cannot be null or blank");
         }
 
-        datedDirectory = addTrailingSlash(datedDirectory);
+        directory = addTrailingSlash(directory);
 
-        File file = new File(storagePath + datedDirectory + fileName);
+        File file = new File(storagePath + directory + fileName);
 
         return file;
     }
 
-    public String readFileIntoString(String datedDirectory, String fileName) {
+    /**
+     * Reads the contents of a file into a string
+     * 
+     * @param directory
+     * @param fileName
+     * @return
+     */
+    public String readFileIntoString(String directory, String fileName) {
+        if (StringUtils.isBlank(directory)) {
+            throw new NullArgumentException("File directory cannot be null or blank");
+        }
+        if (StringUtils.isBlank(fileName)) {
+            throw new NullArgumentException("File name cannot be null or blank");
+        }
+
         String fileString = "";
 
         try {
-            File file = getFile(datedDirectory, fileName);
+            File file = getFile(directory, fileName);
 
             InputStream inputStream = new FileInputStream(file);
             StringWriter writer = new StringWriter();
@@ -171,18 +221,47 @@ public class FileService {
     }
 
     public boolean saveStringToFile(String dataString, String directory, String name) {
-        File file = createNewFile(directory, name);
-        boolean success = writeStringToFile(file, dataString);
+        if (StringUtils.isBlank(dataString)) {
+            throw new NullArgumentException("Data string cannot be null or blank");
+        }
+        if (StringUtils.isBlank(directory)) {
+            throw new NullArgumentException("Directory name cannot be null or blank");
+        }
+        if (StringUtils.isBlank(name)) {
+            throw new NullArgumentException("File name cannot be null or blank");
+        }
 
-        return success;
+        File file = createNewFile(directory, name);
+
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+            bufferedWriter.write(dataString);
+            bufferedWriter.close();
+
+            return true;
+        } catch (Exception e) {
+            log.error("Error writing string to file: " + e, e);
+
+            return false;
+        }
     }
 
+    /**
+     * Add a trailing slash to the end of the path, if none exists
+     * 
+     * @param path the path string
+     * @return the path with a trailing slash
+     */
     private String addTrailingSlash(String path) {
         if (!StringUtils.endsWith(path, "/")) {
             path += "/";
         }
 
         return path;
+    }
+
+    public String getStoragePath() {
+        return storagePath;
     }
 
     private ComparatorService comparatorService;

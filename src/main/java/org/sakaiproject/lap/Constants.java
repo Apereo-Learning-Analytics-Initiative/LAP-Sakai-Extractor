@@ -14,6 +14,12 @@
  */
 package org.sakaiproject.lap;
 
+/**
+ * User-definable constants
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class Constants {
 
     public final static String DEFAULT_CSV_STORAGE_DIRECTORY = "lap-data/";
@@ -25,6 +31,7 @@ public class Constants {
     public final static String MIME_TYPE_CSV = "text/csv";
     public final static String ENCODING_UTF8 = "UTF-8";
 
+    public final static String DEFAULT_NO_TIME = "Never";
     /**
      * Default times for automatic generation of data reports (defaults to GMT midnight and noon each day)
      */

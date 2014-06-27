@@ -28,26 +28,26 @@
 <link media="all" href="/library/skin/tool_base.css" rel="stylesheet" type="text/css" />
 <link media="all" href="/library/skin/neo-default/tool.css" rel="stylesheet" type="text/css" />
 
-<!-- Additional CSS -->
-<!-- link media="all" href="<c:url value='/css/jquery-ui.css'/>" rel="stylesheet" type="text/css" / -->
-<link media="all" href="<c:url value='/css/main.css'/>" rel="stylesheet" type="text/css" />
-
 <script src="/library/js/headscripts.js" language="JavaScript" type="text/javascript"></script>
-<!-- JQuery latest libs in Sakai library -->
-<!--script src="/library/js/jquery/jquery-1.9.1.min.js" language="JavaScript" type="text/javascript"></script>
-<script src="/library/js/jquery/ui/1.8.4/jquery-ui-1.8.4.full.min.js" language="JavaScript" type="text/javascript"></script -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
+<!-- jQuery -->
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
-<!-- Additional JavaScript -->
-<script src="<c:url value='/js/scripts.js'/>" language="JavaScript" type="text/javascript"></script>
+<!-- jQuery CSS -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 
 <!-- Twitter Bootstrap -->
 <script src="<c:url value='/js/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
 <link media="all" href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css" />
 
-<title><spring:message code="lap.title" /></title>
+<!-- Additional JavaScript -->
+<script src="<c:url value='/js/scripts.js'/>" language="JavaScript" type="text/javascript"></script>
+
+<!-- Additional CSS -->
+<link media="all" href="<c:url value='/css/main.css'/>" rel="stylesheet" type="text/css" />
+
+<title><spring:message code="title" /></title>
 </head>
 <body onload="<%=request.getAttribute("sakai.html.body.onload")%>">
 <!-- Hidden block to declare resource bundle variables for use in JS -->

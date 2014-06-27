@@ -37,6 +37,8 @@ import org.sakaiproject.lap.service.FileService;
 import com.google.gson.Gson;
 
 /**
+ * Entity provider for REST endpoints
+ * 
  * @author Robert Long (rlong @ unicon.net)
  */
 public class ExtractorProvider extends AbstractEntityProvider implements EntityProvider, Outputable, Describeable, ActionsExecutable {
@@ -61,7 +63,7 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     @EntityCustomAction(action="courses", viewKey=EntityView.VIEW_LIST)
     public ActionReturn coursesCsv(EntityView view) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access courses .csv.", null);
+            throw new SecurityException("User not allowed to access courses.csv", null);
         }
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"courses\": \"course1\"}");
@@ -76,7 +78,7 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     @EntityCustomAction(action="grades", viewKey=EntityView.VIEW_LIST)
     public ActionReturn gradesCsv(EntityView view) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access grades .csv.", null);
+            throw new SecurityException("User not allowed to access grades.csv", null);
         }
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"grades\": \"grade1\"}");
@@ -91,7 +93,7 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     @EntityCustomAction(action="students", viewKey=EntityView.VIEW_LIST)
     public ActionReturn studentsCsv(EntityView view) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access students .csv.", null);
+            throw new SecurityException("User not allowed to access students.csv", null);
         }
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"students\": \"students1\"}");
@@ -106,7 +108,7 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     @EntityCustomAction(action="usage", viewKey=EntityView.VIEW_LIST)
     public ActionReturn usageCsv(EntityView view) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access usage .csv.", null);
+            throw new SecurityException("User not allowed to access usage.csv", null);
         }
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"usage\":\"usage1\"}");
@@ -121,7 +123,7 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     @EntityCustomAction(action="statistics", viewKey=EntityView.VIEW_LIST)
     public ActionReturn generation(EntityView view) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access generation statistics.", null);
+            throw new SecurityException("User not allowed to access statistics.", null);
         }
 
         String lastRunDate = data.getLatestRunDate();

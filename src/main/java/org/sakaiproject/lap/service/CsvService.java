@@ -16,8 +16,20 @@ package org.sakaiproject.lap.service;
 
 import java.util.List;
 
+/**
+ * Handles transforming data into CSV-specific strings
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
 public class CsvService {
 
+    /**
+     * Formats a list of strings into a CSV-specific string
+     * 
+     * @param rowData a list of strings
+     * @return the CSV-specific formatted string
+     */
     public String setAsCsvRow(List<String> rowData) {
         String csvRow = "";
         String csvSep = ",";
@@ -42,6 +54,13 @@ public class CsvService {
         return csvRow;
     }
 
+    /**
+     * Add quotes to each CSV field
+     * 
+     * @param sb the string builder
+     * @param toQuote the data string
+     * @return the quoted string
+     */
     private StringBuilder appendQuoted(StringBuilder sb, String toQuote) {
         if ((toQuote.indexOf(',') >= 0) || (toQuote.indexOf('"') >= 0)) {
             String out = toQuote.replaceAll("\"", "\"\"");

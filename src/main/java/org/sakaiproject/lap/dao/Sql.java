@@ -14,8 +14,22 @@
  */
 package org.sakaiproject.lap.dao;
 
-public class Queries {
+/**
+ * Handles all the SQL strings
+ * 
+ * @author Robert E. Long (rlong @ unicon.net)
+ *
+ */
+public class Sql {
 
+    /**
+     * SQL string to get event data
+     * Optionally filter by site title, start date, end date
+     * 
+     * @param hasStartDate has a start date?
+     * @param hasEndDate has an end date?
+     * @return the SQL string
+     */
     public String getSqlEvents(boolean hasStartDate, boolean hasEndDate) {
         String sql = "SELECT " +
                 "sn.SESSION_USER ALTERNATIVE_ID," +
@@ -44,6 +58,11 @@ public class Queries {
         return sql;
     }
 
+    /**
+     * SQL string to get grade data
+     * 
+     * @return the SQL string
+     */
     public String getSqlGrades() {
         String sql = "SELECT " +
                 "gr.STUDENT_ID ALTERNATIVE_ID," +

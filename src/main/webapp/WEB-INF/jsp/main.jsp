@@ -37,19 +37,19 @@
     </div>
 </c:if>
 
-<h2><spring:message code="lap.title" /></h2>
+<h2><spring:message code="title" /></h2>
 
 <div class="instructions clear">
-    <label><spring:message code="lap.latest.data.generation" /> <span id="last-run-date" class="statistics"></span></label>
+    <label><spring:message code="label.latest.data.generation" /> <span id="last-run-date" class="statistics"></span></label>
     <br />
-    <label><spring:message code="lap.next.data.generation" /> <span id="next-run-date" class="statistics"></span></label>
+    <label><spring:message code="label.next.data.generation" /> <span id="next-run-date" class="statistics"></span></label>
 </div>
 <fieldset class="form-fieldset">
-    <legend class="form-legend">Download a data report</legend>
+    <legend class="form-legend"><spring:message code="legend.download" /></legend>
     <form id="download-form" method="post" action="download.htm" target="_blank">
         <table class="table table-hover form-table">
             <tr>
-                <td><label for="directory"><spring:message code="lap.label.select.directory" /></label></td>
+                <td><label for="directory"><spring:message code="label.select.directory" /></label></td>
                 <td>
                     <select id="directory" name="directory" class="form-control">
                         <c:forEach var="directory" items="${directories}">
@@ -60,10 +60,10 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <button class="btn btn-primary csv" id="courses"><spring:message code="lap.button.courses" /></button>
-                    <button class="btn btn-primary csv" id="grades"><spring:message code="lap.button.grades" /></button>
-                    <button class="btn btn-primary csv" id="students"><spring:message code="lap.button.students" /></button>
-                    <button class="btn btn-primary csv" id="usage"><spring:message code="lap.button.usage" /></button>
+                    <button class="btn btn-primary csv" id="courses"><spring:message code="button.courses" /></button>
+                    <button class="btn btn-primary csv" id="grades"><spring:message code="button.grades" /></button>
+                    <button class="btn btn-primary csv" id="students"><spring:message code="button.students" /></button>
+                    <button class="btn btn-primary csv" id="usage"><spring:message code="button.usage" /></button>
                 </td>
             <tr>
         </table>
@@ -71,23 +71,24 @@
     </form>
 </fieldset>
 <fieldset class="form-fieldset">
-    <legend class="form-legend">Generate a new set of data reports</legend>
+    <legend class="form-legend"><spring:message code="legend.generate" /></legend>
     <form id="generate-form" method="post" action="main.htm">
+        <spring:message code="placeholder.criteria" var="criteriaPlaceholder" />
         <table class="table table-hover form-table">
             <tr>
-                <td><label for="criteria"><spring:message code="lap.label.criteria" /></label></td>
-                <td><input type="text" id="criteria" name="criteria" value="" placeholder="use '%' for a wildcard" /></td>
+                <td><label for="criteria"><spring:message code="label.criteria" /></label></td>
+                <td><input type="text" id="criteria" name="criteria" value="" placeholder="${criteriaPlaceholder}" /></td>
             </tr>
             <tr>
-                <td><label for="startDate"><spring:message code="lap.label.start" /></label></td>
+                <td><label for="startDate"><spring:message code="label.start" /></label></td>
                 <td><input type="text" id="startDate" name="startDate" class="datePicker" /></td>
             </tr>
             <tr>
-                <td><label for="endDate"><spring:message code="lap.label.end" /></label></td>
+                <td><label for="endDate"><spring:message code="label.end" /></label></td>
                 <td><input type="text" id="endDate" name="endDate" class="datePicker" /></td>
             </tr>
             <tr>
-                <td colspan="2"><button class="btn btn-danger" id="generate"><spring:message code="lap.button.generate" /></button></td>
+                <td colspan="2"><button class="btn btn-danger" id="generate"><spring:message code="button.generate" /></button></td>
             </tr>
         </table>
         <input type="hidden" id="statusMessageType" name="statusMessageType" value="" />
