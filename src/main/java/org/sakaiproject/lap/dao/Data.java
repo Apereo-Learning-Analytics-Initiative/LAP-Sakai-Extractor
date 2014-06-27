@@ -17,28 +17,24 @@ package org.sakaiproject.lap.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
+import org.sakaiproject.lap.service.ComparatorService;
 import org.sakaiproject.lap.service.CsvService;
+import org.sakaiproject.lap.service.DateService;
 import org.sakaiproject.lap.service.FileService;
 
 public class Data extends Db {
 
-    private final Log log = LogFactory.getLog(Data.class);
+    private final Log log = LogFactory.getLog(getClass());
 
     public boolean prepareUsageCsv(String directory) {
         return prepareUsageCsv("", "", "", directory);
@@ -66,12 +62,12 @@ public class Data extends Db {
             preparedStatement.setString(1, "%" + criteria + "%");
 
             if (hasStartDate) {
-                startDate += Constants.DATE_START_TIME;
+                startDate += DateService.DATE_START_TIME;
                 preparedStatement.setString(2, startDate);
             }
 
             if (hasEndDate) {
-                endDate += Constants.DATE_END_TIME;
+                endDate += DateService.DATE_END_TIME;
                 if (hasStartDate) {
                     preparedStatement.setString(3, endDate);
                 } else {
@@ -220,9 +216,9 @@ public class Data extends Db {
 
         for (String directoryName : directoryNames) {
             try {
-                Date date = Constants.FORMAT_FILE_NAME.parse(directoryName);
-                String formattedDate = Constants.FORMAT_DROP_DOWN.format(date);
-                directories.put(directoryName, formattedDate);
+                Date date = DateService.SDF_FILE_NAME.parse(directoryName);
+                String displayDate = DateService.SDF_DISPLAY.format(date);
+                directories.put(directoryName, displayDate);
             } catch (Exception e) {
                 log.error("Error parsing directory name: " + e, e);
                 directories.put(directoryName, directoryName);
@@ -235,62 +231,21 @@ public class Data extends Db {
     public String getLatestRunDate() {
         Map<String, String> directoryListing = getDirectoryListing();
 
-        return getLatestRunDate(directoryListing);
-    }
-
-    public String getLatestRunDate(Map<String, String> directoryListing) {
-        if (directoryListing == null || directoryListing.isEmpty()) {
-            return "Never";
-        }
-
-        String firstDirectory = directoryListing.keySet().iterator().next();
-        String latestRundate = directoryListing.get(firstDirectory);
-
-        return latestRundate;
+        return dateService.getLatestRunDate(directoryListing);
     }
 
     public String getNextScheduledRunDate() {
-        String nextScheduledRunDate = "";
-        String[] scheduledRunTimes = ServerConfigurationService.getStrings("lap.data.generation.times");
-        if (ArrayUtils.isEmpty(scheduledRunTimes)) {
-            scheduledRunTimes = Constants.DEFAULT_DATA_GENERATION_TIMES;
-        }
-
-        try {
-            List<String> scheduledDateStrings = new ArrayList<String>(scheduledRunTimes.length);
-            
-            Date currentTime = new Date();
-            String currentTimeDateOnly = Constants.FORMAT_DATE_ONLY.format(currentTime);
-            String currentTimeString = Constants.FORMAT_FILE_NAME.format(currentTime);
-
-            scheduledDateStrings.add(currentTimeString);
-            for (String runTime : scheduledRunTimes) {
-                scheduledDateStrings.add(currentTimeDateOnly + "_" + runTime.replaceAll(":", ""));
-            }
-
-            Collections.sort(scheduledDateStrings, new DateComparator());
-
-            int position = scheduledDateStrings.indexOf(currentTimeString);
-            if (position < scheduledDateStrings.size() - 1) {
-                Date nextDate = Constants.FORMAT_FILE_NAME.parse(scheduledDateStrings.get(position + 1));
-                nextScheduledRunDate = Constants.FORMAT_DROP_DOWN.format(nextDate);
-            } else {
-                String firstTime = scheduledDateStrings.get(0);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Constants.FORMAT_FILE_NAME.parse(firstTime));
-                calendar.add(Calendar.DATE, 1);
-                nextScheduledRunDate = Constants.FORMAT_DROP_DOWN.format(calendar.getTime());
-            }
-        } catch (Exception e) {
-            log.error("Error getting scheduled run time: " + e, e);
-        }
-
-        return nextScheduledRunDate;
+        return dateService.getNextScheduledRunDate();
     }
 
     private CsvService csvService;
     public void setCsvService(CsvService csvService) {
         this.csvService = csvService;
+    }
+
+    private DateService dateService;
+    public void setDateService(DateService dateService) {
+        this.dateService = dateService;
     }
 
     private FileService fileService;
@@ -303,20 +258,4 @@ public class Data extends Db {
         this.queries = queries;
     }
 
-    /**
-     * Compare directory names by converting name to date
-     */
-    public class DateComparator implements Comparator<String> {
-        @Override
-        public int compare(String arg0, String arg1) {
-            try {
-                Date date1 = Constants.FORMAT_FILE_NAME.parse(arg0);
-                Date date2 = Constants.FORMAT_FILE_NAME.parse(arg1);
-                return date1.compareTo(date2);
-            } catch (ParseException e) {
-                log.error("Error comparing dates: " + e, e);
-                return 0;
-            }
-        }
-    }
 }

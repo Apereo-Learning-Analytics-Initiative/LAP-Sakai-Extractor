@@ -16,11 +16,9 @@ package org.sakaiproject.lap.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -34,29 +32,16 @@ public class AutomaticGeneratorService implements Runnable {
     private boolean threadStop;
     private Thread thread = null;
     private long interval;
-    private ArrayList<String> scheduledRunTimes;
-    private String currentDay;
-    private Map<String, List<Date>> currentDayRemainingTimes = new HashMap<String, List<Date>>();
 
     public void init() {
         boolean automaticGenerationEnabled = ServerConfigurationService.getBoolean("lap.automatic.generation.enabled", true);
 
         if (automaticGenerationEnabled) {
-            // get run dates from config
-            String[] runTimes = ServerConfigurationService.getStrings("lap.data.generation.times");
-            if (ArrayUtils.isEmpty(runTimes)) {
-                runTimes = Constants.DEFAULT_DATA_GENERATION_TIMES;
-            }
-
-            scheduledRunTimes = new ArrayList<String>(runTimes.length);
-            for (String runTime : runTimes) {
-                scheduledRunTimes.add(runTime);
-            }
+            List<String> scheduledRunTimes = dateService.getScheduledRunTimes();
 
             // only run if scheduled times exist
             if (!scheduledRunTimes.isEmpty()) {
-                interval = ServerConfigurationService.getInt("lap.data.generation.check.interval", Constants.DEFAULT_DATA_GENERATION_CHECK_INTERVAL);
-                setCurrentDayRemainingTimes();
+                interval = ServerConfigurationService.getInt("lap.data.generation.check.interval", Constants.DEFAULT_DATA_GENERATION_CHECK_INTERVAL) * 1000;
 
                 start();
             } else {
@@ -99,8 +84,7 @@ public class AutomaticGeneratorService implements Runnable {
     @Override
     public void run() {
         while ((!threadStop) && (!Thread.currentThread().isInterrupted())) {
-            Date currentDate = new Date();
-            log.info("Thread running! " + currentDate);
+            log.info("Thread running! " + new Date());
 
             if (isTimeToRun()) {
                 String directory = fileService.createDatedDirectoryName();
@@ -120,46 +104,25 @@ public class AutomaticGeneratorService implements Runnable {
         }
     }
 
-    private void setCurrentDay() {
-        currentDay = Constants.FORMAT_DATE_ONLY.format(new Date());
-        if (!currentDayRemainingTimes.containsKey(currentDay)) {
-            currentDayRemainingTimes.put(currentDay, new ArrayList<Date>());
-        }
-    }
-
-    private void setCurrentDayRemainingTimes() {
-        setCurrentDay();
-
-        try {
-            Date currentDate = new Date();
-            List<Date> dates = new ArrayList<Date>();
-
-            for (String s : scheduledRunTimes) {
-                Date scheduledDate = Constants.FORMAT_DATE_TIME.parse(currentDay + " " + s);
-                if (scheduledDate.after(currentDate)) {
-                    dates.add(scheduledDate);
-                }
-            }
-            currentDayRemainingTimes.put(currentDay, dates);
-        } catch (Exception e) {
-            log.error("Error parsing scheduled dates. Error: " + e, e);
-        }
-    }
-
+    
     private boolean isTimeToRun() {
         boolean isTimeToRun = false;
-        setCurrentDay();
         Date currentDate = new Date();
-        List<Date> remainingTimes = currentDayRemainingTimes.get(currentDay);
+        dateService.processCurrentDay(currentDate);
+
+        Map<String, List<Date>> currentDayRemainingTimes = dateService.getRemainingTimes();
+        List<Date> remainingTimes = currentDayRemainingTimes.get(dateService.getCurrentDay());
         if (remainingTimes != null) {
-            List<Date> toRemove = new ArrayList<Date>();
+            List<Date> datesToRemove = new ArrayList<Date>();
             for (Date remainingTime : remainingTimes) {
                 if (currentDate.after(remainingTime)) {
                     isTimeToRun = true;
-                    toRemove.add(remainingTime);
+                    datesToRemove.add(remainingTime);
                 }
             }
-            remainingTimes.removeAll(toRemove);
+            remainingTimes.removeAll(datesToRemove);
+            currentDayRemainingTimes.put(dateService.getCurrentDay(), remainingTimes);
+            dateService.setRemainingTimes(currentDayRemainingTimes);
         }
 
         return isTimeToRun;
@@ -170,8 +133,14 @@ public class AutomaticGeneratorService implements Runnable {
         this.data = data;
     }
 
+    private DateService dateService;
+    public void setDateService(DateService dateService) {
+        this.dateService = dateService;
+    }
+
     private FileService fileService;
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
     }
+
 }

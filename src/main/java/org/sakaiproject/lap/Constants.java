@@ -14,9 +14,6 @@
  */
 package org.sakaiproject.lap;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 public class Constants {
 
     public final static String DEFAULT_CSV_STORAGE_DIRECTORY = "lap-data/";
@@ -24,19 +21,6 @@ public class Constants {
     public final static String CSV_FILE_GRADES = "grades.csv";
     public final static String CSV_FILE_STUDENTS = "students.csv";
     public final static String CSV_FILE_USAGE = "usage.csv";
-
-    public final static String DATE_FORMAT_FILE_NAME = "yyyyMMdd_HHmmss";
-    public final static String DATE_FORMAT_FILE_NAME_DATE_ONLY = "yyyyMMdd";
-    public final static String DATE_FORMAT_DROPDOWN = "MMMM dd, yyyy HH:mm:ss";
-    public final static String DATE_FORMAT_TIME_ONLY = "HH:mm:ss";
-    public final static String DATE_FORMAT_DATE_TIME = "yyyyMMdd HH:mm:ss";
-    public final static String DATE_START_TIME = " 00:00:00";
-    public final static String DATE_END_TIME = " 23:59:59";
-    public final static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat(Constants.DATE_FORMAT_DATE_TIME, Locale.ENGLISH);
-    public final static SimpleDateFormat FORMAT_DATE_ONLY = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME_DATE_ONLY, Locale.ENGLISH);
-    public final static SimpleDateFormat FORMAT_TIME_ONLY = new SimpleDateFormat(Constants.DATE_FORMAT_TIME_ONLY, Locale.ENGLISH);
-    public final static SimpleDateFormat FORMAT_FILE_NAME = new SimpleDateFormat(Constants.DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
-    public final static SimpleDateFormat FORMAT_DROP_DOWN = new SimpleDateFormat(Constants.DATE_FORMAT_DROPDOWN, Locale.ENGLISH);
 
     public final static String MIME_TYPE_CSV = "text/csv";
     public final static String ENCODING_UTF8 = "UTF-8";
@@ -49,5 +33,5 @@ public class Constants {
     /**
      * Default interval to check to see if the automatic generation should run (default is 60 seconds)
      */
-    public final static int DEFAULT_DATA_GENERATION_CHECK_INTERVAL = 1000 * 60;
+    public final static int DEFAULT_DATA_GENERATION_CHECK_INTERVAL = 60;
 }

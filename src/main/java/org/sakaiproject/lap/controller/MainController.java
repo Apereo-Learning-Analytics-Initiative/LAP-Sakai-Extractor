@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 public class MainController extends AbstractController {
+
     final protected Log log = LogFactory.getLog(getClass());
 
     /* (non-Javadoc)
@@ -40,14 +41,6 @@ public class MainController extends AbstractController {
         // drop-down of existing directories
         Map<String, String> directoryListing = data.getDirectoryListing();
         model.put("directories", directoryListing);
-
-        // last date the data generation was run
-        String latestRunDate = data.getLatestRunDate(directoryListing);
-        model.put("latestRunDate", latestRunDate);
-
-        // next schedule date the data generation will run
-        String nextRunDate = data.getNextScheduledRunDate();
-        model.put("nextRunDate", nextRunDate);
 
         if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
             if (request.getParameter("statusMessageType") != null && request.getParameter("statusMessage") != null) {

@@ -25,7 +25,7 @@ import org.sakaiproject.db.api.SqlService;
 
 public class Db {
 
-    private final Log log = LogFactory.getLog(Db.class);
+    private final Log log = LogFactory.getLog(getClass());
 
     private Connection borrowConnection() {
         Connection connection = null;

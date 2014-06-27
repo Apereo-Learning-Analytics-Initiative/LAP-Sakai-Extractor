@@ -41,7 +41,7 @@ import com.google.gson.Gson;
  */
 public class ExtractorProvider extends AbstractEntityProvider implements EntityProvider, Outputable, Describeable, ActionsExecutable {
 
-    private final Log log = LogFactory.getLog(ExtractorProvider.class);
+    private final Log log = LogFactory.getLog(getClass());
 
     public static String PREFIX = "lap-sakai-extractor";
     public String getEntityPrefix() {

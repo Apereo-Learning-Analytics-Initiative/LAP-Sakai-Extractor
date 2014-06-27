@@ -20,10 +20,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -83,7 +81,7 @@ public class FileService {
 
     public String createDatedDirectoryName() {
         Date date = new Date();
-        String directoryName = Constants.FORMAT_FILE_NAME.format(date);
+        String directoryName = DateService.SDF_FILE_NAME.format(date);
 
         return directoryName;
     }
@@ -135,7 +133,7 @@ public class FileService {
             }
         }
 
-        Collections.sort(folders, new DateComparator());
+        Collections.sort(folders, comparatorService.new DateComparatorLatestToEarliest());
 
         return folders;
     }
@@ -187,21 +185,9 @@ public class FileService {
         return path;
     }
 
-    /**
-     * Compare directory names by converting name to date
-     */
-    public class DateComparator implements Comparator<String> {
-        @Override
-        public int compare(String arg0, String arg1) {
-            try {
-                Date date1 = Constants.FORMAT_FILE_NAME.parse(arg0);
-                Date date2 = Constants.FORMAT_FILE_NAME.parse(arg1);
-                return date2.compareTo(date1);
-            } catch (ParseException e) {
-                log.error("Error comparing dates of files: " + e, e);
-                return 0;
-            }
-        }
+    private ComparatorService comparatorService;
+    public void setComparatorService(ComparatorService comparatorService) {
+        this.comparatorService = comparatorService;
     }
 
 }

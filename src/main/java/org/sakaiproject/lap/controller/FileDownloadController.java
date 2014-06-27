@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public class FileDownloadController {
 
-    private final Log log = LogFactory.getLog(FileDownloadController.class);
+    private final Log log = LogFactory.getLog(getClass());
 
     @RequestMapping(method = RequestMethod.POST)
     public void doDownload(HttpServletRequest request, HttpServletResponse response) {
