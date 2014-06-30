@@ -10,7 +10,7 @@ There are two files that will be generated:
 <ul>
     <li>activity.csv</li>
     <li>grades.csv</li>
-<ul>
+</ul>
 
 The files will be placed in a directory named as the current date and time the extraction was run. For example, an extraction occurring on June 27, 2014 at 12:30:00 will be in a directory named: 20140627_123000
 
