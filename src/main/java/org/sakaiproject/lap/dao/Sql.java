@@ -30,9 +30,9 @@ public class Sql {
      * @param hasEndDate has an end date?
      * @return the SQL string
      */
-    public String getSqlEvents(boolean hasStartDate, boolean hasEndDate) {
+    public String getSqlActivity(boolean hasStartDate, boolean hasEndDate) {
         String sql = "SELECT " +
-                "sn.SESSION_USER ALTERNATIVE_ID," +
+                "suim.EID ALTERNATIVE_ID," +
                 "ss.SITE_ID COURSE_ID," +
                 "se.EVENT EVENT," +
                 "se.EVENT_DATE EVENT_DATE " +
@@ -44,6 +44,9 @@ public class Sql {
             "LEFT JOIN " +
                 "SAKAI_SITE ss " +
                     "ON se.CONTEXT = ss.SITE_ID " +
+            "LEFT JOIN " +
+                "SAKAI_USER_ID_MAP suim " +
+                    "ON sn.SESSION_USER = suim.USER_ID " +
             "WHERE " +
                 "ss.TITLE LIKE ?";
 
@@ -65,7 +68,7 @@ public class Sql {
      */
     public String getSqlGrades() {
         String sql = "SELECT " +
-                "gr.STUDENT_ID ALTERNATIVE_ID," +
+                "suim.EID ALTERNATIVE_ID," +
                 "ss.SITE_ID COURSE_ID," +
                 "go.NAME GRADABLE_OBJECT," +
                 "c.NAME CATEGORY," +
@@ -87,6 +90,9 @@ public class Sql {
             "LEFT JOIN " +
                 "SAKAI_SITE ss " +
                     "ON g.GRADEBOOK_UID = ss.SITE_ID " +
+            "LEFT JOIN " +
+                "SAKAI_USER_ID_MAP suim " +
+                    "ON gr.STUDENT_ID = suim.USER_ID " +
             "WHERE " +
                 "ss.TITLE LIKE ? AND " +
                 "go.OBJECT_TYPE_ID = 1 AND " +
@@ -101,15 +107,4 @@ public class Sql {
         return sql;
     }
 
-    public String getSqlCourses() {
-        String sql = "";
-
-        return sql;
-    }
-
-    public String getSqlStudents() {
-        String sql = "";
-
-        return sql;
-    }
 }

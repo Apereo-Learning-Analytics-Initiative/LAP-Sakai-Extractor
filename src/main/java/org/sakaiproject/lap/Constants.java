@@ -23,22 +23,22 @@ package org.sakaiproject.lap;
 public class Constants {
 
     public final static String DEFAULT_CSV_STORAGE_DIRECTORY = "lap-data/";
-    public final static String CSV_FILE_COURSES = "courses.csv";
-    public final static String CSV_FILE_GRADES = "grades.csv";
-    public final static String CSV_FILE_STUDENTS = "students.csv";
     public final static String CSV_FILE_ACTIVITY = "activity.csv";
+    public final static String CSV_FILE_GRADES = "grades.csv";
+
 
     public final static String MIME_TYPE_CSV = "text/csv";
     public final static String ENCODING_UTF8 = "UTF-8";
 
     public final static String DEFAULT_NO_TIME = "Never";
-    /**
-     * Default times for automatic generation of data reports (defaults to GMT midnight and noon each day)
-     */
-    public final static String[] DEFAULT_DATA_GENERATION_TIMES = new String[] {"00:00:00", "12:00:00"};
 
     /**
-     * Default interval to check to see if the automatic generation should run (default is 60 seconds)
+     * Default times for automatic extraction of data (defaults to midnight and noon each day)
      */
-    public final static int DEFAULT_DATA_GENERATION_CHECK_INTERVAL = 60;
+    public final static String[] DEFAULT_DATA_EXTRACTION_TIMES = new String[] {"00:00:00", "12:00:00"};
+
+    /**
+     * Default interval to check to see if the automatic extraction should run (default is 60 seconds)
+     */
+    public final static long DEFAULT_DATA_EXTRACTION_CHECK_INTERVAL = 1000L * 60L;
 }

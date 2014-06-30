@@ -69,7 +69,7 @@ public class Data extends Database {
         PreparedStatement preparedStatement = null;
 
         try {
-            String query = sql.getSqlEvents(hasStartDate, hasEndDate);
+            String query = sql.getSqlActivity(hasStartDate, hasEndDate);
 
             preparedStatement = createPreparedStatement(preparedStatement, query);
             preparedStatement.setString(1, "%" + criteria + "%");
@@ -91,42 +91,6 @@ public class Data extends Database {
             success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_ACTIVITY);
         } catch (Exception e) {
             log.error("Error preparing activity csv: " + e, e);
-        } finally {
-            closePreparedStatement(preparedStatement);
-        }
-
-        return success;
-    }
-
-    /**
-     * Convenience method for the courses method
-     * @param directory the name of the date-specific directory to store the .csv file
-     * @return true, if creation and storage successful
-     */
-    public boolean prepareCoursesCsv(String directory) {
-        return prepareCoursesCsv("", directory);
-    }
-
-    /**
-     * Create the courses.csv file, store it on file system
-     * 
-     * @param criteria the site title search term to use
-     * @param directory the name of the date-specific directory to store the .csv file
-     * @return true, if creation and storage successful
-     */
-    public boolean prepareCoursesCsv(String criteria, String directory) {
-        boolean success = false;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            String query = sql.getSqlCourses();
-
-            /*preparedStatement = createPreparedStatement(preparedStatement, query);
-            preparedStatement.setString(1, "%" + criteria + "%");
-
-            success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_COURSES);*/
-        } catch (Exception e) {
-            log.error("Error preparing courses csv: " + e, e);
         } finally {
             closePreparedStatement(preparedStatement);
         }
@@ -163,42 +127,6 @@ public class Data extends Database {
             success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_GRADES);
         } catch (Exception e) {
             log.error("Error preparing grades csv: " + e, e);
-        } finally {
-            closePreparedStatement(preparedStatement);
-        }
-
-        return success;
-    }
-
-    /**
-     * Convenience method for the students method
-     * @param directory the name of the date-specific directory to store the .csv file
-     * @return true, if creation and storage successful
-     */
-    public boolean prepareStudentsCsv(String directory) {
-        return prepareStudentsCsv("", directory);
-    }
-
-    /**
-     * Create the students.csv file, store it on file system
-     * 
-     * @param criteria the site title search term to use
-     * @param directory the name of the date-specific directory to store the .csv file
-     * @return true, if creation and storage successful
-     */
-    public boolean prepareStudentsCsv(String criteria, String directory) {
-        boolean success = false;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            String query = sql.getSqlStudents();
-
-            /*preparedStatement = createPreparedStatement(preparedStatement, query);
-            preparedStatement.setString(1, "%" + criteria + "%");
-
-            success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_STUDENTS);*/
-        } catch (Exception e) {
-            log.error("Error preparing students csv: " + e, e);
         } finally {
             closePreparedStatement(preparedStatement);
         }
@@ -296,24 +224,33 @@ public class Data extends Database {
     }
 
     /**
-     * Gets the last data generation date from the listing of directories
+     * Gets the last data extraction date from the listing of directories
      * 
      * @param directoryListing the directory listing map
-     * @return the last generation date
+     * @return the last extraction date
      */
     public String getLatestRunDate() {
         Map<String, String> directoryListing = getDirectoryListing();
 
-        return dateService.getLatestRunDate(directoryListing);
+        return dateService.getLatestExtractionDate(directoryListing);
     }
 
     /**
-     * Gets the next scheduled automatic generation date
+     * Gets the next scheduled automatic extraction date
      * 
-     * @return the next generation date
+     * @return the next extraction date
      */
     public String getNextScheduledRunDate() {
-        return dateService.getNextScheduledRunDate();
+        return dateService.getNextScheduledExtractionDate();
+    }
+
+    /**
+     * Gets a listing of all the extraction dates
+     * 
+     * @return the list of all extraction dates
+     */
+    public List<String> getAllRunDates() {
+        return dateService.getAllExtractionDates();
     }
 
     private CsvService csvService;

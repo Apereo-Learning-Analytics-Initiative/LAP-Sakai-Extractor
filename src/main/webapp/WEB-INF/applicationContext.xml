@@ -17,7 +17,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-    <bean id="automaticGeneratorService" class="org.sakaiproject.lap.service.AutomaticGeneratorService" init-method="init" destroy-method="destroy">
+    <bean id="automaticExtractionService" class="org.sakaiproject.lap.service.AutomaticExtractionService" init-method="init" destroy-method="destroy">
         <property name="data" ref="data" />
         <property name="dateService" ref="dateService" />
         <property name="fileService" ref="fileService" />
@@ -34,7 +34,9 @@
         <property name="sql" ref="sql" />
     </bean>
 
-    <bean id="dateService" class="org.sakaiproject.lap.service.DateService" init-method="init"></bean>
+    <bean id="dateService" class="org.sakaiproject.lap.service.DateService" init-method="init">
+        <property name="fileService" ref="fileService" />
+    </bean>
 
     <bean id="database" class="org.sakaiproject.lap.dao.Database">
         <property name="sqlService" ref="org.sakaiproject.db.api.SqlService" />

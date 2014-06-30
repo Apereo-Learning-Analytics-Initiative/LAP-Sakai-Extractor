@@ -74,10 +74,10 @@ public class DateService {
      */
     private void processScheduledRunTimes() {
         // get run dates from config
-        String[] runTimes = ServerConfigurationService.getStrings("lap.data.generation.times");
-        // get hard-coded auto-generation times
+        String[] runTimes = ServerConfigurationService.getStrings("lap.data.extraction.times");
+        // get hard-coded auto-extraction times
         if (ArrayUtils.isEmpty(runTimes)) {
-            runTimes = Constants.DEFAULT_DATA_GENERATION_TIMES;
+            runTimes = Constants.DEFAULT_DATA_EXTRACTION_TIMES;
         }
 
         if (runTimes != null) {
@@ -122,12 +122,12 @@ public class DateService {
     }
 
     /**
-     * Gets the last data generation date from the listing of directories
+     * Gets the last data extraction date from the listing of directories
      * 
      * @param directoryListing the directory listing map
-     * @return the last generation date
+     * @return the last extraction date
      */
-    public String getLatestRunDate(Map<String, String> directoryListing) {
+    public String getLatestExtractionDate(Map<String, String> directoryListing) {
         if (directoryListing == null || directoryListing.isEmpty()) {
             return Constants.DEFAULT_NO_TIME;
         }
@@ -139,18 +139,18 @@ public class DateService {
     }
 
     /**
-     * Gets the next scheduled automatic generation date
+     * Gets the next scheduled automatic extraction date
      * If none available for current date, calculates the next day's times
      * 
-     * @return the next generation date
+     * @return the next extraction date
      */
-    public String getNextScheduledRunDate() {
-        String nextScheduledRunDate =Constants.DEFAULT_NO_TIME;
+    public String getNextScheduledExtractionDate() {
+        String nextScheduledExtractionDate = Constants.DEFAULT_NO_TIME;
         List<Date> times = remainingTimes.get(currentDay);
 
         if (times != null) {
             if (times.size() > 0) {
-                nextScheduledRunDate = SDF_DISPLAY.format(times.get(0));
+                nextScheduledExtractionDate = SDF_DISPLAY.format(times.get(0));
             } else {
                 // we are after the last time scheduled for today, get the next day's times
                 Calendar calendar = Calendar.getInstance();
@@ -160,11 +160,35 @@ public class DateService {
                 String nextDayString = DateService.SDF_DATE_ONLY.format(nextDay);
                 processRemainingTimes(nextDay);
                 List<Date> nextDayTimes = remainingTimes.get(nextDayString);
-                nextScheduledRunDate = DateService.SDF_DISPLAY.format(nextDayTimes.get(0));
+                nextScheduledExtractionDate = DateService.SDF_DISPLAY.format(nextDayTimes.get(0));
             }
         }
 
-        return nextScheduledRunDate;
+        return nextScheduledExtractionDate;
+    }
+
+    /**
+     * Gets a listing of all the extraction dates
+     * 
+     * @return the list of all extraction dates
+     */
+    public List<String> getAllExtractionDates() {
+        String directory = fileService.getStoragePath();
+        List<String> directoryNames = fileService.parseDirectory(directory);
+        List<String> extractionDates = new ArrayList<String>(directoryNames.size());
+
+        for (String directoryName : directoryNames) {
+            try {
+                Date date = DateService.SDF_FILE_NAME.parse(directoryName);
+                String displayDate = DateService.SDF_DISPLAY.format(date);
+                extractionDates.add(displayDate);
+            } catch (Exception e) {
+                log.error("Error parsing directory name: " + e, e);
+                extractionDates.add(directoryName);
+            }
+        }
+
+        return extractionDates;
     }
 
     public String getCurrentDay() {
@@ -181,6 +205,11 @@ public class DateService {
 
     public ArrayList<String> getScheduledRunTimes() {
         return scheduledRunTimes;
+    }
+
+    private FileService fileService;
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
     }
 
     /*

@@ -16,6 +16,7 @@
 package org.sakaiproject.lap.provider;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -63,92 +64,22 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     @EntityCustomAction(action="activity", viewKey=EntityView.VIEW_LIST)
     public ActionReturn activityCsv(EntityView view) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access activity.csv", null);
+            throw new SecurityException("User not allowed to access activity data", null);
         }
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"activity\":\"activity1\"}");
     }
 
     /**
-     * GET /direct/lap-sakai-extractor/courses
+     * POST /direct/lap-sakai-extractor/extraction
      * 
      * @param view
      * @return
      */
-    @EntityCustomAction(action="courses", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn coursesCsv(EntityView view) {
+    @EntityCustomAction(action="extraction", viewKey=EntityView.VIEW_NEW)
+    public ActionReturn extractData(EntityView view, Map<String, Object> params) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access courses.csv", null);
-        }
-
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"courses\": \"course1\"}");
-    }
-
-    /**
-     * GET /direct/lap-sakai-extractor/grades
-     * 
-     * @param view
-     * @return
-     */
-    @EntityCustomAction(action="grades", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn gradesCsv(EntityView view) {
-        if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access grades.csv", null);
-        }
-
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"grades\": \"grade1\"}");
-    }
-
-    /**
-     * GET /direct/lap-sakai-extractor/students
-     * 
-     * @param view
-     * @return
-     */
-    @EntityCustomAction(action="students", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn studentsCsv(EntityView view) {
-        if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access students.csv", null);
-        }
-
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"students\": \"students1\"}");
-    }
-
-    /**
-     * GET /direct/lap-sakai-extractor/statistics
-     * 
-     * @param view
-     * @return
-     */
-    @EntityCustomAction(action="statistics", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn statistics(EntityView view) {
-        if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access statistics.", null);
-        }
-
-        String lastRunDate = data.getLatestRunDate();
-        String nextRunDate = data.getNextScheduledRunDate();
-        
-        Map<String, String> data = new HashMap<String, String>(2);
-        data.put("lastRunDate", lastRunDate);
-        data.put("nextRunDate", nextRunDate);
-
-        Gson gson = new Gson();
-        String json = gson.toJson(data, HashMap.class);
-        
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, json);
-    }
-
-    /**
-     * POST /direct/lap-sakai-extractor/generate
-     * 
-     * @param view
-     * @return
-     */
-    @EntityCustomAction(action="generate", viewKey=EntityView.VIEW_NEW)
-    public ActionReturn generateNewData(EntityView view, Map<String, Object> params) {
-        if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to generate new CSVs.", null);
+            throw new SecurityException("User not allowed to extract data.", null);
         }
 
         String criteria = "";
@@ -170,11 +101,51 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
 
         boolean activityCsvCreated = data.prepareActivityCsv(criteria, startDate, endDate, directory);
         boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory);
-        boolean studentsCsvCreated = data.prepareStudentsCsv(criteria, directory);
-        boolean coursesCsvCreated = data.prepareCoursesCsv(criteria, directory);
-        String success = Boolean.toString((activityCsvCreated && gradesCsvCreated && studentsCsvCreated && coursesCsvCreated));
+        String success = Boolean.toString((activityCsvCreated && gradesCsvCreated));
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, success);
+    }
+
+    /**
+     * GET /direct/lap-sakai-extractor/grades
+     * 
+     * @param view
+     * @return
+     */
+    @EntityCustomAction(action="grades", viewKey=EntityView.VIEW_LIST)
+    public ActionReturn gradesCsv(EntityView view) {
+        if (!extractorService.isAdminSession()){
+            throw new SecurityException("User not allowed to access grades data", null);
+        }
+
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"grades\": \"grade1\"}");
+    }
+
+    /**
+     * GET /direct/lap-sakai-extractor/statistics
+     * 
+     * @param view
+     * @return
+     */
+    @EntityCustomAction(action="statistics", viewKey=EntityView.VIEW_LIST)
+    public ActionReturn statistics(EntityView view) {
+        if (!extractorService.isAdminSession()){
+            throw new SecurityException("User not allowed to access statistics data.", null);
+        }
+
+        String lastRunDate = data.getLatestRunDate();
+        String nextRunDate = data.getNextScheduledRunDate();
+        List<String> allRunDates = data.getAllRunDates();
+        
+        Map<String, Object> data = new HashMap<String, Object>(3);
+        data.put("lastRunDate", lastRunDate);
+        data.put("nextRunDate", nextRunDate);
+        data.put("allRunDates", allRunDates);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(data, HashMap.class);
+        
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, json);
     }
 
     public String[] getHandledOutputFormats() {

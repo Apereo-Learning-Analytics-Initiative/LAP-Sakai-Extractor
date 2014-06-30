@@ -26,33 +26,29 @@ import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
 
 /**
- * Handles the automatic data report generation
+ * Handles the automatic data extraction via thread
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  *
  */
-public class AutomaticGeneratorService implements Runnable {
+public class AutomaticExtractionService implements Runnable {
 
     final protected Log log = LogFactory.getLog(getClass());
 
     private boolean threadStop;
     private Thread thread = null;
-    private long interval;
 
     public void init() {
-        boolean automaticGenerationEnabled = ServerConfigurationService.getBoolean("lap.automatic.generation.enabled", true);
+        boolean automaticExtractionEnabled = ServerConfigurationService.getBoolean("lap.automatic.extraction.enabled", true);
 
-        if (automaticGenerationEnabled) {
+        if (automaticExtractionEnabled) {
             List<String> scheduledRunTimes = dateService.getScheduledRunTimes();
 
             // only run if scheduled times exist
             if (!scheduledRunTimes.isEmpty()) {
-                // set the thread sleep interval
-                interval = ServerConfigurationService.getInt("lap.data.generation.check.interval", Constants.DEFAULT_DATA_GENERATION_CHECK_INTERVAL) * 1000;
-
                 start();
             } else {
-                log.error("Cannot setup automatic generation of data. No times are configured.");
+                log.error("Cannot setup automatic extraction of data. No times are configured.");
             }
         }
     }
@@ -88,7 +84,7 @@ public class AutomaticGeneratorService implements Runnable {
 
         thread = null;
 
-        log.info("Automatic data extraction thread started.");
+        log.info("Automatic data extraction thread stopped.");
     }
 
     @Override
@@ -102,16 +98,14 @@ public class AutomaticGeneratorService implements Runnable {
 
                 // create all the reports
                 boolean activitySuccess = data.prepareActivityCsv(directory);
-                boolean coursesSuccess = data.prepareCoursesCsv(directory);
                 boolean gradesSuccess = data.prepareGradesCsv(directory);
-                boolean studentsSuccess = data.prepareStudentsCsv(directory);
 
-                log.info("Data files created: activity: " + activitySuccess + ", courses: " + coursesSuccess + ", grades: " + gradesSuccess + ", students: " + studentsSuccess);
+                log.info("Data files created: activity: " + activitySuccess + ", grades: " + gradesSuccess);
             }
 
             try{
                 // wait the configured period of time
-                Thread.sleep(interval);
+                Thread.sleep(Constants.DEFAULT_DATA_EXTRACTION_CHECK_INTERVAL);
             } catch (Exception e) {
             }
         }

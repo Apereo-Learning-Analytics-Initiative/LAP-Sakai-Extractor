@@ -40,9 +40,9 @@
 <h2><spring:message code="title" /></h2>
 
 <div class="instructions clear">
-    <label><spring:message code="label.latest.data.generation" /> <span id="last-run-date" class="statistics"></span></label>
+    <label><spring:message code="label.latest.data.extraction" /> <span id="last-run-date" class="statistics"></span></label>
     <br />
-    <label><spring:message code="label.next.data.generation" /> <span id="next-run-date" class="statistics"></span></label>
+    <label><spring:message code="label.next.data.extraction" /> <span id="next-run-date" class="statistics"></span></label>
 </div>
 <fieldset class="form-fieldset">
     <legend class="form-legend"><spring:message code="legend.download" /></legend>
@@ -60,10 +60,8 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <button class="btn btn-primary csv" id="courses"><spring:message code="button.courses" /></button>
-                    <button class="btn btn-primary csv" id="grades"><spring:message code="button.grades" /></button>
-                    <button class="btn btn-primary csv" id="students"><spring:message code="button.students" /></button>
                     <button class="btn btn-primary csv" id="activity"><spring:message code="button.activity" /></button>
+                    <button class="btn btn-primary csv" id="grades"><spring:message code="button.grades" /></button>
                 </td>
             <tr>
         </table>
@@ -71,8 +69,8 @@
     </form>
 </fieldset>
 <fieldset class="form-fieldset">
-    <legend class="form-legend"><spring:message code="legend.generate" /></legend>
-    <form id="generate-form" method="post" action="main.htm">
+    <legend class="form-legend"><spring:message code="legend.extraction" /></legend>
+    <form id="extraction-form" method="post" action="main.htm">
         <spring:message code="placeholder.criteria" var="criteriaPlaceholder" />
         <table class="table table-hover form-table">
             <tr>
@@ -88,7 +86,7 @@
                 <td><input type="text" id="endDate" name="endDate" class="datePicker" /></td>
             </tr>
             <tr>
-                <td colspan="2"><button class="btn btn-danger" id="generate"><spring:message code="button.generate" /></button></td>
+                <td colspan="2"><button class="btn btn-danger" id="extraction"><spring:message code="button.extraction" /></button></td>
             </tr>
         </table>
         <input type="hidden" id="statusMessageType" name="statusMessageType" value="" />

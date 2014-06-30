@@ -14,9 +14,15 @@
  */
 
 // hack for MSIE browser look-up error
-$.browser={};(function(){$.browser.msie=false;
-$.browser.version=0;if(navigator.userAgent.match(/MSIE ([0-9]+)\./)){
-$.browser.msie=true;$.browser.version=RegExp.$1;}})();
+$.browser={};
+(function(){
+    $.browser.msie = false;
+    $.browser.version = 0;
+    if(navigator.userAgent.match(/MSIE ([0-9]+)\./)){
+        $.browser.msie = true;
+        $.browser.version = RegExp.$1;
+    }
+})();
 
 $(document).ready(function() {
     var url = "/direct/lap-sakai-extractor/";
@@ -27,20 +33,20 @@ $(document).ready(function() {
         $("#download-form").submit();
     });
 
-    /* generate csv files */
-    $("#generate").click(function() {
-        var filterData = $("#generate-form").serialize();
+    /* start data extraction */
+    $("#extraction").click(function() {
+        var filterData = $("#extraction-form").serialize();
 
-        generateNewData(this.id, filterData, function(success, data) {
+        extractData(this.id, filterData, function(success, data) {
             var status = (success) ? "success" : "error";
             $("#statusMessageType").val(status);
             $("#statusMessage").val(data);
 
-            $("#generate-form").submit();
+            $("#extraction-form").submit();
         });
     });
 
-    function generateNewData(endpoint, filterData, callback) {
+    function extractData(endpoint, filterData, callback) {
         var request = $.ajax({
             type: "POST",
             url:  url + endpoint,
@@ -58,7 +64,7 @@ $(document).ready(function() {
         });
     }
 
-    /* data picker for date range on generation */
+    /* data picker for date range on extraction */
     $(function() {
         $(".datePicker").datepicker({dateFormat: "yy-mm-dd"});
     });
