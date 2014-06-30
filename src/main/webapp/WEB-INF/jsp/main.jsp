@@ -63,7 +63,7 @@
                     <button class="btn btn-primary csv" id="courses"><spring:message code="button.courses" /></button>
                     <button class="btn btn-primary csv" id="grades"><spring:message code="button.grades" /></button>
                     <button class="btn btn-primary csv" id="students"><spring:message code="button.students" /></button>
-                    <button class="btn btn-primary csv" id="usage"><spring:message code="button.usage" /></button>
+                    <button class="btn btn-primary csv" id="activity"><spring:message code="button.activity" /></button>
                 </td>
             <tr>
         </table>

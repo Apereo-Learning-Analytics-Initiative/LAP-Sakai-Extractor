@@ -26,7 +26,7 @@ public class Constants {
     public final static String CSV_FILE_COURSES = "courses.csv";
     public final static String CSV_FILE_GRADES = "grades.csv";
     public final static String CSV_FILE_STUDENTS = "students.csv";
-    public final static String CSV_FILE_USAGE = "usage.csv";
+    public final static String CSV_FILE_ACTIVITY = "activity.csv";
 
     public final static String MIME_TYPE_CSV = "text/csv";
     public final static String ENCODING_UTF8 = "UTF-8";

@@ -101,12 +101,12 @@ public class AutomaticGeneratorService implements Runnable {
                 String directory = fileService.createDatedDirectoryName();
 
                 // create all the reports
+                boolean activitySuccess = data.prepareActivityCsv(directory);
                 boolean coursesSuccess = data.prepareCoursesCsv(directory);
                 boolean gradesSuccess = data.prepareGradesCsv(directory);
                 boolean studentsSuccess = data.prepareStudentsCsv(directory);
-                boolean usageSuccess = data.prepareUsageCsv(directory);
 
-                log.info("Data files created: courses: " + coursesSuccess + ", grades: " + gradesSuccess + ", students: " + studentsSuccess + ", usage: " + usageSuccess);
+                log.info("Data files created: activity: " + activitySuccess + ", courses: " + coursesSuccess + ", grades: " + gradesSuccess + ", students: " + studentsSuccess);
             }
 
             try{

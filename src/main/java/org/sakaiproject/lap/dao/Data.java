@@ -45,6 +45,60 @@ public class Data extends Database {
     private final Log log = LogFactory.getLog(getClass());
 
     /**
+     * Convenience method for the activity method
+     * @param directory the name of the date-specific directory to store the .csv file
+     * @return true, if creation and storage successful
+     */
+    public boolean prepareActivityCsv(String directory) {
+        return prepareActivityCsv("", "", "", directory);
+    }
+
+    /**
+     * Create the activity.csv file, store it on file system
+     * 
+     * @param criteria the site title search term to use
+     * @param startDate the date to start the inclusion of data
+     * @param endDate the date to end the inclusion of data
+     * @param directory the name of the date-specific directory to store the .csv file
+     * @return true, if creation and storage successful
+     */
+    public boolean prepareActivityCsv(String criteria, String startDate, String endDate, String directory) {
+        boolean hasStartDate = StringUtils.isNotBlank(startDate);
+        boolean hasEndDate = StringUtils.isNotBlank(endDate);
+        boolean success = false;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            String query = sql.getSqlEvents(hasStartDate, hasEndDate);
+
+            preparedStatement = createPreparedStatement(preparedStatement, query);
+            preparedStatement.setString(1, "%" + criteria + "%");
+
+            if (hasStartDate) {
+                startDate += DateService.DATE_START_TIME;
+                preparedStatement.setString(2, startDate);
+            }
+
+            if (hasEndDate) {
+                endDate += DateService.DATE_END_TIME;
+                if (hasStartDate) {
+                    preparedStatement.setString(3, endDate);
+                } else {
+                    preparedStatement.setString(2, endDate);
+                }
+            }
+
+            success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_ACTIVITY);
+        } catch (Exception e) {
+            log.error("Error preparing activity csv: " + e, e);
+        } finally {
+            closePreparedStatement(preparedStatement);
+        }
+
+        return success;
+    }
+
+    /**
      * Convenience method for the courses method
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
@@ -145,60 +199,6 @@ public class Data extends Database {
             success = saveToFile(preparedStatement, directory, Constants.CSV_FILE_STUDENTS);*/
         } catch (Exception e) {
             log.error("Error preparing students csv: " + e, e);
-        } finally {
-            closePreparedStatement(preparedStatement);
-        }
-
-        return success;
-    }
-
-    /**
-     * Convenience method for the usage method
-     * @param directory the name of the date-specific directory to store the .csv file
-     * @return true, if creation and storage successful
-     */
-    public boolean prepareUsageCsv(String directory) {
-        return prepareUsageCsv("", "", "", directory);
-    }
-
-    /**
-     * Create the usage.csv file, store it on file system
-     * 
-     * @param criteria the site title search term to use
-     * @param startDate the date to start the inclusion of data
-     * @param endDate the date to end the inclusion of data
-     * @param directory the name of the date-specific directory to store the .csv file
-     * @return true, if creation and storage successful
-     */
-    public boolean prepareUsageCsv(String criteria, String startDate, String endDate, String directory) {
-        boolean hasStartDate = StringUtils.isNotBlank(startDate);
-        boolean hasEndDate = StringUtils.isNotBlank(endDate);
-        boolean success = false;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            String query = sql.getSqlEvents(hasStartDate, hasEndDate);
-
-            preparedStatement = createPreparedStatement(preparedStatement, query);
-            preparedStatement.setString(1, "%" + criteria + "%");
-
-            if (hasStartDate) {
-                startDate += DateService.DATE_START_TIME;
-                preparedStatement.setString(2, startDate);
-            }
-
-            if (hasEndDate) {
-                endDate += DateService.DATE_END_TIME;
-                if (hasStartDate) {
-                    preparedStatement.setString(3, endDate);
-                } else {
-                    preparedStatement.setString(2, endDate);
-                }
-            }
-
-            success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_USAGE);
-        } catch (Exception e) {
-            log.error("Error preparing usage csv: " + e, e);
         } finally {
             closePreparedStatement(preparedStatement);
         }

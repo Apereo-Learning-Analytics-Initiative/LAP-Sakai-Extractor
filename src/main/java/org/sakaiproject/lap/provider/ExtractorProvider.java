@@ -55,6 +55,21 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     }
 
     /**
+     * GET /direct/lap-sakai-extractor/activity
+     * 
+     * @param view
+     * @return
+     */
+    @EntityCustomAction(action="activity", viewKey=EntityView.VIEW_LIST)
+    public ActionReturn activityCsv(EntityView view) {
+        if (!extractorService.isAdminSession()){
+            throw new SecurityException("User not allowed to access activity.csv", null);
+        }
+
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"activity\":\"activity1\"}");
+    }
+
+    /**
      * GET /direct/lap-sakai-extractor/courses
      * 
      * @param view
@@ -100,28 +115,13 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     }
 
     /**
-     * GET /direct/lap-sakai-extractor/usage
-     * 
-     * @param view
-     * @return
-     */
-    @EntityCustomAction(action="usage", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn usageCsv(EntityView view) {
-        if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access usage.csv", null);
-        }
-
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"usage\":\"usage1\"}");
-    }
-
-    /**
-     * GET /direct/lap-sakai-extractor/usage
+     * GET /direct/lap-sakai-extractor/statistics
      * 
      * @param view
      * @return
      */
     @EntityCustomAction(action="statistics", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn generation(EntityView view) {
+    public ActionReturn statistics(EntityView view) {
         if (!extractorService.isAdminSession()){
             throw new SecurityException("User not allowed to access statistics.", null);
         }
@@ -168,11 +168,11 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
 
         String directory = fileService.createDatedDirectoryName();
 
-        boolean usageCsvCreated = data.prepareUsageCsv(criteria, startDate, endDate, directory);
+        boolean activityCsvCreated = data.prepareActivityCsv(criteria, startDate, endDate, directory);
         boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory);
         boolean studentsCsvCreated = data.prepareStudentsCsv(criteria, directory);
         boolean coursesCsvCreated = data.prepareCoursesCsv(criteria, directory);
-        String success = Boolean.toString((usageCsvCreated && gradesCsvCreated && studentsCsvCreated && coursesCsvCreated));
+        String success = Boolean.toString((activityCsvCreated && gradesCsvCreated && studentsCsvCreated && coursesCsvCreated));
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, success);
     }
