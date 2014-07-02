@@ -48,7 +48,7 @@ public class FileService {
     public void init() {
         storagePath = createStoragePath();
         // create the root directory
-        createNewDirectory("");
+        createNewDirectory("", false);
     }
 
     /**
@@ -75,7 +75,7 @@ public class FileService {
      * @param directoryName the name of the directory
      * @return the path to the directory
      */
-    private String createNewDirectory(String directoryName) {
+    private String createNewDirectory(String directoryName, boolean isManualExtraction) {
         File newDirectory = new File(storagePath + directoryName);
 
         // if the directory does not exist, create it
@@ -96,11 +96,14 @@ public class FileService {
      * Create a new directory name for storing files
      * Format: yyyyMMdd_HHmmss
      * 
-     * @return 
+     * @param isManualExtraction is this directory for a manual extraction?
+     * @return the directory name
      */
-    public String createDatedDirectoryName() {
+    public String createDatedDirectoryName(boolean isManualExtraction) {
+        String extractionExtension = extractorService.getExtractionTypeExtension(isManualExtraction);
+
         Date date = new Date();
-        String directoryName = DateService.SDF_FILE_NAME.format(date);
+        String directoryName = DateService.SDF_FILE_NAME.format(date) + extractionExtension;
 
         return directoryName;
     }
@@ -113,7 +116,7 @@ public class FileService {
      * @param fileName the name of the new file
      * @return the new file
      */
-    public File createNewFile(String directory, String fileName) {
+    public File createNewFile(String directory, String fileName, boolean isManualExtraction) {
         if (StringUtils.isBlank(directory)) {
             throw new NullArgumentException("File directory cannot be null or blank");
         }
@@ -123,7 +126,7 @@ public class FileService {
 
         File newFile = null;
 
-        String newDirectory = createNewDirectory(directory);
+        String newDirectory = createNewDirectory(directory, isManualExtraction);
         newDirectory = addTrailingSlash(directory);
 
         try {
@@ -144,11 +147,23 @@ public class FileService {
      * Method to parse a directory for subdirectories
      * 
      * @param directory the directory to parse
+     * @param type the type of extraction (manual, automatic, "" = get all)
      * @return a listing of the subdirectory names
      */
-    public List<String> parseDirectory(String directory) {
+    public List<String> parseDirectory(String directory, String type) {
         if (StringUtils.isBlank(directory)) {
             throw new NullArgumentException("Directory cannot be null or blank");
+        }
+        if (!StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_AUTOMATIC) || !StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
+            type = "";
+        }
+
+        // fix this to only get the correct directories (manual or automatic), when requested
+        boolean getAll = true;
+        String extractionType = "";
+        if (StringUtils.isNotBlank(type)) {
+            getAll = false;
+            extractionType = extractorService.getExtractionTypeExtension(type);
         }
 
         List<String> directories = new ArrayList<String>();
@@ -157,7 +172,10 @@ public class FileService {
         for (File subDirectory : fileDirectory.listFiles()) {
             // only store subdirectory names
             if (subDirectory.isDirectory()) {
-                directories.add(subDirectory.getName());
+                String directoryExtractionType = StringUtils.substring(subDirectory.getName(), subDirectory.getName().length() - 2);
+                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, extractionType)) {
+                    directories.add(subDirectory.getName());
+                }
             }
         }
 
@@ -220,7 +238,7 @@ public class FileService {
         return fileString;
     }
 
-    public boolean saveStringToFile(String dataString, String directory, String name) {
+    public boolean saveStringToFile(String dataString, String directory, String name, boolean isManualExtraction) {
         if (StringUtils.isBlank(dataString)) {
             throw new NullArgumentException("Data string cannot be null or blank");
         }
@@ -231,7 +249,7 @@ public class FileService {
             throw new NullArgumentException("File name cannot be null or blank");
         }
 
-        File file = createNewFile(directory, name);
+        File file = createNewFile(directory, name, isManualExtraction);
 
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
@@ -267,6 +285,11 @@ public class FileService {
     private ComparatorService comparatorService;
     public void setComparatorService(ComparatorService comparatorService) {
         this.comparatorService = comparatorService;
+    }
+
+    private ExtractorService extractorService;
+    public void setExtractorService(ExtractorService extractorService) {
+        this.extractorService = extractorService;
     }
 
 }

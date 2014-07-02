@@ -41,4 +41,9 @@ public class Constants {
      * Default interval to check to see if the automatic extraction should run (default is 60 seconds)
      */
     public final static long DEFAULT_DATA_EXTRACTION_CHECK_INTERVAL = 1000L * 60L;
+
+    public final static String EXTRACTION_TYPE_EXTENSION_AUTOMATIC = "_A";
+    public final static String EXTRACTION_TYPE_NAME_AUTOMATIC = "automatic";
+    public final static String EXTRACTION_TYPE_EXTENSION_MANUAL = "_M";
+    public final static String EXTRACTION_TYPE_NAME_MANUAL = "manual";
 }

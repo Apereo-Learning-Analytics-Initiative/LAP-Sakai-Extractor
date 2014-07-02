@@ -44,10 +44,12 @@ public class DateService {
     private String currentDay;
     private Map<String, List<Date>> remainingTimes = new HashMap<String, List<Date>>();
     private ArrayList<String> scheduledRunTimes;
+    private String lastAutomaticExtractionDate;
 
     public void init() {
         processCurrentDay(new Date());
         processScheduledRunTimes();
+        processLastAutomaticExtractionDate();
     }
 
     /**
@@ -174,7 +176,7 @@ public class DateService {
      */
     public List<String> getAllExtractionDates() {
         String directory = fileService.getStoragePath();
-        List<String> directoryNames = fileService.parseDirectory(directory);
+        List<String> directoryNames = fileService.parseDirectory(directory, "");
         List<String> extractionDates = new ArrayList<String>(directoryNames.size());
 
         for (String directoryName : directoryNames) {
@@ -191,6 +193,15 @@ public class DateService {
         return extractionDates;
     }
 
+    private void processLastAutomaticExtractionDate() {
+        String directory = fileService.getStoragePath();
+        List<String> automaticDirectories = fileService.parseDirectory(directory, Constants.EXTRACTION_TYPE_NAME_AUTOMATIC);
+
+        if (automaticDirectories.size() > 0) {
+            lastAutomaticExtractionDate = automaticDirectories.get(0);
+        }
+    }
+
     public String getCurrentDay() {
         return currentDay;
     }
@@ -205,6 +216,14 @@ public class DateService {
 
     public ArrayList<String> getScheduledRunTimes() {
         return scheduledRunTimes;
+    }
+
+    public String getLastAutomaticExtractionDate() {
+        return lastAutomaticExtractionDate;
+    }
+
+    public void setLastAutomaticExtractionDate(String lastAutomaticExtractionDate) {
+        this.lastAutomaticExtractionDate = lastAutomaticExtractionDate;
     }
 
     private FileService fileService;

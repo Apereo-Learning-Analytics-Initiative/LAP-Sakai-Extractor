@@ -17,7 +17,6 @@ package org.sakaiproject.lap.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -27,10 +26,10 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.service.CsvService;
 import org.sakaiproject.lap.service.DateService;
+import org.sakaiproject.lap.service.ExtractorService;
 import org.sakaiproject.lap.service.FileService;
 
 /**
@@ -49,8 +48,8 @@ public class Data extends Database {
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
      */
-    public boolean prepareActivityCsv(String directory) {
-        return prepareActivityCsv("", "", "", directory);
+    public boolean prepareActivityCsv(String directory, boolean isManualExtraction) {
+        return prepareActivityCsv("", "", "", directory, isManualExtraction);
     }
 
     /**
@@ -62,7 +61,7 @@ public class Data extends Database {
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
      */
-    public boolean prepareActivityCsv(String criteria, String startDate, String endDate, String directory) {
+    public boolean prepareActivityCsv(String criteria, String startDate, String endDate, String directory, boolean isManualExtraction) {
         boolean hasStartDate = StringUtils.isNotBlank(startDate);
         boolean hasEndDate = StringUtils.isNotBlank(endDate);
         boolean success = false;
@@ -88,7 +87,7 @@ public class Data extends Database {
                 }
             }
 
-            success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_ACTIVITY);
+            success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_ACTIVITY, isManualExtraction);
         } catch (Exception e) {
             log.error("Error preparing activity csv: " + e, e);
         } finally {
@@ -103,8 +102,8 @@ public class Data extends Database {
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
      */
-    public boolean prepareGradesCsv(String directory) {
-        return prepareGradesCsv("", directory);
+    public boolean prepareGradesCsv(String directory, boolean isManualExtraction) {
+        return prepareGradesCsv("", directory, isManualExtraction);
     }
 
     /**
@@ -114,7 +113,7 @@ public class Data extends Database {
      * @param directory the name of the date-specific directory to store the .csv file
      * @return true, if creation and storage successful
      */
-    public boolean prepareGradesCsv(String criteria, String directory) {
+    public boolean prepareGradesCsv(String criteria, String directory, boolean isManualExtraction) {
         boolean success = false;
         PreparedStatement preparedStatement = null;
 
@@ -124,7 +123,7 @@ public class Data extends Database {
             preparedStatement = createPreparedStatement(preparedStatement, query);
             preparedStatement.setString(1, "%" + criteria + "%");
 
-            success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_GRADES);
+            success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_GRADES, isManualExtraction);
         } catch (Exception e) {
             log.error("Error preparing grades csv: " + e, e);
         } finally {
@@ -146,7 +145,7 @@ public class Data extends Database {
      * @return true, if successful operations
      * @throws Exception on errors
      */
-    private boolean saveResultsToFile(PreparedStatement preparedStatement, String directory, String fileName) throws Exception {
+    private boolean saveResultsToFile(PreparedStatement preparedStatement, String directory, String fileName, boolean isManualExtraction) throws Exception {
         ResultSet results = executePreparedStatement(preparedStatement);
         ResultSetMetaData metadata = results.getMetaData();
         int numberOfColumns = metadata.getColumnCount();
@@ -167,7 +166,7 @@ public class Data extends Database {
             csvData += csvService.setAsCsvRow(row);
         }
 
-        boolean success = fileService.saveStringToFile(csvData, directory, fileName);
+        boolean success = fileService.saveStringToFile(csvData, directory, fileName, isManualExtraction);
 
         return success;
     }
@@ -199,20 +198,25 @@ public class Data extends Database {
     /**
      * Retrieves the listing of subdirectories in the given directory
      * 
-     * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss")
+     * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss ({EXTRACTION TYPE})")
      */
     public Map<String, String> getDirectoryListing(String directory) {
         if (StringUtils.isBlank(directory)) {
             directory = fileService.getStoragePath();
         }
 
-        List<String> directoryNames = fileService.parseDirectory(directory);
+        List<String> directoryNames = fileService.parseDirectory(directory, "");
         Map<String, String> directories = new LinkedHashMap<String, String>(directoryNames.size());
 
         for (String directoryName : directoryNames) {
             try {
                 Date date = DateService.SDF_FILE_NAME.parse(directoryName);
                 String displayDate = DateService.SDF_DISPLAY.format(date);
+                String extractionType = extractorService.calculateExtractionType(directoryName);
+                if (StringUtils.isNotBlank(extractionType)) {
+                    displayDate += " (" + extractionType + ")";
+                }
+
                 directories.put(directoryName, displayDate);
             } catch (Exception e) {
                 log.error("Error parsing directory name: " + e, e);
@@ -261,6 +265,11 @@ public class Data extends Database {
     private DateService dateService;
     public void setDateService(DateService dateService) {
         this.dateService = dateService;
+    }
+
+    private ExtractorService extractorService;
+    public void setExtractorService(ExtractorService extractorService) {
+        this.extractorService = extractorService;
     }
 
     private FileService fileService;

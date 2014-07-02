@@ -37,6 +37,7 @@ public class AutomaticExtractionService implements Runnable {
 
     private boolean threadStop;
     private Thread thread = null;
+    private boolean isManualExtraction = false;
 
     public void init() {
         boolean automaticExtractionEnabled = ServerConfigurationService.getBoolean("lap.automatic.extraction.enabled", true);
@@ -94,11 +95,29 @@ public class AutomaticExtractionService implements Runnable {
 
             if (isTimeToRun()) {
                 // create the file storage directory
-                String directory = fileService.createDatedDirectoryName();
+                String directory = fileService.createDatedDirectoryName(isManualExtraction);
 
-                // create all the reports
-                boolean activitySuccess = data.prepareActivityCsv(directory);
-                boolean gradesSuccess = data.prepareGradesCsv(directory);
+                // get the last extraction date for activity processing
+                String lastAutomaticExtractionDate = dateService.getLastAutomaticExtractionDate();
+                boolean activitySuccess = false;
+                if (lastAutomaticExtractionDate != null) {
+                    // only extract activity from last automatic extraction date
+                    String startDate = "";
+
+                    try {
+                        Date lastDate = DateService.SDF_DATE_TIME.parse(lastAutomaticExtractionDate);
+                        startDate = DateService.SDF_DATE_TIME.format(lastDate);
+                    } catch (Exception e) {
+                        log.error("Error parsing last automatic extraction date. Error: " + e, e);
+                    }
+
+                    activitySuccess = data.prepareActivityCsv("", startDate, "", directory, isManualExtraction);
+                } else {
+                    // extract all activity data
+                    activitySuccess = data.prepareActivityCsv(directory, isManualExtraction);
+                }
+
+                boolean gradesSuccess = data.prepareGradesCsv(directory, isManualExtraction);
 
                 log.info("Data files created: activity: " + activitySuccess + ", grades: " + gradesSuccess);
             }

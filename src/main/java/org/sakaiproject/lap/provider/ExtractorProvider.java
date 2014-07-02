@@ -82,6 +82,8 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
             throw new SecurityException("User not allowed to extract data.", null);
         }
 
+        boolean isManualExtraction = true;
+
         String criteria = "";
         if (params.get("criteria") != null) {
             criteria = (String) params.get("criteria");
@@ -97,10 +99,10 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
             endDate = (String) params.get("endDate");
         }
 
-        String directory = fileService.createDatedDirectoryName();
+        String directory = fileService.createDatedDirectoryName(isManualExtraction);
 
-        boolean activityCsvCreated = data.prepareActivityCsv(criteria, startDate, endDate, directory);
-        boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory);
+        boolean activityCsvCreated = data.prepareActivityCsv(criteria, startDate, endDate, directory, isManualExtraction);
+        boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory, isManualExtraction);
         String success = Boolean.toString((activityCsvCreated && gradesCsvCreated));
 
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, success);

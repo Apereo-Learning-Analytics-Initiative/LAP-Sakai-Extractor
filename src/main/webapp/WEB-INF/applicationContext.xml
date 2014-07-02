@@ -30,6 +30,7 @@
     <bean id="data" class="org.sakaiproject.lap.dao.Data" parent="database">
         <property name="csvService" ref="csvService" />
         <property name="dateService" ref="dateService" />
+        <property name="extractorService" ref="extractorService" />
         <property name="fileService" ref="fileService" />
         <property name="sql" ref="sql" />
     </bean>
@@ -55,6 +56,7 @@
 
     <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init">
         <property name="comparatorService" ref="comparatorService" />
+        <property name="extractorService" ref="extractorService" />
     </bean>
 
     <!-- the i18n messages source -->
