@@ -46,6 +46,7 @@ public class Data extends Database {
     /**
      * Convenience method for the activity method
      * @param directory the name of the date-specific directory to store the .csv file
+     * @param isManualExtraction is this from a manual extraction?
      * @return true, if creation and storage successful
      */
     public boolean prepareActivityCsv(String directory, boolean isManualExtraction) {
@@ -59,6 +60,7 @@ public class Data extends Database {
      * @param startDate the date to start the inclusion of data
      * @param endDate the date to end the inclusion of data
      * @param directory the name of the date-specific directory to store the .csv file
+     * @param isManualExtraction is this from a manual extraction?
      * @return true, if creation and storage successful
      */
     public boolean prepareActivityCsv(String criteria, String startDate, String endDate, String directory, boolean isManualExtraction) {
@@ -74,12 +76,10 @@ public class Data extends Database {
             preparedStatement.setString(1, "%" + criteria + "%");
 
             if (hasStartDate) {
-                startDate += DateService.DATE_START_TIME;
                 preparedStatement.setString(2, startDate);
             }
 
             if (hasEndDate) {
-                endDate += DateService.DATE_END_TIME;
                 if (hasStartDate) {
                     preparedStatement.setString(3, endDate);
                 } else {
@@ -100,6 +100,7 @@ public class Data extends Database {
     /**
      * Convenience method for the grades method
      * @param directory the name of the date-specific directory to store the .csv file
+     * @param isManualExtraction is this from a manual extraction?
      * @return true, if creation and storage successful
      */
     public boolean prepareGradesCsv(String directory, boolean isManualExtraction) {
@@ -111,6 +112,7 @@ public class Data extends Database {
      * 
      * @param criteria the site title search term to use
      * @param directory the name of the date-specific directory to store the .csv file
+     * @param isManualExtraction is this from a manual extraction?
      * @return true, if creation and storage successful
      */
     public boolean prepareGradesCsv(String criteria, String directory, boolean isManualExtraction) {
@@ -142,6 +144,7 @@ public class Data extends Database {
      * @param preparedStatement the prepared statement
      * @param directory the directory to save the file in
      * @param fileName the name of the file
+     * @param isManualExtraction is this from a manual extraction?
      * @return true, if successful operations
      * @throws Exception on errors
      */
@@ -187,7 +190,7 @@ public class Data extends Database {
     /**
      * Retrieves the listing of subdirectories in the configured storage path
      * 
-     * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss")
+     * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss ({EXTRACTION TYPE})")
      */
     public Map<String, String> getDirectoryListing() {
         String directory = fileService.getStoragePath();
@@ -210,7 +213,7 @@ public class Data extends Database {
 
         for (String directoryName : directoryNames) {
             try {
-                Date date = DateService.SDF_FILE_NAME.parse(directoryName);
+                Date date = dateService.parseDirectoryToDateTime(directoryName);
                 String displayDate = DateService.SDF_DISPLAY.format(date);
                 String extractionType = extractorService.calculateExtractionType(directoryName);
                 if (StringUtils.isNotBlank(extractionType)) {
@@ -233,18 +236,18 @@ public class Data extends Database {
      * @param directoryListing the directory listing map
      * @return the last extraction date
      */
-    public String getLatestRunDate() {
+    public String getLatestExtractionDate() {
         Map<String, String> directoryListing = getDirectoryListing();
 
         return dateService.getLatestExtractionDate(directoryListing);
     }
 
     /**
-     * Gets the next scheduled automatic extraction date
+     * Gets the next scheduled extraction date
      * 
      * @return the next extraction date
      */
-    public String getNextScheduledRunDate() {
+    public String getNextScheduledExtractionDate() {
         return dateService.getNextScheduledExtractionDate();
     }
 
@@ -253,7 +256,7 @@ public class Data extends Database {
      * 
      * @return the list of all extraction dates
      */
-    public List<String> getAllRunDates() {
+    public Map<String, String> getAllExtractionDates() {
         return dateService.getAllExtractionDates();
     }
 

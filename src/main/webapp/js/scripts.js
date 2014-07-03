@@ -76,12 +76,12 @@ $(document).ready(function() {
         cache: false,
         async: false,
         success: (function(data, status, jqXHR) {
-            $("#last-run-date").html(data.lastRunDate);
-            $("#next-run-date").html(data.nextRunDate);
+            $("#last-extraction-date").html(data.lastExtractionDate);
+            $("#next-extraction-date").html(data.nextExtractionDate);
         }),
         fail: (function(jqXHR, textStatus, errorThrown) {
-            $("#last-run-date").html("Error getting data.");
-            $("#next-run-date").html("Error getting data.");
+            $("#last-extraction-date").html("Error getting data.");
+            $("#next-extraction-date").html("Error getting data.");
         })
     });
 });

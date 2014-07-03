@@ -22,7 +22,7 @@ Data extraction can occur in two ways:
 
 <ol>
     <li>Manually, via a button press</li>
-    <li>Automatically, via threading</li>
+    <li>Scheduled, via threading</li>
 </ol>
 
 You may initiate a manual extraction of data by:
@@ -37,8 +37,8 @@ You may initiate a manual extraction of data by:
 You may also set up the system to automatically run a data extraction at certain times. To do so:
 
 <ol>
-    <li>Enable the automatic extraction by setting 'lap.automatic.extraction.enabled=true' in sakai.properties</li>
-    <li>Set the times you wish the automatic extraction to run by setting the 'lap.data.extraction.times' property in sakai.properties. The default is midnight (00:00:00) and noon (12:00:00). The times must be set in 24-hour notation.</li>
+    <li>Enable the scheduled extraction by setting 'lap.scheduled.extraction.enabled=true' in sakai.properties</li>
+    <li>Set the times you wish the scheduled extraction to run by setting the 'lap.data.extraction.times' property in sakai.properties. The default is midnight (00:00:00) and noon (12:00:00). The times must be set in 24-hour notation.</li>
 </ol>
 
 -----
@@ -50,15 +50,15 @@ sakai.properties:
 ```
 # LAP Sakai Data Extractor
 
-# Enable automatic data extraction
+# Enable scheduled data extraction
 # Default: true
-#lap.automatic.extraction.enabled=true
+#lap.scheduled.extraction.enabled=true
 
 # File system path to store data extraction files
 # Default: bodyPath@org.sakaiproject.content.api.ContentHostingService + lap-data
 #lap.data.extraction.storage.path=
 
-# Time of day that the automatic data extraction will run
+# Time of day that the scheduled data extraction will run
 #lap.data.extraction.times.count=2
 #lap.data.extraction.times.1=00:00:00
 #lap.data.extraction.times.2=12:00:00

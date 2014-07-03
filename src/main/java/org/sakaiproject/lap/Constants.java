@@ -33,17 +33,17 @@ public class Constants {
     public final static String DEFAULT_NO_TIME = "Never";
 
     /**
-     * Default times for automatic extraction of data (defaults to midnight and noon each day)
+     * Default times for scheduled extraction of data (defaults to midnight and noon each day)
      */
     public final static String[] DEFAULT_DATA_EXTRACTION_TIMES = new String[] {"00:00:00", "12:00:00"};
 
     /**
-     * Default interval to check to see if the automatic extraction should run (default is 60 seconds)
+     * Default interval to check to see if the scheduled extraction should run (default is 60 seconds)
      */
     public final static long DEFAULT_DATA_EXTRACTION_CHECK_INTERVAL = 1000L * 60L;
 
-    public final static String EXTRACTION_TYPE_EXTENSION_AUTOMATIC = "_A";
-    public final static String EXTRACTION_TYPE_NAME_AUTOMATIC = "automatic";
+    public final static String EXTRACTION_TYPE_EXTENSION_SCHEDULED = "_S";
+    public final static String EXTRACTION_TYPE_NAME_SCHEDULED = "scheduled";
     public final static String EXTRACTION_TYPE_EXTENSION_MANUAL = "_M";
     public final static String EXTRACTION_TYPE_NAME_MANUAL = "manual";
 }

@@ -48,7 +48,8 @@ public class Sql {
                 "SAKAI_USER_ID_MAP suim " +
                     "ON sn.SESSION_USER = suim.USER_ID " +
             "WHERE " +
-                "ss.TITLE LIKE ?";
+                "ss.TITLE LIKE ? AND " +
+                "se.SESSION_ID NOT LIKE '~%'";
 
         if (hasStartDate) {
             sql += " AND se.EVENT_DATE >= ?";

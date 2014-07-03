@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entitybroker.EntityView;
@@ -32,6 +33,7 @@ import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
+import org.sakaiproject.lap.service.DateService;
 import org.sakaiproject.lap.service.ExtractorService;
 import org.sakaiproject.lap.service.FileService;
 
@@ -85,18 +87,18 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
         boolean isManualExtraction = true;
 
         String criteria = "";
-        if (params.get("criteria") != null) {
+        if (StringUtils.isNotBlank((String) params.get("criteria"))) {
             criteria = (String) params.get("criteria");
         }
 
         String startDate = "";
-        if (params.get("startDate") != null) {
-            startDate = (String) params.get("startDate");
+        if (StringUtils.isNotBlank((String) params.get("startDate"))) {
+            startDate = (String) params.get("startDate") + DateService.DATE_START_TIME;
         }
 
         String endDate = "";
-        if (params.get("endDate") != null) {
-            endDate = (String) params.get("endDate");
+        if (StringUtils.isNotBlank((String) params.get("endDate"))) {
+            endDate = (String) params.get("endDate") + DateService.DATE_END_TIME;
         }
 
         String directory = fileService.createDatedDirectoryName(isManualExtraction);
@@ -135,14 +137,14 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
             throw new SecurityException("User not allowed to access statistics data.", null);
         }
 
-        String lastRunDate = data.getLatestRunDate();
-        String nextRunDate = data.getNextScheduledRunDate();
-        List<String> allRunDates = data.getAllRunDates();
-        
+        String lastExtractionDate = data.getLatestExtractionDate();
+        String nextExtractionDate = data.getNextScheduledExtractionDate();
+        Map<String, String> allExtractionDates = data.getAllExtractionDates();
+
         Map<String, Object> data = new HashMap<String, Object>(3);
-        data.put("lastRunDate", lastRunDate);
-        data.put("nextRunDate", nextRunDate);
-        data.put("allRunDates", allRunDates);
+        data.put("lastExtractionDate", lastExtractionDate);
+        data.put("nextExtractionDate", nextExtractionDate);
+        data.put("allExtractionDates", allExtractionDates);
 
         Gson gson = new Gson();
         String json = gson.toJson(data, HashMap.class);

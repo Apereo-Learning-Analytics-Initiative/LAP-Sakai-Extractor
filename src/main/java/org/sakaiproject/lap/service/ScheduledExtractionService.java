@@ -26,12 +26,12 @@ import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
 
 /**
- * Handles the automatic data extraction via thread
+ * Handles the scheduled data extraction via thread
  * 
  * @author Robert E. Long (rlong @ unicon.net)
  *
  */
-public class AutomaticExtractionService implements Runnable {
+public class ScheduledExtractionService implements Runnable {
 
     final protected Log log = LogFactory.getLog(getClass());
 
@@ -40,16 +40,16 @@ public class AutomaticExtractionService implements Runnable {
     private boolean isManualExtraction = false;
 
     public void init() {
-        boolean automaticExtractionEnabled = ServerConfigurationService.getBoolean("lap.automatic.extraction.enabled", true);
+        boolean scheduledExtractionEnabled = ServerConfigurationService.getBoolean("lap.scheduled.extraction.enabled", true);
 
-        if (automaticExtractionEnabled) {
+        if (scheduledExtractionEnabled) {
             List<String> scheduledRunTimes = dateService.getScheduledRunTimes();
 
             // only run if scheduled times exist
             if (!scheduledRunTimes.isEmpty()) {
                 start();
             } else {
-                log.error("Cannot setup automatic extraction of data. No times are configured.");
+                log.error("Cannot setup scheduled extraction of data. No times are configured.");
             }
         }
     }
@@ -68,7 +68,7 @@ public class AutomaticExtractionService implements Runnable {
         thread.setDaemon(true);
         thread.start();
 
-        log.info("Automatic data extraction thread started.");
+        log.info("Scheduled data extraction thread started.");
     }
 
     /**
@@ -85,7 +85,7 @@ public class AutomaticExtractionService implements Runnable {
 
         thread = null;
 
-        log.info("Automatic data extraction thread stopped.");
+        log.info("Scheduled data extraction thread stopped.");
     }
 
     @Override
@@ -97,18 +97,18 @@ public class AutomaticExtractionService implements Runnable {
                 // create the file storage directory
                 String directory = fileService.createDatedDirectoryName(isManualExtraction);
 
-                // get the last extraction date for activity processing
-                String lastAutomaticExtractionDate = dateService.getLastAutomaticExtractionDate();
+                // get the last scheduled extraction date for activity processing
+                String lastScheduledExtractionDate = dateService.getLastScheduledExtractionDate();
                 boolean activitySuccess = false;
-                if (lastAutomaticExtractionDate != null) {
-                    // only extract activity from last automatic extraction date
+                if (lastScheduledExtractionDate != null) {
+                    // only extract activity from last scheduled extraction date
                     String startDate = "";
 
                     try {
-                        Date lastDate = DateService.SDF_DATE_TIME.parse(lastAutomaticExtractionDate);
-                        startDate = DateService.SDF_DATE_TIME.format(lastDate);
+                        Date lastDate = dateService.parseDirectoryToDateTime(lastScheduledExtractionDate);
+                        startDate = DateService.SDF_DATE_TIME_MYSQL.format(lastDate);
                     } catch (Exception e) {
-                        log.error("Error parsing last automatic extraction date. Error: " + e, e);
+                        log.error("Error parsing last scheduled extraction date. Error: " + e, e);
                     }
 
                     activitySuccess = data.prepareActivityCsv("", startDate, "", directory, isManualExtraction);
@@ -118,6 +118,10 @@ public class AutomaticExtractionService implements Runnable {
                 }
 
                 boolean gradesSuccess = data.prepareGradesCsv(directory, isManualExtraction);
+
+                if (activitySuccess) {
+                    dateService.setLastScheduledExtractionDate(directory);
+                }
 
                 log.info("Data files created: activity: " + activitySuccess + ", grades: " + gradesSuccess);
             }

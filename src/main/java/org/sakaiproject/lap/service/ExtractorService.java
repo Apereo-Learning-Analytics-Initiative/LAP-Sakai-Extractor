@@ -62,17 +62,31 @@ public class ExtractorService {
         }
     }
 
+    /**
+     * Get the appropriate extension
+     * e.g "_M" or "_S"
+     * 
+     * @param isManualExtraction is this a manual extraction?
+     * @return the type
+     */
     public String getExtractionTypeExtension(boolean isManualExtraction) {
-        String extractionType = (isManualExtraction) ? Constants.EXTRACTION_TYPE_EXTENSION_MANUAL : Constants.EXTRACTION_TYPE_EXTENSION_AUTOMATIC;
+        String extractionType = (isManualExtraction) ? Constants.EXTRACTION_TYPE_EXTENSION_MANUAL : Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED;
 
         return extractionType;
     }
 
+    /**
+     * Gets the extension type directory name extention
+     * e.g "_M" or "_S"
+     * 
+     * @param extractionType the full type name
+     * @return the abbreviated name
+     */
     public String getExtractionTypeExtension(String extractionType) {
         String extractionTypeExtension = "";
 
-        if (StringUtils.equalsIgnoreCase(extractionType, Constants.EXTRACTION_TYPE_NAME_AUTOMATIC)) {
-            extractionType = Constants.EXTRACTION_TYPE_EXTENSION_AUTOMATIC;
+        if (StringUtils.equalsIgnoreCase(extractionType, Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED)) {
+            extractionType = Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED;
         } else if (StringUtils.equalsIgnoreCase(extractionType, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
             extractionType = Constants.EXTRACTION_TYPE_EXTENSION_MANUAL;
         }
@@ -80,13 +94,20 @@ public class ExtractorService {
         return extractionTypeExtension;
     }
 
+    /**
+     * Gets the full name of the extraction type for a given directory 
+     * e.g. "manual" or "scheduled"
+     * 
+     * @param directory the directory
+     * @return the full name of the extraction type
+     */
     public String calculateExtractionType(String directory) {
         String extractionType = "";
         // get the last 2 characters of 
-        String fileNameExtractionType = StringUtils.substring(directory, directory.length() - 2);
+        String fileNameExtractionType = StringUtils.substring(directory, directory.length() - 2, directory.length());
 
-        if (StringUtils.endsWithIgnoreCase(fileNameExtractionType, Constants.EXTRACTION_TYPE_EXTENSION_AUTOMATIC)) {
-            extractionType = Constants.EXTRACTION_TYPE_NAME_AUTOMATIC;
+        if (StringUtils.endsWithIgnoreCase(fileNameExtractionType, Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED)) {
+            extractionType = Constants.EXTRACTION_TYPE_NAME_SCHEDULED;
         } else if (StringUtils.endsWithIgnoreCase(fileNameExtractionType, Constants.EXTRACTION_TYPE_EXTENSION_MANUAL)) {
             extractionType = Constants.EXTRACTION_TYPE_NAME_MANUAL;
         }

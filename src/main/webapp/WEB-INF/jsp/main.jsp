@@ -40,9 +40,9 @@
 <h2><spring:message code="title" /></h2>
 
 <div class="instructions clear">
-    <label><spring:message code="label.latest.data.extraction" /> <span id="last-run-date" class="statistics"></span></label>
+    <label><spring:message code="label.latest.data.extraction" /> <span id="last-extraction-date" class="statistics"></span></label>
     <br />
-    <label><spring:message code="label.next.data.extraction" /> <span id="next-run-date" class="statistics"></span></label>
+    <label><spring:message code="label.next.data.extraction" /> <span id="next-extraction-date" class="statistics"></span></label>
 </div>
 <fieldset class="form-fieldset">
     <legend class="form-legend"><spring:message code="legend.download" /></legend>

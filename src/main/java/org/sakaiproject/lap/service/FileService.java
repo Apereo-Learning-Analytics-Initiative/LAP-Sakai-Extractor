@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +74,7 @@ public class FileService {
      * Creates a new directory for storing files
      * 
      * @param directoryName the name of the directory
+     * @param isManualExtraction is this from a manual extraction?
      * @return the path to the directory
      */
     private String createNewDirectory(String directoryName, boolean isManualExtraction) {
@@ -114,6 +116,7 @@ public class FileService {
      * 
      * @param directory the directory to store the file
      * @param fileName the name of the new file
+     * @param isManualExtraction is this from a manual extraction?
      * @return the new file
      */
     public File createNewFile(String directory, String fileName, boolean isManualExtraction) {
@@ -147,24 +150,18 @@ public class FileService {
      * Method to parse a directory for subdirectories
      * 
      * @param directory the directory to parse
-     * @param type the type of extraction (manual, automatic, "" = get all)
+     * @param type the type of extraction (manual, scheduled, "" = get all)
      * @return a listing of the subdirectory names
      */
     public List<String> parseDirectory(String directory, String type) {
         if (StringUtils.isBlank(directory)) {
             throw new NullArgumentException("Directory cannot be null or blank");
         }
-        if (!StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_AUTOMATIC) || !StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
+        if (!StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_SCHEDULED) && !StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
             type = "";
         }
 
-        // fix this to only get the correct directories (manual or automatic), when requested
-        boolean getAll = true;
-        String extractionType = "";
-        if (StringUtils.isNotBlank(type)) {
-            getAll = false;
-            extractionType = extractorService.getExtractionTypeExtension(type);
-        }
+        boolean getAll = StringUtils.isBlank(type);
 
         List<String> directories = new ArrayList<String>();
         File fileDirectory = new File(directory);
@@ -173,14 +170,14 @@ public class FileService {
             // only store subdirectory names
             if (subDirectory.isDirectory()) {
                 String directoryExtractionType = StringUtils.substring(subDirectory.getName(), subDirectory.getName().length() - 2);
-                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, extractionType)) {
+                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, extractorService.getExtractionTypeExtension(type))) {
                     directories.add(subDirectory.getName());
                 }
             }
         }
 
         // sort the list, newest directories first
-        Collections.sort(directories, comparatorService.new DateComparatorLatestToEarliest());
+        Collections.sort(directories, new DateComparatorLatestToEarliest());
 
         return directories;
     }
@@ -189,8 +186,8 @@ public class FileService {
      * Retrieves a file with the given name from the given directory
      * 
      * @param directory the directory
-     * @param fileName
-     * @return
+     * @param fileName the file name
+     * @return the file object
      */
     public File getFile(String directory, String fileName) {
         if (StringUtils.isBlank(directory)) {
@@ -210,9 +207,9 @@ public class FileService {
     /**
      * Reads the contents of a file into a string
      * 
-     * @param directory
-     * @param fileName
-     * @return
+     * @param directory the directory of the file
+     * @param fileName the file name
+     * @return the data string
      */
     public String readFileIntoString(String directory, String fileName) {
         if (StringUtils.isBlank(directory)) {
@@ -238,6 +235,15 @@ public class FileService {
         return fileString;
     }
 
+    /**
+     * Saves the contents of a string to the given file
+     * 
+     * @param dataString the string of data
+     * @param directory the directory to store the file
+     * @param name the file name
+     * @param isManualExtraction is this from a manual extraction?
+     * @return true, if file saved successfully
+     */
     public boolean saveStringToFile(String dataString, String directory, String name, boolean isManualExtraction) {
         if (StringUtils.isBlank(dataString)) {
             throw new NullArgumentException("Data string cannot be null or blank");
@@ -282,14 +288,36 @@ public class FileService {
         return storagePath;
     }
 
-    private ComparatorService comparatorService;
-    public void setComparatorService(ComparatorService comparatorService) {
-        this.comparatorService = comparatorService;
-    }
-
     private ExtractorService extractorService;
     public void setExtractorService(ExtractorService extractorService) {
         this.extractorService = extractorService;
     }
 
+    /**
+     * Compare dates for sorting latest to earliest
+     */
+    public static class DateComparatorLatestToEarliest implements Comparator<String> {
+        @Override
+        public int compare(String arg0, String arg1) {
+            DateService dateService = new DateService();
+            Date date1 = dateService.parseDirectoryToDateTime(arg0);
+            Date date2 = dateService.parseDirectoryToDateTime(arg1);
+
+            return date2.compareTo(date1);
+        }
+    }
+
+    /**
+     * Compare dates for sorting earliest to latest date
+     */
+    public class DateComparatorEarliestToLatest implements Comparator<String> {
+        @Override
+        public int compare(String arg0, String arg1) {
+            DateService dateService = new DateService();
+            Date date1 = dateService.parseDirectoryToDateTime(arg0);
+            Date date2 = dateService.parseDirectoryToDateTime(arg1);
+
+            return date1.compareTo(date2);
+        }
+    }
 }

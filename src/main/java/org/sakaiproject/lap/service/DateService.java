@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,12 +46,12 @@ public class DateService {
     private String currentDay;
     private Map<String, List<Date>> remainingTimes = new HashMap<String, List<Date>>();
     private ArrayList<String> scheduledRunTimes;
-    private String lastAutomaticExtractionDate;
+    private String lastScheduledExtractionDate = null;
 
     public void init() {
         processCurrentDay(new Date());
         processScheduledRunTimes();
-        processLastAutomaticExtractionDate();
+        processLastScheduledExtractionDate();
     }
 
     /**
@@ -141,7 +143,7 @@ public class DateService {
     }
 
     /**
-     * Gets the next scheduled automatic extraction date
+     * Gets the next scheduled extraction date
      * If none available for current date, calculates the next day's times
      * 
      * @return the next extraction date
@@ -174,32 +176,66 @@ public class DateService {
      * 
      * @return the list of all extraction dates
      */
-    public List<String> getAllExtractionDates() {
+    public Map<String, String> getAllExtractionDates() {
         String directory = fileService.getStoragePath();
         List<String> directoryNames = fileService.parseDirectory(directory, "");
-        List<String> extractionDates = new ArrayList<String>(directoryNames.size());
+        Map<String, String> extractionDates = new HashMap<String, String>(directoryNames.size());
 
         for (String directoryName : directoryNames) {
             try {
-                Date date = DateService.SDF_FILE_NAME.parse(directoryName);
-                String displayDate = DateService.SDF_DISPLAY.format(date);
-                extractionDates.add(displayDate);
+                Date date = parseDirectoryToDateTime(directoryName);
+                String dateTime = SDF_DISPLAY.format(date);
+                String displayDateTime = dateTime;
+                String extractionType = extractorService.calculateExtractionType(directoryName);
+                if (StringUtils.isNotBlank(extractionType)) {
+                    displayDateTime += " (" + extractionType + ")";
+                }
+                extractionDates.put(dateTime, displayDateTime);
             } catch (Exception e) {
                 log.error("Error parsing directory name: " + e, e);
-                extractionDates.add(directoryName);
+                extractionDates.put(directoryName, directoryName);
             }
         }
 
         return extractionDates;
     }
 
-    private void processLastAutomaticExtractionDate() {
+    /**
+     * Finds the last directory created by a scheduled extraction
+     */
+    private void processLastScheduledExtractionDate() {
         String directory = fileService.getStoragePath();
-        List<String> automaticDirectories = fileService.parseDirectory(directory, Constants.EXTRACTION_TYPE_NAME_AUTOMATIC);
+        List<String> scheduledDirectories = fileService.parseDirectory(directory, Constants.EXTRACTION_TYPE_NAME_SCHEDULED);
 
-        if (automaticDirectories.size() > 0) {
-            lastAutomaticExtractionDate = automaticDirectories.get(0);
+        if (scheduledDirectories.size() > 0) {
+            lastScheduledExtractionDate = scheduledDirectories.get(0);
         }
+    }
+
+    /**
+     * Parses a dated directory name to get the date object
+     * e.g. yyyyMMdd_HHmmss_A => date object
+     * 
+     * @param directory the directory name
+     * @return the date object
+     */
+    public Date parseDirectoryToDateTime(String directory) {
+        if (StringUtils.isBlank(directory)) {
+            throw new NullArgumentException(directory);
+        }
+
+        if (directory.length() > 15) {
+            directory = StringUtils.substring(directory, 0, 15);
+        }
+
+        Date date = null;
+        try {
+            date = SDF_FILE_NAME.parse(directory);
+        } catch (Exception e) {
+            log.error("Error parsing directory string to date. Error: " + e, e);
+        }
+
+        return date;
     }
 
     public String getCurrentDay() {
@@ -218,12 +254,17 @@ public class DateService {
         return scheduledRunTimes;
     }
 
-    public String getLastAutomaticExtractionDate() {
-        return lastAutomaticExtractionDate;
+    public String getLastScheduledExtractionDate() {
+        return lastScheduledExtractionDate;
     }
 
-    public void setLastAutomaticExtractionDate(String lastAutomaticExtractionDate) {
-        this.lastAutomaticExtractionDate = lastAutomaticExtractionDate;
+    public void setLastScheduledExtractionDate(String lastScheduledExtractionDate) {
+        this.lastScheduledExtractionDate = lastScheduledExtractionDate;
+    }
+
+    private ExtractorService extractorService;
+    public void setExtractorService(ExtractorService extractorService) {
+        this.extractorService = extractorService;
     }
 
     private FileService fileService;
@@ -239,10 +280,12 @@ public class DateService {
     public final static String DATE_FORMAT_DROPDOWN = "MMMM dd, yyyy HH:mm:ss";
     public final static String DATE_FORMAT_TIME_ONLY = "HH:mm:ss";
     public final static String DATE_FORMAT_DATE_TIME = "yyyyMMdd HH:mm:ss";
+    public final static String DATE_FORMAT_DATE_TIME_MYSQL = "yyyy-MM-dd HH:mm:ss";
     public final static String DATE_START_TIME = " 00:00:00";
     public final static String DATE_END_TIME = " 23:59:59";
     
     public final static SimpleDateFormat SDF_DATE_TIME = new SimpleDateFormat(DATE_FORMAT_DATE_TIME, Locale.ENGLISH);
+    public final static SimpleDateFormat SDF_DATE_TIME_MYSQL = new SimpleDateFormat(DATE_FORMAT_DATE_TIME_MYSQL, Locale.ENGLISH);
     public final static SimpleDateFormat SDF_DATE_ONLY = new SimpleDateFormat(DATE_FORMAT_FILE_NAME_DATE_ONLY, Locale.ENGLISH);
     public final static SimpleDateFormat SDF_TIME_ONLY = new SimpleDateFormat(DATE_FORMAT_TIME_ONLY, Locale.ENGLISH);
     public final static SimpleDateFormat SDF_FILE_NAME = new SimpleDateFormat(DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
