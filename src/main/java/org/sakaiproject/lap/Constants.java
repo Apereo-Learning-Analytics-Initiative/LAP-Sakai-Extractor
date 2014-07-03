@@ -14,6 +14,9 @@
  */
 package org.sakaiproject.lap;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * User-definable constants
  * 
@@ -46,4 +49,13 @@ public class Constants {
     public final static String EXTRACTION_TYPE_NAME_SCHEDULED = "scheduled";
     public final static String EXTRACTION_TYPE_EXTENSION_MANUAL = "_M";
     public final static String EXTRACTION_TYPE_NAME_MANUAL = "manual";
+
+    public final static Map<String, String> EXTRACTION_TYPE_MAP = new HashMap<String, String>() {
+        private static final long serialVersionUID = 1L;
+
+        {
+            put(EXTRACTION_TYPE_EXTENSION_MANUAL, EXTRACTION_TYPE_NAME_MANUAL);
+            put(EXTRACTION_TYPE_EXTENSION_SCHEDULED, EXTRACTION_TYPE_NAME_SCHEDULED);
+        }
+    };
 }

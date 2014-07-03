@@ -76,19 +76,16 @@ public class ExtractorService {
     }
 
     /**
-     * Gets the extension type directory name extention
+     * Gets the extension type directory name extension
      * e.g "_M" or "_S"
      * 
      * @param extractionType the full type name
      * @return the abbreviated name
      */
     public String getExtractionTypeExtension(String extractionType) {
-        String extractionTypeExtension = "";
-
-        if (StringUtils.equalsIgnoreCase(extractionType, Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED)) {
-            extractionType = Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED;
-        } else if (StringUtils.equalsIgnoreCase(extractionType, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
-            extractionType = Constants.EXTRACTION_TYPE_EXTENSION_MANUAL;
+        String extractionTypeExtension = Constants.EXTRACTION_TYPE_MAP.get(extractionType);
+        if (extractionType == null) {
+            extractionType = "";
         }
 
         return extractionTypeExtension;
@@ -102,14 +99,12 @@ public class ExtractorService {
      * @return the full name of the extraction type
      */
     public String calculateExtractionType(String directory) {
-        String extractionType = "";
-        // get the last 2 characters of 
+        // get the last 2 characters of directory name
         String fileNameExtractionType = StringUtils.substring(directory, directory.length() - 2, directory.length());
 
-        if (StringUtils.endsWithIgnoreCase(fileNameExtractionType, Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED)) {
-            extractionType = Constants.EXTRACTION_TYPE_NAME_SCHEDULED;
-        } else if (StringUtils.endsWithIgnoreCase(fileNameExtractionType, Constants.EXTRACTION_TYPE_EXTENSION_MANUAL)) {
-            extractionType = Constants.EXTRACTION_TYPE_NAME_MANUAL;
+        String extractionType = Constants.EXTRACTION_TYPE_MAP.get(fileNameExtractionType);
+        if (extractionType == null) {
+            extractionType = "";
         }
 
         return extractionType;
