@@ -12,7 +12,7 @@ There are two files that will be generated:
     <li>grades.csv</li>
 </ul>
 
-The files will be placed in a directory named as the current date and time the extraction was run. For example, an extraction occurring on June 27, 2014 at 12:30:00 will be in a directory named: 20140627_123000
+The files will be placed in a directory named as the current date and time the extraction was run. For example, a "scheduled" extraction occurring on June 27, 2014 at 15:30:00 will be in a directory named: 20140627_153000_S ("_M" will be used to denote a "manual" extraction)
 
 You can configure where on the server (an NFS or similar is suggested), by setting the property 'lap.data.extraction.storage.path' to the path on the server. The default is to use the setting from bodyPath@org.sakaiproject.content.api.ContentHostingService and adding "/lap-data/" to the end.
 
