@@ -106,8 +106,8 @@ public class FileUtils {
      * @return the path with a trailing slash
      */
     public static String addTrailingSlash(String path) {
-        if (!StringUtils.endsWith(path, "/")) {
-            path += "/";
+        if (!StringUtils.endsWith(path, System.getProperty("file.separator"))) {
+            path += System.getProperty("file.separator");
         }
 
         return path;
