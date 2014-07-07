@@ -12,7 +12,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package org.sakaiproject.lap.service;
+package org.sakaiproject.lap.util;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Robert E. Long (rlong @ unicon.net)
  *
  */
-public class CsvService {
+public class CsvUtils {
 
     /**
      * Formats a list of strings into a CSV-specific string
@@ -30,7 +30,7 @@ public class CsvService {
      * @param rowData a list of strings
      * @return the CSV-specific formatted string
      */
-    public String setAsCsvRow(List<String> rowData) {
+    public static String setAsCsvRow(List<String> rowData) {
         String csvRow = "";
         String csvSep = ",";
         StringBuilder sb = new StringBuilder();
@@ -61,7 +61,7 @@ public class CsvService {
      * @param toQuote the data string
      * @return the quoted string
      */
-    private StringBuilder appendQuoted(StringBuilder sb, String toQuote) {
+    private static StringBuilder appendQuoted(StringBuilder sb, String toQuote) {
         if ((toQuote.indexOf(',') >= 0) || (toQuote.indexOf('"') >= 0)) {
             String out = toQuote.replaceAll("\"", "\"\"");
             sb.append("\"").append(out).append("\"");

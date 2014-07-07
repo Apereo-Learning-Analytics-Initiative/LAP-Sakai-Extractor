@@ -78,10 +78,20 @@ $(document).ready(function() {
         success: (function(data, status, jqXHR) {
             $("#last-extraction-date").html(data.lastExtractionDate);
             $("#next-extraction-date").html(data.nextExtractionDate);
+            createDirectoryListing(data.extractionDisplayDates);
         }),
         fail: (function(jqXHR, textStatus, errorThrown) {
             $("#last-extraction-date").html("Error getting data.");
             $("#next-extraction-date").html("Error getting data.");
         })
     });
+
+    function createDirectoryListing(data) {
+        $.each(data, function(key, value) {   
+            $("#directory")
+                .append($("<option>", { value : key })
+                .text(value)
+            ); 
+       });
+    }
 });

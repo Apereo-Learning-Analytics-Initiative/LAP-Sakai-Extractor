@@ -16,7 +16,6 @@
 package org.sakaiproject.lap.provider;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,9 +32,9 @@ import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
-import org.sakaiproject.lap.service.DateService;
 import org.sakaiproject.lap.service.ExtractorService;
-import org.sakaiproject.lap.service.FileService;
+import org.sakaiproject.lap.util.DateUtils;
+import org.sakaiproject.lap.util.FileUtils;
 
 import com.google.gson.Gson;
 
@@ -93,15 +92,15 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
 
         String startDate = "";
         if (StringUtils.isNotBlank((String) params.get("startDate"))) {
-            startDate = (String) params.get("startDate") + DateService.DATE_START_TIME;
+            startDate = (String) params.get("startDate") + DateUtils.DATE_START_TIME;
         }
 
         String endDate = "";
         if (StringUtils.isNotBlank((String) params.get("endDate"))) {
-            endDate = (String) params.get("endDate") + DateService.DATE_END_TIME;
+            endDate = (String) params.get("endDate") + DateUtils.DATE_END_TIME;
         }
 
-        String directory = fileService.createDatedDirectoryName(isManualExtraction);
+        String directory = FileUtils.createDatedDirectoryName(isManualExtraction);
 
         boolean activityCsvCreated = data.prepareActivityCsv(criteria, startDate, endDate, directory, isManualExtraction);
         boolean gradesCsvCreated = data.prepareGradesCsv(criteria, directory, isManualExtraction);
@@ -140,14 +139,16 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
         String lastExtractionDate = data.getLatestExtractionDate();
         String nextExtractionDate = data.getNextScheduledExtractionDate();
         Map<String, String> allExtractionDates = data.getAllExtractionDates();
+        Map<String, String> extractionDisplayDates = data.getDirectoryListing();
 
-        Map<String, Object> data = new HashMap<String, Object>(3);
-        data.put("lastExtractionDate", lastExtractionDate);
-        data.put("nextExtractionDate", nextExtractionDate);
-        data.put("allExtractionDates", allExtractionDates);
+        Map<String, Object> responseData = new HashMap<String, Object>(3);
+        responseData.put("lastExtractionDate", lastExtractionDate);
+        responseData.put("nextExtractionDate", nextExtractionDate);
+        responseData.put("allExtractionDates", allExtractionDates);
+        responseData.put("extractionDisplayDates", extractionDisplayDates);
 
         Gson gson = new Gson();
-        String json = gson.toJson(data, HashMap.class);
+        String json = gson.toJson(responseData, HashMap.class);
         
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, json);
     }
@@ -168,11 +169,6 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     private Data data;
     public void setData(Data data) {
         this.data = data;
-    }
-
-    private FileService fileService;
-    public void setFileService(FileService fileService) {
-        this.fileService = fileService;
     }
 
 }

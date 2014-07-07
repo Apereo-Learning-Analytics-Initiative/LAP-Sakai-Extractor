@@ -20,19 +20,13 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.lap.Constants;
+import org.sakaiproject.lap.util.FileUtils;
 
 /**
  * Handles all the needed file operations
@@ -47,27 +41,9 @@ public class FileService {
     private String storagePath = "";
 
     public void init() {
-        storagePath = createStoragePath();
+        storagePath = FileUtils.createStoragePath();
         // create the root directory
         createNewDirectory("", false);
-    }
-
-    /**
-     * Creates a string representing the path to the storage directory
-     * If none is specified, use the ContentHostingService path
-     * 
-     * @return the path string
-     */
-    private String createStoragePath() {
-        String storagePath = ServerConfigurationService.getString("lap.data.storage.path", "");
-        if (StringUtils.isBlank(storagePath)) {
-            String rootDirectory = ServerConfigurationService.getString("bodyPath@org.sakaiproject.content.api.ContentHostingService", "");
-            rootDirectory = addTrailingSlash(rootDirectory);
-
-            storagePath = addTrailingSlash(rootDirectory + Constants.DEFAULT_CSV_STORAGE_DIRECTORY);
-        }
-
-        return storagePath;
     }
 
     /**
@@ -95,22 +71,6 @@ public class FileService {
     }
 
     /**
-     * Create a new directory name for storing files
-     * Format: yyyyMMdd_HHmmss
-     * 
-     * @param isManualExtraction is this directory for a manual extraction?
-     * @return the directory name
-     */
-    public String createDatedDirectoryName(boolean isManualExtraction) {
-        String extractionExtension = extractorService.getExtractionTypeExtension(isManualExtraction);
-
-        Date date = new Date();
-        String directoryName = DateService.SDF_FILE_NAME.format(date) + extractionExtension;
-
-        return directoryName;
-    }
-
-    /**
      * Creates a new file with the given name in a given directory
      * If file exists, get the file instead
      * 
@@ -130,7 +90,7 @@ public class FileService {
         File newFile = null;
 
         String newDirectory = createNewDirectory(directory, isManualExtraction);
-        newDirectory = addTrailingSlash(directory);
+        newDirectory = FileUtils.addTrailingSlash(directory);
 
         try {
             newFile = new File(storagePath + newDirectory + fileName);
@@ -144,42 +104,6 @@ public class FileService {
         }
 
         return newFile;
-    }
-
-    /**
-     * Method to parse a directory for subdirectories
-     * 
-     * @param directory the directory to parse
-     * @param type the type of extraction (manual, scheduled, "" = get all)
-     * @return a listing of the subdirectory names
-     */
-    public List<String> parseDirectory(String directory, String type) {
-        if (StringUtils.isBlank(directory)) {
-            throw new NullArgumentException("Directory cannot be null or blank");
-        }
-        if (!StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_SCHEDULED) && !StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
-            type = "";
-        }
-
-        boolean getAll = StringUtils.isBlank(type);
-
-        List<String> directories = new ArrayList<String>();
-        File fileDirectory = new File(directory);
-
-        for (File subDirectory : fileDirectory.listFiles()) {
-            // only store subdirectory names
-            if (subDirectory.isDirectory()) {
-                String directoryExtractionType = StringUtils.substring(subDirectory.getName(), subDirectory.getName().length() - 2);
-                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, extractorService.getExtractionTypeExtension(type))) {
-                    directories.add(subDirectory.getName());
-                }
-            }
-        }
-
-        // sort the list, newest directories first
-        Collections.sort(directories, new DateComparatorLatestToEarliest());
-
-        return directories;
     }
 
     /**
@@ -197,7 +121,7 @@ public class FileService {
             throw new NullArgumentException("File name cannot be null or blank");
         }
 
-        directory = addTrailingSlash(directory);
+        directory = FileUtils.addTrailingSlash(directory);
 
         File file = new File(storagePath + directory + fileName);
 
@@ -270,54 +194,8 @@ public class FileService {
         }
     }
 
-    /**
-     * Add a trailing slash to the end of the path, if none exists
-     * 
-     * @param path the path string
-     * @return the path with a trailing slash
-     */
-    private String addTrailingSlash(String path) {
-        if (!StringUtils.endsWith(path, "/")) {
-            path += "/";
-        }
-
-        return path;
-    }
-
     public String getStoragePath() {
         return storagePath;
     }
 
-    private ExtractorService extractorService;
-    public void setExtractorService(ExtractorService extractorService) {
-        this.extractorService = extractorService;
-    }
-
-    /**
-     * Compare dates for sorting latest to earliest
-     */
-    public static class DateComparatorLatestToEarliest implements Comparator<String> {
-        @Override
-        public int compare(String arg0, String arg1) {
-            DateService dateService = new DateService();
-            Date date1 = dateService.parseDirectoryToDateTime(arg0);
-            Date date2 = dateService.parseDirectoryToDateTime(arg1);
-
-            return date2.compareTo(date1);
-        }
-    }
-
-    /**
-     * Compare dates for sorting earliest to latest date
-     */
-    public class DateComparatorEarliestToLatest implements Comparator<String> {
-        @Override
-        public int compare(String arg0, String arg1) {
-            DateService dateService = new DateService();
-            Date date1 = dateService.parseDirectoryToDateTime(arg0);
-            Date date2 = dateService.parseDirectoryToDateTime(arg1);
-
-            return date1.compareTo(date2);
-        }
-    }
 }

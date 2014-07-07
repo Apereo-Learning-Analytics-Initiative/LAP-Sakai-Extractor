@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.lap.Constants;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
@@ -62,62 +61,14 @@ public class ExtractorService {
         }
     }
 
-    /**
-     * Get the appropriate extension
-     * e.g "_M" or "_S"
-     * 
-     * @param isManualExtraction is this a manual extraction?
-     * @return the type
-     */
-    public String getExtractionTypeExtension(boolean isManualExtraction) {
-        String extractionType = (isManualExtraction) ? Constants.EXTRACTION_TYPE_EXTENSION_MANUAL : Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED;
-
-        return extractionType;
-    }
-
-    /**
-     * Gets the extension type directory name extension
-     * e.g "_M" or "_S"
-     * 
-     * @param extractionType the full type name
-     * @return the abbreviated name
-     */
-    public String getExtractionTypeExtension(String extractionType) {
-        String extractionTypeExtension = Constants.EXTRACTION_TYPE_MAP.get(extractionType);
-        if (extractionType == null) {
-            extractionType = "";
-        }
-
-        return extractionTypeExtension;
-    }
-
-    /**
-     * Gets the full name of the extraction type for a given directory 
-     * e.g. "manual" or "scheduled"
-     * 
-     * @param directory the directory
-     * @return the full name of the extraction type
-     */
-    public String calculateExtractionType(String directory) {
-        // get the last 2 characters of directory name
-        String fileNameExtractionType = StringUtils.substring(directory, directory.length() - 2, directory.length());
-
-        String extractionType = Constants.EXTRACTION_TYPE_MAP.get(fileNameExtractionType);
-        if (extractionType == null) {
-            extractionType = "";
-        }
-
-        return extractionType;
+    private SecurityService securityService;
+    public void setSecurityService(SecurityService securityService) {
+        this.securityService = securityService;
     }
 
     private SessionManager sessionManager;
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
-    }
-
-    private SecurityService securityService;
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
     }
 
 }

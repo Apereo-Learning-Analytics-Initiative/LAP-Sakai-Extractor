@@ -51,11 +51,7 @@
             <tr>
                 <td><label for="directory"><spring:message code="label.select.directory" /></label></td>
                 <td>
-                    <select id="directory" name="directory" class="form-control">
-                        <c:forEach var="directory" items="${directories}">
-                            <option value="${directory.key}">${directory.value}</option>
-                        </c:forEach>
-                    </select>
+                    <select id="directory" name="directory" class="form-control"></select>
                 </td>
             </tr>
             <tr>

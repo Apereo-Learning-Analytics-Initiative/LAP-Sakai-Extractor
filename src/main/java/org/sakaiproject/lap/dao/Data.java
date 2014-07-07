@@ -27,10 +27,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.lap.Constants;
-import org.sakaiproject.lap.service.CsvService;
 import org.sakaiproject.lap.service.DateService;
-import org.sakaiproject.lap.service.ExtractorService;
 import org.sakaiproject.lap.service.FileService;
+import org.sakaiproject.lap.util.CsvUtils;
+import org.sakaiproject.lap.util.DateUtils;
+import org.sakaiproject.lap.util.ExtractorUtils;
+import org.sakaiproject.lap.util.FileUtils;
 
 /**
  * General data-gathering methods, from database and other operations
@@ -158,7 +160,7 @@ public class Data extends Database {
         for (int i = 1;i <=numberOfColumns;i++) {
             header.add(metadata.getColumnLabel(i));
         }
-        String csvData = csvService.setAsCsvRow(header);
+        String csvData = CsvUtils.setAsCsvRow(header);
 
         // data rows
         while (results.next()) {
@@ -166,7 +168,7 @@ public class Data extends Database {
             for (int i = 1;i <=numberOfColumns;i++) {
                 row.add(results.getString(i));
             }
-            csvData += csvService.setAsCsvRow(row);
+            csvData += CsvUtils.setAsCsvRow(row);
         }
 
         boolean success = fileService.saveStringToFile(csvData, directory, fileName, isManualExtraction);
@@ -208,14 +210,14 @@ public class Data extends Database {
             directory = fileService.getStoragePath();
         }
 
-        List<String> directoryNames = fileService.parseDirectory(directory, "");
+        List<String> directoryNames = FileUtils.parseDirectory(directory, "");
         Map<String, String> directories = new LinkedHashMap<String, String>(directoryNames.size());
 
         for (String directoryName : directoryNames) {
             try {
                 Date date = dateService.parseDirectoryToDateTime(directoryName);
-                String displayDate = DateService.SDF_DISPLAY.format(date);
-                String extractionType = extractorService.calculateExtractionType(directoryName);
+                String displayDate = DateUtils.SDF_DISPLAY.format(date);
+                String extractionType = ExtractorUtils.calculateExtractionType(directoryName);
                 if (StringUtils.isNotBlank(extractionType)) {
                     displayDate += " (" + extractionType + ")";
                 }
@@ -260,19 +262,9 @@ public class Data extends Database {
         return dateService.getAllExtractionDates();
     }
 
-    private CsvService csvService;
-    public void setCsvService(CsvService csvService) {
-        this.csvService = csvService;
-    }
-
     private DateService dateService;
     public void setDateService(DateService dateService) {
         this.dateService = dateService;
-    }
-
-    private ExtractorService extractorService;
-    public void setExtractorService(ExtractorService extractorService) {
-        this.extractorService = extractorService;
     }
 
     private FileService fileService;

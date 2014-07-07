@@ -14,15 +14,12 @@
  */
 package org.sakaiproject.lap.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -32,6 +29,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
+import org.sakaiproject.lap.util.DateUtils;
+import org.sakaiproject.lap.util.ExtractorUtils;
+import org.sakaiproject.lap.util.FileUtils;
 
 /**
  * Handles all needed date functionality
@@ -65,8 +65,8 @@ public class DateService {
             date = new Date();
         }
 
-        if (!StringUtils.equalsIgnoreCase(currentDay, SDF_DATE_ONLY.format(date))) {
-            currentDay = SDF_DATE_ONLY.format(date);
+        if (!StringUtils.equalsIgnoreCase(currentDay, DateUtils.SDF_DATE_ONLY.format(date))) {
+            currentDay = DateUtils.SDF_DATE_ONLY.format(date);
 
             processRemainingTimes(date);
         }
@@ -107,11 +107,11 @@ public class DateService {
             processScheduledRunTimes();
         }
         List<Date> dates = new ArrayList<Date>(scheduledRunTimes.size());
-        String dateString = SDF_DATE_ONLY.format(date);
+        String dateString = DateUtils.SDF_DATE_ONLY.format(date);
 
         try {
             for (String s : scheduledRunTimes) {
-                Date scheduledDate = SDF_DATE_TIME.parse(dateString + " " + s);
+                Date scheduledDate = DateUtils.SDF_DATE_TIME.parse(dateString + " " + s);
 
                 // add the date to the schedule if it's after the current date or is next day
                 if (!StringUtils.equalsIgnoreCase(currentDay, dateString) || scheduledDate.after(date)) {
@@ -154,17 +154,17 @@ public class DateService {
 
         if (times != null) {
             if (times.size() > 0) {
-                nextScheduledExtractionDate = SDF_DISPLAY.format(times.get(0));
+                nextScheduledExtractionDate = DateUtils.SDF_DISPLAY.format(times.get(0));
             } else {
                 // we are after the last time scheduled for today, get the next day's times
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.DATE, 1);
                 Date nextDay = calendar.getTime();
-                String nextDayString = DateService.SDF_DATE_ONLY.format(nextDay);
+                String nextDayString = DateUtils.SDF_DATE_ONLY.format(nextDay);
                 processRemainingTimes(nextDay);
                 List<Date> nextDayTimes = remainingTimes.get(nextDayString);
-                nextScheduledExtractionDate = DateService.SDF_DISPLAY.format(nextDayTimes.get(0));
+                nextScheduledExtractionDate = DateUtils.SDF_DISPLAY.format(nextDayTimes.get(0));
             }
         }
 
@@ -178,15 +178,15 @@ public class DateService {
      */
     public Map<String, String> getAllExtractionDates() {
         String directory = fileService.getStoragePath();
-        List<String> directoryNames = fileService.parseDirectory(directory, "");
+        List<String> directoryNames = FileUtils.parseDirectory(directory, "");
         Map<String, String> extractionDates = new HashMap<String, String>(directoryNames.size());
 
         for (String directoryName : directoryNames) {
             try {
                 Date date = parseDirectoryToDateTime(directoryName);
-                String dateTime = SDF_DISPLAY.format(date);
+                String dateTime = DateUtils.SDF_DISPLAY.format(date);
                 String displayDateTime = dateTime;
-                String extractionType = extractorService.calculateExtractionType(directoryName);
+                String extractionType = ExtractorUtils.calculateExtractionType(directoryName);
                 if (StringUtils.isNotBlank(extractionType)) {
                     displayDateTime += " (" + extractionType + ")";
                 }
@@ -205,7 +205,7 @@ public class DateService {
      */
     private void processLastScheduledExtractionDate() {
         String directory = fileService.getStoragePath();
-        List<String> scheduledDirectories = fileService.parseDirectory(directory, Constants.EXTRACTION_TYPE_NAME_SCHEDULED);
+        List<String> scheduledDirectories = FileUtils.parseDirectory(directory, Constants.EXTRACTION_TYPE_NAME_SCHEDULED);
 
         if (scheduledDirectories.size() > 0) {
             lastScheduledExtractionDate = scheduledDirectories.get(0);
@@ -230,7 +230,7 @@ public class DateService {
 
         Date date = null;
         try {
-            date = SDF_FILE_NAME.parse(directory);
+            date = DateUtils.SDF_FILE_NAME.parse(directory);
         } catch (Exception e) {
             log.error("Error parsing directory string to date. Error: " + e, e);
         }
@@ -262,33 +262,9 @@ public class DateService {
         this.lastScheduledExtractionDate = lastScheduledExtractionDate;
     }
 
-    private ExtractorService extractorService;
-    public void setExtractorService(ExtractorService extractorService) {
-        this.extractorService = extractorService;
-    }
-
     private FileService fileService;
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
     }
-
-    /*
-     * Static items
-     */
-    public final static String DATE_FORMAT_FILE_NAME = "yyyyMMdd_HHmmss";
-    public final static String DATE_FORMAT_FILE_NAME_DATE_ONLY = "yyyyMMdd";
-    public final static String DATE_FORMAT_DROPDOWN = "MMMM dd, yyyy HH:mm:ss";
-    public final static String DATE_FORMAT_TIME_ONLY = "HH:mm:ss";
-    public final static String DATE_FORMAT_DATE_TIME = "yyyyMMdd HH:mm:ss";
-    public final static String DATE_FORMAT_DATE_TIME_MYSQL = "yyyy-MM-dd HH:mm:ss";
-    public final static String DATE_START_TIME = " 00:00:00";
-    public final static String DATE_END_TIME = " 23:59:59";
-    
-    public final static SimpleDateFormat SDF_DATE_TIME = new SimpleDateFormat(DATE_FORMAT_DATE_TIME, Locale.ENGLISH);
-    public final static SimpleDateFormat SDF_DATE_TIME_MYSQL = new SimpleDateFormat(DATE_FORMAT_DATE_TIME_MYSQL, Locale.ENGLISH);
-    public final static SimpleDateFormat SDF_DATE_ONLY = new SimpleDateFormat(DATE_FORMAT_FILE_NAME_DATE_ONLY, Locale.ENGLISH);
-    public final static SimpleDateFormat SDF_TIME_ONLY = new SimpleDateFormat(DATE_FORMAT_TIME_ONLY, Locale.ENGLISH);
-    public final static SimpleDateFormat SDF_FILE_NAME = new SimpleDateFormat(DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
-    public final static SimpleDateFormat SDF_DISPLAY = new SimpleDateFormat(DATE_FORMAT_DROPDOWN, Locale.ENGLISH);
 
 }

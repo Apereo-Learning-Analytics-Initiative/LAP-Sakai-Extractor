@@ -24,6 +24,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
+import org.sakaiproject.lap.util.DateUtils;
+import org.sakaiproject.lap.util.FileUtils;
 
 /**
  * Handles the scheduled data extraction via thread
@@ -95,7 +97,7 @@ public class ScheduledExtractionService implements Runnable {
 
             if (isTimeToRun()) {
                 // create the file storage directory
-                String directory = fileService.createDatedDirectoryName(isManualExtraction);
+                String directory = FileUtils.createDatedDirectoryName(isManualExtraction);
 
                 // get the last scheduled extraction date for activity processing
                 String lastScheduledExtractionDate = dateService.getLastScheduledExtractionDate();
@@ -106,7 +108,7 @@ public class ScheduledExtractionService implements Runnable {
 
                     try {
                         Date lastDate = dateService.parseDirectoryToDateTime(lastScheduledExtractionDate);
-                        startDate = DateService.SDF_DATE_TIME_MYSQL.format(lastDate);
+                        startDate = DateUtils.SDF_DATE_TIME_MYSQL.format(lastDate);
                     } catch (Exception e) {
                         log.error("Error parsing last scheduled extraction date. Error: " + e, e);
                     }
@@ -174,11 +176,6 @@ public class ScheduledExtractionService implements Runnable {
     private DateService dateService;
     public void setDateService(DateService dateService) {
         this.dateService = dateService;
-    }
-
-    private FileService fileService;
-    public void setFileService(FileService fileService) {
-        this.fileService = fileService;
     }
 
 }

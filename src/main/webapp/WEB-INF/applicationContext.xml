@@ -17,18 +17,13 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-    <bean id="csvService" class="org.sakaiproject.lap.service.CsvService"></bean>
-
     <bean id="data" class="org.sakaiproject.lap.dao.Data" parent="database">
-        <property name="csvService" ref="csvService" />
         <property name="dateService" ref="dateService" />
-        <property name="extractorService" ref="extractorService" />
         <property name="fileService" ref="fileService" />
         <property name="sql" ref="sql" />
     </bean>
 
     <bean id="dateService" class="org.sakaiproject.lap.service.DateService" init-method="init">
-        <property name="extractorService" ref="extractorService" />
         <property name="fileService" ref="fileService" />
     </bean>
 
@@ -39,7 +34,6 @@
     <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" class="org.sakaiproject.lap.provider.ExtractorProvider">
         <property name="data" ref="data" />
         <property name="extractorService" ref="extractorService" />
-        <property name="fileService" ref="fileService" />
     </bean>
 
     <bean id="extractorService" class="org.sakaiproject.lap.service.ExtractorService">
@@ -47,9 +41,7 @@
         <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
     </bean>
 
-    <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init">
-        <property name="extractorService" ref="extractorService" />
-    </bean>
+    <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init"></bean>
 
     <!-- the i18n messages source -->
     <bean id="messageSource" class="org.sakaiproject.lap.service.ResourceLoaderMessageSource">
@@ -59,7 +51,6 @@
     <bean id="scheduledExtractionService" class="org.sakaiproject.lap.service.ScheduledExtractionService" init-method="init" destroy-method="destroy">
         <property name="data" ref="data" />
         <property name="dateService" ref="dateService" />
-        <property name="fileService" ref="fileService" />
     </bean>
 
     <bean id="sql" class="org.sakaiproject.lap.dao.Sql"></bean>
