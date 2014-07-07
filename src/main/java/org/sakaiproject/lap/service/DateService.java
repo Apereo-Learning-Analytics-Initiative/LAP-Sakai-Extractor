@@ -205,7 +205,7 @@ public class DateService {
      */
     private void processLastScheduledExtractionDate() {
         String directory = fileService.getStoragePath();
-        List<String> scheduledDirectories = FileUtils.parseDirectory(directory, Constants.EXTRACTION_TYPE_NAME_SCHEDULED);
+        List<String> scheduledDirectories = FileUtils.parseDirectory(directory, Constants.EXTRACTION_TYPE_EXTENSION_SCHEDULED);
 
         if (scheduledDirectories.size() > 0) {
             lastScheduledExtractionDate = scheduledDirectories.get(0);

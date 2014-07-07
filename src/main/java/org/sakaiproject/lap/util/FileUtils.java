@@ -63,17 +63,18 @@ public class FileUtils {
     }
 
     /**
-     * Method to parse a directory for subdirectories
+     * Method to parse a directory for sub-directories
      * 
      * @param directory the directory to parse
      * @param type the type of extraction (manual, scheduled, "" = get all)
-     * @return a listing of the subdirectory names
+     * @return a listing of the sub-directory names
      */
     public static List<String> parseDirectory(String directory, String type) {
         if (StringUtils.isBlank(directory)) {
             throw new NullArgumentException("Directory cannot be null or blank");
         }
-        if (!StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_SCHEDULED) && !StringUtils.equalsIgnoreCase(type, Constants.EXTRACTION_TYPE_NAME_MANUAL)) {
+        // if type extension passed in does not match a configured type, get all sub-directories
+        if (!Constants.EXTRACTION_TYPE_MAP.containsKey(type)) {
             type = "";
         }
 
@@ -83,10 +84,10 @@ public class FileUtils {
         File fileDirectory = new File(directory);
 
         for (File subDirectory : fileDirectory.listFiles()) {
-            // only store subdirectory names
+            // only store sub-directory names
             if (subDirectory.isDirectory()) {
                 String directoryExtractionType = StringUtils.substring(subDirectory.getName(), subDirectory.getName().length() - 2);
-                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, ExtractorUtils.getExtractionTypeExtension(type))) {
+                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, type)) {
                     directories.add(subDirectory.getName());
                 }
             }

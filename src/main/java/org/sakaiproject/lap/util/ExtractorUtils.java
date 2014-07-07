@@ -34,15 +34,15 @@ public class ExtractorUtils {
 
     /**
      * Gets the extension type directory name extension
-     * e.g "_M" or "_S"
+     * e.g "manual" or "scheduled"
      * 
-     * @param extractionType the full type name
+     * @param extractionType the type extension (e.g. "_M" or "_S")
      * @return the abbreviated name
      */
-    public static String getExtractionTypeExtension(String extractionType) {
-        String extractionTypeExtension = Constants.EXTRACTION_TYPE_MAP.get(extractionType);
-        if (extractionType == null) {
-            extractionType = "";
+    public static String getExtractionTypeName(String extractionExtension) {
+        String extractionTypeExtension = Constants.EXTRACTION_TYPE_MAP.get(extractionExtension);
+        if (extractionExtension == null) {
+            extractionExtension = "";
         }
 
         return extractionTypeExtension;
