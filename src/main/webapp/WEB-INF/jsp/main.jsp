@@ -40,24 +40,25 @@
 <h2><spring:message code="title" /></h2>
 
 <div class="instructions clear">
-    <label><spring:message code="label.latest.data.extraction" /> <span id="last-extraction-date" class="statistics"></span></label>
+    <label><spring:message code="label.latest.data.extraction" /> <span id="latest-extraction-date" class="statistics"></span></label>
     <br />
     <label><spring:message code="label.next.data.extraction" /> <span id="next-extraction-date" class="statistics"></span></label>
 </div>
 <fieldset class="form-fieldset">
     <legend class="form-legend"><spring:message code="legend.download" /></legend>
     <form id="download-form" method="post" action="download.htm" target="_blank">
-        <table class="table table-hover form-table">
+        <table class="table table-hover form-table download">
             <tr>
-                <td><label for="directory"><spring:message code="label.select.directory" /></label></td>
+                <td><label for="extractions-listing"><spring:message code="label.select.extraction" /></label></td>
                 <td>
-                    <select id="directory" name="directory" class="form-control"></select>
+                    <select id="extractions-listing" name="extractions-listing" class="form-control"></select>
+                    <label><span id="no-extractions-exist" class="no-extractions-exist"><spring:message code="label.no.extractions" /></span></label>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button class="btn btn-primary csv" id="activity"><spring:message code="button.activity" /></button>
-                    <button class="btn btn-primary csv" id="grades"><spring:message code="button.grades" /></button>
+                    <button class="btn btn-primary extraction-download-button" id="activity"><spring:message code="button.activity" /></button>
+                    <button class="btn btn-primary extraction-download-button" id="grades"><spring:message code="button.grades" /></button>
                 </td>
             <tr>
         </table>
@@ -68,7 +69,7 @@
     <legend class="form-legend"><spring:message code="legend.extraction" /></legend>
     <form id="extraction-form" method="post" action="main.htm">
         <spring:message code="placeholder.criteria" var="criteriaPlaceholder" />
-        <table class="table table-hover form-table">
+        <table class="table table-hover form-table extraction">
             <tr>
                 <td><label for="criteria"><spring:message code="label.criteria" /></label></td>
                 <td><input type="text" id="criteria" name="criteria" value="" placeholder="${criteriaPlaceholder}" /></td>

@@ -28,7 +28,7 @@ $(document).ready(function() {
     var url = "/direct/lap-sakai-extractor/";
 
     /* download a csv file */
-    $(".csv").click(function() {
+    $(".extraction-download-button").click(function() {
         $("#action").val(this.id);
         $("#download-form").submit();
     });
@@ -76,22 +76,31 @@ $(document).ready(function() {
         cache: false,
         async: false,
         success: (function(data, status, jqXHR) {
-            $("#last-extraction-date").html(data.lastExtractionDate);
+            $.map(data.latestExtractionDate, function(date, i) {
+                $("#latest-extraction-date").html(date.displayDate);
+            });
             $("#next-extraction-date").html(data.nextExtractionDate);
-            createDirectoryListing(data.extractionDisplayDates);
+            createExtractionListing(data.allExtractionDates);
         }),
         fail: (function(jqXHR, textStatus, errorThrown) {
-            $("#last-extraction-date").html("Error getting data.");
+            $("#latest-extraction-date").html("Error getting data.");
             $("#next-extraction-date").html("Error getting data.");
         })
     });
 
-    function createDirectoryListing(data) {
-        $.each(data, function(key, value) {   
-            $("#directory")
-                .append($("<option>", { value : key })
-                .text(value)
-            ); 
-       });
+    function createExtractionListing(allExtractionDates) {
+        var extractionsExist = false;
+        $.each(allExtractionDates, function(key, value) {
+            $("#extractions-listing").append($("<option>", {value : key}).text(value.displayDate));
+            extractionsExist = true;
+        });
+
+        // show the "no extractions" dialog if none exist
+        if (!extractionsExist) {
+            $("#extractions-listing").hide();
+            $(".extraction-download-button").hide();
+            $(".no-extractions-exist").show();
+        }
     }
+
 });

@@ -58,4 +58,14 @@ public class Constants {
             put(EXTRACTION_TYPE_EXTENSION_SCHEDULED, EXTRACTION_TYPE_NAME_SCHEDULED);
         }
     };
+
+    /*
+     * REST endpoint response map keys
+     */
+    public final static String REST_MAP_KEY_DISPLAY_DATE = "displayDate";
+    public final static String REST_MAP_KEY_DATE_TIME = "dateTime";
+    public final static String REST_MAP_KEY_LATEST_EXTRACTION_DATE = "latestExtractionDate";
+    public final static String REST_MAP_KEY_NEXT_EXTRACTION_DATE = "nextExtractionDate";
+    public final static String REST_MAP_KEY_ALL_EXTRACTION_DATES = "allExtractionDates";
+
 }

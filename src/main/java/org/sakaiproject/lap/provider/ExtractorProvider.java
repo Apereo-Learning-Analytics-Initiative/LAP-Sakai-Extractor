@@ -136,16 +136,14 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
             throw new SecurityException("User not allowed to access statistics data.", null);
         }
 
-        String lastExtractionDate = data.getLatestExtractionDate();
+        Map<String, Map<String, String>> lastExtractionDate = data.getLatestExtractionDate();
         String nextExtractionDate = data.getNextScheduledExtractionDate();
-        Map<String, String> allExtractionDates = data.getAllExtractionDates();
-        Map<String, String> extractionDisplayDates = data.getDirectoryListing();
+        Map<String, Map<String, String>> allExtractionDates = data.getExtractionDates();
 
         Map<String, Object> responseData = new HashMap<String, Object>(3);
-        responseData.put("lastExtractionDate", lastExtractionDate);
-        responseData.put("nextExtractionDate", nextExtractionDate);
-        responseData.put("allExtractionDates", allExtractionDates);
-        responseData.put("extractionDisplayDates", extractionDisplayDates);
+        responseData.put(Constants.REST_MAP_KEY_LATEST_EXTRACTION_DATE, lastExtractionDate);
+        responseData.put(Constants.REST_MAP_KEY_NEXT_EXTRACTION_DATE, nextExtractionDate);
+        responseData.put(Constants.REST_MAP_KEY_ALL_EXTRACTION_DATES, allExtractionDates);
 
         Gson gson = new Gson();
         String json = gson.toJson(responseData, HashMap.class);

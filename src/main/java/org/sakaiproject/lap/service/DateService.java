@@ -131,15 +131,29 @@ public class DateService {
      * @param directoryListing the directory listing map
      * @return the last extraction date
      */
-    public String getLatestExtractionDate(Map<String, String> directoryListing) {
+    public Map<String, Map<String, String>> getLatestExtractionDate(Map<String, Map<String, String>> directoryListing) {
+        String displayDate = Constants.DEFAULT_NO_TIME;
+        String dateTime = Constants.DEFAULT_NO_TIME;
+        Map<String, Map<String, String>> extractionDate = new HashMap<String, Map<String, String>>(1);
+        Map<String, String> dateMap = new HashMap<String, String>(2);
+
         if (directoryListing == null || directoryListing.isEmpty()) {
-            return Constants.DEFAULT_NO_TIME;
+            dateMap.put(Constants.REST_MAP_KEY_DISPLAY_DATE, displayDate);
+            dateMap.put(Constants.REST_MAP_KEY_DATE_TIME, dateTime);
+            extractionDate.put(Constants.DEFAULT_NO_TIME, dateMap);
+
+            return extractionDate;
         }
 
         String firstDirectory = directoryListing.keySet().iterator().next();
-        String latestRunDate = directoryListing.get(firstDirectory);
+        displayDate = directoryListing.get(firstDirectory).get(Constants.REST_MAP_KEY_DISPLAY_DATE);
+        dateTime = directoryListing.get(firstDirectory).get(Constants.REST_MAP_KEY_DATE_TIME);
 
-        return latestRunDate;
+        dateMap.put(Constants.REST_MAP_KEY_DISPLAY_DATE, displayDate);
+        dateMap.put(Constants.REST_MAP_KEY_DATE_TIME, dateTime);
+        extractionDate.put(firstDirectory, dateMap);
+
+        return extractionDate;
     }
 
     /**

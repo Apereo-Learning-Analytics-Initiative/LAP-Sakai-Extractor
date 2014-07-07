@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,10 +195,10 @@ public class Data extends Database {
      * 
      * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss ({EXTRACTION TYPE})")
      */
-    public Map<String, String> getDirectoryListing() {
+    public Map<String, Map<String, String>> getExtractionDates() {
         String directory = fileService.getStoragePath();
 
-        return getDirectoryListing(directory);
+        return getExtractionDates(directory);
     }
 
     /**
@@ -205,27 +206,36 @@ public class Data extends Database {
      * 
      * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss ({EXTRACTION TYPE})")
      */
-    public Map<String, String> getDirectoryListing(String directory) {
+    public Map<String, Map<String, String>> getExtractionDates(String directory) {
         if (StringUtils.isBlank(directory)) {
             directory = fileService.getStoragePath();
         }
 
         List<String> directoryNames = FileUtils.parseDirectory(directory, "");
-        Map<String, String> directories = new LinkedHashMap<String, String>(directoryNames.size());
+        Map<String, Map<String, String>> directories = new LinkedHashMap<String, Map<String, String>>(directoryNames.size());
 
         for (String directoryName : directoryNames) {
+            Map<String, String> dateMap = new HashMap<String, String>(2);
             try {
                 Date date = dateService.parseDirectoryToDateTime(directoryName);
+
+                String dateTime = DateUtils.SDF_DATE_TIME_MYSQL.format(date);
+                dateMap.put(Constants.REST_MAP_KEY_DATE_TIME, dateTime);
+
                 String displayDate = DateUtils.SDF_DISPLAY.format(date);
                 String extractionType = ExtractorUtils.calculateExtractionType(directoryName);
                 if (StringUtils.isNotBlank(extractionType)) {
                     displayDate += " (" + extractionType + ")";
                 }
 
-                directories.put(directoryName, displayDate);
+                dateMap.put(Constants.REST_MAP_KEY_DISPLAY_DATE, displayDate);
+                directories.put(directoryName, dateMap);
             } catch (Exception e) {
                 log.error("Error parsing directory name: " + e, e);
-                directories.put(directoryName, directoryName);
+
+                dateMap.put(Constants.REST_MAP_KEY_DATE_TIME, directoryName);
+                dateMap.put(Constants.REST_MAP_KEY_DISPLAY_DATE, directoryName);
+                directories.put(directoryName, dateMap);
             }
         }
 
@@ -238,10 +248,10 @@ public class Data extends Database {
      * @param directoryListing the directory listing map
      * @return the last extraction date
      */
-    public String getLatestExtractionDate() {
-        Map<String, String> directoryListing = getDirectoryListing();
+    public Map<String, Map<String, String>> getLatestExtractionDate() {
+        Map<String, Map<String, String>> extractionDates = getExtractionDates();
 
-        return dateService.getLatestExtractionDate(directoryListing);
+        return dateService.getLatestExtractionDate(extractionDates);
     }
 
     /**

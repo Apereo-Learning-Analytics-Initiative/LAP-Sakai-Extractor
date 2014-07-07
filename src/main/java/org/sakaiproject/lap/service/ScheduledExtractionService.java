@@ -93,7 +93,7 @@ public class ScheduledExtractionService implements Runnable {
     @Override
     public void run() {
         while ((!threadStop) && (!Thread.currentThread().isInterrupted())) {
-            log.info("Thread running! " + new Date());
+            if (log.isDebugEnabled()) log.debug("Scheduled data extraction thread running at " + new Date());
 
             if (isTimeToRun()) {
                 // create the file storage directory

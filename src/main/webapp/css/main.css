@@ -15,7 +15,6 @@
 
 .form-table {
     margin: 0 0 2em 0;
-    width: 500px !important;
     float: left;
 }
 
@@ -24,8 +23,9 @@
 }
 
 .form-table .form-control {
-    width: auto;
+    float: left;
     display: inline;
+    width: auto;
 }
 
 .form-fieldset {
@@ -41,6 +41,15 @@
     padding: 5px;
 }
 
+.download, .extraction {
+    width: auto !important;
+}
+
 label .statistics {
     color: #357ebd;
+}
+
+label .no-extractions-exist {
+    color: #d43f3a;
+    display: none;
 }
