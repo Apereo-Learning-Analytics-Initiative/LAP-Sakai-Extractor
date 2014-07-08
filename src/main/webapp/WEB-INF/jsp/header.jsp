@@ -31,11 +31,11 @@
 <script src="/library/js/headscripts.js" language="JavaScript" type="text/javascript"></script>
 
 <!-- jQuery -->
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="<c:url value='/js/jquery.js'/>"></script>
+<script src="<c:url value='/js/jquery-ui.js'/>"></script>
 
 <!-- jQuery CSS -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="<c:url value='/css/jquery-ui.css'/>">
 
 <!-- Twitter Bootstrap -->
 <script src="<c:url value='/js/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>

@@ -98,8 +98,9 @@ public class Sql {
                 "ss.TITLE LIKE ? AND " +
                 "go.OBJECT_TYPE_ID = 1 AND " +
                 "go.NOT_COUNTED <> 1 AND " +
-                "(c.REMOVED IS NULL or c.REMOVED <> 1) AND " +
-                "(go.REMOVED IS NULL or go.REMOVED <> 1) " +
+                "(c.REMOVED IS NULL OR c.REMOVED <> 1) AND " +
+                "(go.REMOVED IS NULL OR go.REMOVED <> 1) AND " +
+                "(gr.STUDENT_ID IS NOT NULL AND gr.STUDENT_ID <> '') " +
             "ORDER BY " +
                 "go.DUE_DATE ASC, " +
                 "go.NAME ASC, " +

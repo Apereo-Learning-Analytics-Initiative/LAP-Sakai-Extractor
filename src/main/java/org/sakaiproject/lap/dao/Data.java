@@ -272,6 +272,21 @@ public class Data extends Database {
         return dateService.getAllExtractionDates();
     }
 
+    /**
+     * Get the list of all available files for downloading
+     * Note: this is to rid the constants map of the serialVersionUID
+     * so the map can be serialized and sent through a REST call
+     * 
+     * @return a mapping of the files (e.g. "activity" => "activity.csv")
+     */
+    public Map<String, String> getAvailableFiles() {
+        Map<String, String> availableFiles = new LinkedHashMap<String, String>();
+
+        availableFiles.putAll(Constants.AVAILABLE_FILE_LISTING);
+
+        return availableFiles;
+    }
+
     private DateService dateService;
     public void setDateService(DateService dateService) {
         this.dateService = dateService;

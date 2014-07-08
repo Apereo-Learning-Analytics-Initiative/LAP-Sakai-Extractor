@@ -81,10 +81,10 @@ public class FileService {
      */
     public File createNewFile(String directory, String fileName, boolean isManualExtraction) {
         if (StringUtils.isBlank(directory)) {
-            throw new NullArgumentException("File directory cannot be null or blank");
+            throw new NullArgumentException("File directory");
         }
         if (StringUtils.isBlank(fileName)) {
-            throw new NullArgumentException("File name cannot be null or blank");
+            throw new NullArgumentException("File name");
         }
 
         File newFile = null;
@@ -115,10 +115,10 @@ public class FileService {
      */
     public File getFile(String directory, String fileName) {
         if (StringUtils.isBlank(directory)) {
-            throw new NullArgumentException("File directory cannot be null or blank");
+            throw new NullArgumentException("File directory");
         }
         if (StringUtils.isBlank(fileName)) {
-            throw new NullArgumentException("File name cannot be null or blank");
+            throw new NullArgumentException("File name");
         }
 
         directory = FileUtils.addTrailingSlash(directory);
@@ -137,10 +137,10 @@ public class FileService {
      */
     public String readFileIntoString(String directory, String fileName) {
         if (StringUtils.isBlank(directory)) {
-            throw new NullArgumentException("File directory cannot be null or blank");
+            throw new NullArgumentException("File directory");
         }
         if (StringUtils.isBlank(fileName)) {
-            throw new NullArgumentException("File name cannot be null or blank");
+            throw new NullArgumentException("File name");
         }
 
         String fileString = "";
@@ -170,13 +170,13 @@ public class FileService {
      */
     public boolean saveStringToFile(String dataString, String directory, String name, boolean isManualExtraction) {
         if (StringUtils.isBlank(dataString)) {
-            throw new NullArgumentException("Data string cannot be null or blank");
+            throw new NullArgumentException("Data string");
         }
         if (StringUtils.isBlank(directory)) {
-            throw new NullArgumentException("Directory name cannot be null or blank");
+            throw new NullArgumentException("Directory name");
         }
         if (StringUtils.isBlank(name)) {
-            throw new NullArgumentException("File name cannot be null or blank");
+            throw new NullArgumentException("File name");
         }
 
         File file = createNewFile(directory, name, isManualExtraction);

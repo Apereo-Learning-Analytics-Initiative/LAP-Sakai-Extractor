@@ -15,6 +15,7 @@
 package org.sakaiproject.lap;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -26,8 +27,18 @@ import java.util.Map;
 public class Constants {
 
     public final static String DEFAULT_CSV_STORAGE_DIRECTORY = "lap-data/";
+    public final static String ACTION_ACTIVITY = "activity";
+    public final static String ACTION_GRADES = "grades";
     public final static String CSV_FILE_ACTIVITY = "activity.csv";
     public final static String CSV_FILE_GRADES = "grades.csv";
+    public final static Map<String, String> AVAILABLE_FILE_LISTING = new LinkedHashMap<String, String>(2) {
+        private static final long serialVersionUID = 1L;
+
+        {
+            put(ACTION_ACTIVITY, CSV_FILE_ACTIVITY);
+            put(ACTION_GRADES, CSV_FILE_GRADES);
+        }
+    };
 
 
     public final static String MIME_TYPE_CSV = "text/csv";
@@ -50,7 +61,7 @@ public class Constants {
     public final static String EXTRACTION_TYPE_EXTENSION_MANUAL = "_M";
     public final static String EXTRACTION_TYPE_NAME_MANUAL = "manual";
 
-    public final static Map<String, String> EXTRACTION_TYPE_MAP = new HashMap<String, String>() {
+    public final static Map<String, String> EXTRACTION_TYPE_MAP = new HashMap<String, String>(2) {
         private static final long serialVersionUID = 1L;
 
         {
@@ -67,5 +78,6 @@ public class Constants {
     public final static String REST_MAP_KEY_LATEST_EXTRACTION_DATE = "latestExtractionDate";
     public final static String REST_MAP_KEY_NEXT_EXTRACTION_DATE = "nextExtractionDate";
     public final static String REST_MAP_KEY_ALL_EXTRACTION_DATES = "allExtractionDates";
+    public final static String REST_MAP_KEY_AVAILABLE_FILES = "availableFiles";
 
 }

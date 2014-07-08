@@ -71,7 +71,7 @@ public class FileUtils {
      */
     public static List<String> parseDirectory(String directory, String type) {
         if (StringUtils.isBlank(directory)) {
-            throw new NullArgumentException("Directory cannot be null or blank");
+            throw new NullArgumentException("Directory");
         }
         // if type extension passed in does not match a configured type, get all sub-directories
         if (!Constants.EXTRACTION_TYPE_MAP.containsKey(type)) {

@@ -27,17 +27,21 @@ $.browser={};
 $(document).ready(function() {
     var url = "/direct/lap-sakai-extractor/";
 
-    /* download a csv file */
-    $(".extraction-download-button").click(function() {
+    /**
+     * Button click to download a file
+     */
+    $("#extraction-download-buttons").on("click", "button", function() {
         $("#action").val(this.id);
         $("#download-form").submit();
     });
 
-    /* start data extraction */
-    $("#extraction").click(function() {
+    /**
+     * Button click to start a data extraction
+     */
+    $(".extraction-button").click(function() {
         var filterData = $("#extraction-form").serialize();
 
-        extractData(this.id, filterData, function(success, data) {
+        extractData(filterData, function(success, data) {
             var status = (success) ? "success" : "error";
             $("#statusMessageType").val(status);
             $("#statusMessage").val(data);
@@ -46,14 +50,17 @@ $(document).ready(function() {
         });
     });
 
-    function extractData(endpoint, filterData, callback) {
+    /**
+     * POST request to run data extraction
+     */
+    function extractData(filterData, callback) {
         var request = $.ajax({
             type: "POST",
-            url:  url + endpoint,
+            url:  url + "extraction",
             data: filterData,
             cache: false,
             async: false
-         });
+        });
 
         request.success(function(data, status, jqXHR) {
             callback(true, "Data CSVs created successfully.");
@@ -64,12 +71,16 @@ $(document).ready(function() {
         });
     }
 
-    /* data picker for date range on extraction */
+    /**
+     *  Date picker for activity date range on extraction
+     */
     $(function() {
         $(".datePicker").datepicker({dateFormat: "yy-mm-dd"});
     });
 
-    /* get statistics */
+    /**
+     * GET request for the statistics from the server
+     */
     $.ajax({
         type: "GET",
         url:  url + "statistics",
@@ -81,6 +92,7 @@ $(document).ready(function() {
             });
             $("#next-extraction-date").html(data.nextExtractionDate);
             createExtractionListing(data.allExtractionDates);
+            createDownloadButtons(data.availableFiles);
         }),
         fail: (function(jqXHR, textStatus, errorThrown) {
             $("#latest-extraction-date").html("Error getting data.");
@@ -88,19 +100,35 @@ $(document).ready(function() {
         })
     });
 
+    /**
+     * Creates the drop-down listing of extraction dates
+     */
     function createExtractionListing(allExtractionDates) {
         var extractionsExist = false;
         $.each(allExtractionDates, function(key, value) {
-            $("#extractions-listing").append($("<option>", {value : key}).text(value.displayDate));
+            $("#extraction-date").append($("<option>", {value : key}).text(value.displayDate));
             extractionsExist = true;
         });
 
         // show the "no extractions" dialog if none exist
         if (!extractionsExist) {
-            $("#extractions-listing").hide();
+            $("#extraction-date").hide();
             $(".extraction-download-button").hide();
             $(".no-extractions-exist").show();
         }
+    }
+
+    /**
+     * Creates the download button for each available file type
+     */
+    function createDownloadButtons(availableFiles) {
+        $.each(availableFiles, function(key, value) {
+            $("#extraction-download-buttons")
+                .append(
+                    $("<button>", {id : key, class : "btn btn-primary extraction-download-button"})
+                        .text(key)
+                );
+        });
     }
 
 });

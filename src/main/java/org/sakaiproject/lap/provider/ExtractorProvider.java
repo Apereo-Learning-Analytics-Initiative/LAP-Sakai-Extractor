@@ -18,6 +18,7 @@ package org.sakaiproject.lap.provider;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,24 +58,50 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     }
 
     /**
-     * GET /direct/lap-sakai-extractor/activity
+     * POST /direct/lap-sakai-extractor/download
      * 
      * @param view
+     * @param params
      * @return
      */
-    @EntityCustomAction(action="activity", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn activityCsv(EntityView view) {
+    @EntityCustomAction(action="download", viewKey=EntityView.VIEW_NEW)
+    public ActionReturn download(EntityView view, Map<String, Object> params) {
         if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access activity data", null);
+            throw new SecurityException("User not allowed to access data extractions", null);
         }
 
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"activity\":\"activity1\"}");
+        String action = "";
+        if (StringUtils.isNotBlank((String) params.get("action"))) {
+            action = (String) params.get("action");
+        }
+
+        if (!Constants.AVAILABLE_FILE_LISTING.containsKey(action)) {
+            throw new NullArgumentException("action");
+        } else {
+            action += ".csv";
+        }
+
+        Map<String, Map<String, String>> extractionDates = data.getExtractionDates();
+
+        String extractionDate = "";
+        if (StringUtils.isNotBlank((String) params.get("extraction-date"))) {
+            extractionDate = (String) params.get("extraction-date");
+        }
+
+        if (!extractionDates.containsKey(extractionDate)) {
+            throw new NullArgumentException("extraction-date");
+        }
+
+        String csvData = data.getCsvDataString(extractionDate, action);
+
+        return new ActionReturn(Constants.ENCODING_UTF8, Formats.TXT, csvData);
     }
 
     /**
      * POST /direct/lap-sakai-extractor/extraction
      * 
      * @param view
+     * @param params
      * @return
      */
     @EntityCustomAction(action="extraction", viewKey=EntityView.VIEW_NEW)
@@ -110,21 +137,6 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     }
 
     /**
-     * GET /direct/lap-sakai-extractor/grades
-     * 
-     * @param view
-     * @return
-     */
-    @EntityCustomAction(action="grades", viewKey=EntityView.VIEW_LIST)
-    public ActionReturn gradesCsv(EntityView view) {
-        if (!extractorService.isAdminSession()){
-            throw new SecurityException("User not allowed to access grades data", null);
-        }
-
-        return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, "{\"grades\": \"grade1\"}");
-    }
-
-    /**
      * GET /direct/lap-sakai-extractor/statistics
      * 
      * @param view
@@ -139,15 +151,17 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
         Map<String, Map<String, String>> lastExtractionDate = data.getLatestExtractionDate();
         String nextExtractionDate = data.getNextScheduledExtractionDate();
         Map<String, Map<String, String>> allExtractionDates = data.getExtractionDates();
+        Map<String, String> availableFiles = data.getAvailableFiles();
 
-        Map<String, Object> responseData = new HashMap<String, Object>(3);
+        Map<String, Object> responseData = new HashMap<String, Object>(4);
         responseData.put(Constants.REST_MAP_KEY_LATEST_EXTRACTION_DATE, lastExtractionDate);
         responseData.put(Constants.REST_MAP_KEY_NEXT_EXTRACTION_DATE, nextExtractionDate);
         responseData.put(Constants.REST_MAP_KEY_ALL_EXTRACTION_DATES, allExtractionDates);
+        responseData.put(Constants.REST_MAP_KEY_AVAILABLE_FILES, availableFiles);
 
         Gson gson = new Gson();
         String json = gson.toJson(responseData, HashMap.class);
-        
+
         return new ActionReturn(Constants.ENCODING_UTF8, Formats.JSON, json);
     }
 

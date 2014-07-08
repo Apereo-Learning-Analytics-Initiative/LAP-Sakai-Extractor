@@ -47,19 +47,16 @@
 <fieldset class="form-fieldset">
     <legend class="form-legend"><spring:message code="legend.download" /></legend>
     <form id="download-form" method="post" action="download.htm" target="_blank">
-        <table class="table table-hover form-table download">
+        <table class="table table-hover form-table download-table">
             <tr>
-                <td><label for="extractions-listing"><spring:message code="label.select.extraction" /></label></td>
+                <td><label for="extraction-date"><spring:message code="label.select.extraction" /></label></td>
                 <td>
-                    <select id="extractions-listing" name="extractions-listing" class="form-control"></select>
+                    <select id="extraction-date" name="extraction-date" class="form-control"></select>
                     <label><span id="no-extractions-exist" class="no-extractions-exist"><spring:message code="label.no.extractions" /></span></label>
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <button class="btn btn-primary extraction-download-button" id="activity"><spring:message code="button.activity" /></button>
-                    <button class="btn btn-primary extraction-download-button" id="grades"><spring:message code="button.grades" /></button>
-                </td>
+                <td id="extraction-download-buttons" colspan="2"></td>
             <tr>
         </table>
         <input type="hidden" id="action" name="action" value="" />
@@ -69,7 +66,7 @@
     <legend class="form-legend"><spring:message code="legend.extraction" /></legend>
     <form id="extraction-form" method="post" action="main.htm">
         <spring:message code="placeholder.criteria" var="criteriaPlaceholder" />
-        <table class="table table-hover form-table extraction">
+        <table class="table table-hover form-table extraction-table">
             <tr>
                 <td><label for="criteria"><spring:message code="label.criteria" /></label></td>
                 <td><input type="text" id="criteria" name="criteria" value="" placeholder="${criteriaPlaceholder}" /></td>
@@ -83,7 +80,7 @@
                 <td><input type="text" id="endDate" name="endDate" class="datePicker" /></td>
             </tr>
             <tr>
-                <td colspan="2"><button class="btn btn-danger" id="extraction"><spring:message code="button.extraction" /></button></td>
+                <td colspan="2"><button class="btn btn-danger extraction-button"><spring:message code="button.extraction" /></button></td>
             </tr>
         </table>
         <input type="hidden" id="statusMessageType" name="statusMessageType" value="" />
