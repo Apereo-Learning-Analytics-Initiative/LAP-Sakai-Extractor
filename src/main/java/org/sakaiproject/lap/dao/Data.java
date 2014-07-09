@@ -79,20 +79,29 @@ public class Data extends Database {
             preparedStatement.setString(1, "%" + criteria + "%");
 
             if (hasStartDate) {
-                preparedStatement.setString(2, startDate);
+                java.sql.Timestamp sqlStartTime = DateUtils.dateStringToSqlTimestamp(startDate);
+                preparedStatement.setTimestamp(2, sqlStartTime);
             }
 
             if (hasEndDate) {
+                java.sql.Timestamp sqlEndTime = DateUtils.dateStringToSqlTimestamp(endDate);
+
                 if (hasStartDate) {
-                    preparedStatement.setString(3, endDate);
+                    preparedStatement.setTimestamp(3, sqlEndTime);
                 } else {
-                    preparedStatement.setString(2, endDate);
+                    preparedStatement.setTimestamp(2, sqlEndTime);
                 }
             }
 
             success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_ACTIVITY, isManualExtraction);
+
+            if (success) {
+                log.info("LAP-Extractor :: Activity extraction created successfully for criteria: " + criteria + ", startDate: " + startDate + ", endDate: " + endDate);
+            } else {
+                log.info("LAP-Extractor :: Activity extraction UNSUCCESSFUL for criteria: " + criteria + ", startDate: " + startDate + ", endDate: " + endDate);
+            }
         } catch (Exception e) {
-            log.error("Error preparing activity csv: " + e, e);
+            log.error("Error preparing activity extraction: " + e, e);
         } finally {
             closePreparedStatement(preparedStatement);
         }
@@ -129,6 +138,12 @@ public class Data extends Database {
             preparedStatement.setString(1, "%" + criteria + "%");
 
             success = saveResultsToFile(preparedStatement, directory, Constants.CSV_FILE_GRADES, isManualExtraction);
+
+            if (success) {
+                log.info("LAP-Extractor :: Grade extraction created successfully for criteria: " + criteria);
+            } else {
+                log.info("LAP-Extractor :: Grade extraction UNSUCCESSFUL for criteria: " + criteria);
+            }
         } catch (Exception e) {
             log.error("Error preparing grades csv: " + e, e);
         } finally {
@@ -191,7 +206,7 @@ public class Data extends Database {
     }
 
     /**
-     * Retrieves the listing of subdirectories in the configured storage path
+     * Retrieves the listing of sub-directories in the configured storage path
      * 
      * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss ({EXTRACTION TYPE})")
      */
@@ -202,7 +217,7 @@ public class Data extends Database {
     }
 
     /**
-     * Retrieves the listing of subdirectories in the given directory
+     * Retrieves the listing of sub-directories in the given directory
      * 
      * @return HashMap of the listings (e.g. "yyyyMMdd_HHmmss" => "MMM dd, yyyy HH:mm:ss ({EXTRACTION TYPE})")
      */

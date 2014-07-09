@@ -14,14 +14,19 @@
  */
 package org.sakaiproject.lap.util;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.lap.service.DateService;
 
 public class DateUtils {
+
+    private final static Log log = LogFactory.getLog(DateUtils.class);
 
     public final static String DATE_FORMAT_FILE_NAME = "yyyyMMdd_HHmmss";
     public final static String DATE_FORMAT_FILE_NAME_DATE_ONLY = "yyyyMMdd";
@@ -38,6 +43,26 @@ public class DateUtils {
     public final static SimpleDateFormat SDF_TIME_ONLY = new SimpleDateFormat(DATE_FORMAT_TIME_ONLY, Locale.ENGLISH);
     public final static SimpleDateFormat SDF_FILE_NAME = new SimpleDateFormat(DATE_FORMAT_FILE_NAME, Locale.ENGLISH);
     public final static SimpleDateFormat SDF_DISPLAY = new SimpleDateFormat(DATE_FORMAT_DROPDOWN, Locale.ENGLISH);
+
+    /**
+     * Transforms a MySQL-style date string (yyyy-MM-dd HH:mm:ss) to a java.sql.Timestamp
+     * 
+     * @param dateString the MySQL-style date formatted string (yyyy-MM-dd HH:mm:ss)
+     * @return the java.sql.Timestamp object, or null if an error occurred
+     */
+    public static Timestamp dateStringToSqlTimestamp(String dateString) {
+         Timestamp sqlTimestamp = null;
+
+        try {
+            Date date = SDF_DATE_TIME_MYSQL.parse(dateString);
+
+            sqlTimestamp = new Timestamp(date.getTime());
+        } catch (Exception e) {
+            log.error("Error parsing dateString to java.sql.Timestamp. Error: " + e, e);
+        }
+
+        return sqlTimestamp;
+    }
 
     /**
      * Compare dates for sorting latest to earliest

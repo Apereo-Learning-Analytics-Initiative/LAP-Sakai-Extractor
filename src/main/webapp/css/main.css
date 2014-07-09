@@ -50,6 +50,11 @@
     margin: 0 5px;
 }
 
+.date-picker-error {
+    width: auto;
+    display: none;
+}
+
 label .statistics {
     color: #357ebd;
 }

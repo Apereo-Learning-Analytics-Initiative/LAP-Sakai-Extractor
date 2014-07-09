@@ -63,7 +63,7 @@ $(document).ready(function() {
         });
 
         request.success(function(data, status, jqXHR) {
-            callback(true, "Data CSVs created successfully.");
+            callback(true, "Data extraction files created successfully.");
         });
 
         request.fail(function(jqXHR, textStatus, errorThrown) {
@@ -75,8 +75,29 @@ $(document).ready(function() {
      *  Date picker for activity date range on extraction
      */
     $(function() {
-        $(".datePicker").datepicker({dateFormat: "yy-mm-dd"});
+        $(".date-picker").datepicker({
+            dateFormat: "yy-mm-dd",
+            constrainInput: true,
+            maxDate: "+0d",
+            onClose: function() {checkDatePickerDates()}
+        });
     });
+
+    function checkDatePickerDates() {
+        $(".extraction-button").show();
+        $(".date-picker-error").hide();
+
+        var startDate = $("#start-date").datepicker("getDate");
+        var endDate = $("#end-date").datepicker("getDate");
+
+        if (startDate && endDate) {
+            if (startDate > endDate) {
+                $(".extraction-button").hide();
+                $(".date-picker-error").html("Start date is after end date. Please correct before continuing.");
+                $(".date-picker-error").show();
+            }
+        }
+    }
 
     /**
      * GET request for the statistics from the server

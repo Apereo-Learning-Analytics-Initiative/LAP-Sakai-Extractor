@@ -38,7 +38,7 @@ public class FileDownloadController {
 
     @RequestMapping(method = RequestMethod.POST)
     public void doDownload(HttpServletRequest request, HttpServletResponse response) {
-        String datedDirectory = request.getParameter("extractions-listing");
+        String datedDirectory = request.getParameter("extraction-date");
         String action = request.getParameter("action");
         String fileName = action + ".csv";
         String csvData = data.getCsvDataString(datedDirectory, fileName);

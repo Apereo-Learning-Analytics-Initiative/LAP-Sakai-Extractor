@@ -32,7 +32,7 @@
 
 <!-- jQuery -->
 <script src="<c:url value='/js/jquery.js'/>"></script>
-<script src="<c:url value='/js/jquery-ui.js'/>"></script>
+<script src="<c:url value='/js/jquery-ui/jquery-ui.js'/>"></script>
 
 <!-- jQuery CSS -->
 <link rel="stylesheet" href="<c:url value='/css/jquery-ui.css'/>">

@@ -118,13 +118,13 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
         }
 
         String startDate = "";
-        if (StringUtils.isNotBlank((String) params.get("startDate"))) {
-            startDate = (String) params.get("startDate") + DateUtils.DATE_START_TIME;
+        if (StringUtils.isNotBlank((String) params.get("start-date"))) {
+            startDate = (String) params.get("start-date") + DateUtils.DATE_START_TIME;
         }
 
         String endDate = "";
-        if (StringUtils.isNotBlank((String) params.get("endDate"))) {
-            endDate = (String) params.get("endDate") + DateUtils.DATE_END_TIME;
+        if (StringUtils.isNotBlank((String) params.get("end-date"))) {
+            endDate = (String) params.get("end-date") + DateUtils.DATE_END_TIME;
         }
 
         String directory = FileUtils.createDatedDirectoryName(isManualExtraction);

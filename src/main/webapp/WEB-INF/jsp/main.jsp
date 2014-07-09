@@ -72,15 +72,20 @@
                 <td><input type="text" id="criteria" name="criteria" value="" placeholder="${criteriaPlaceholder}" /></td>
             </tr>
             <tr>
-                <td><label for="startDate"><spring:message code="label.start" /></label></td>
-                <td><input type="text" id="startDate" name="startDate" class="datePicker" /></td>
+                <td><label for="start-date"><spring:message code="label.start" /></label></td>
+                <td><input type="text" id="start-date" name="start-date" class="date-picker" /></td>
             </tr>
             <tr>
-                <td><label for="endDate"><spring:message code="label.end" /></label></td>
-                <td><input type="text" id="endDate" name="endDate" class="datePicker" /></td>
+                <td><label for="end-date"><spring:message code="label.end" /></label></td>
+                <td><input type="text" id="end-date" name="end-date" class="date-picker" /></td>
             </tr>
             <tr>
-                <td colspan="2"><button class="btn btn-danger extraction-button"><spring:message code="button.extraction" /></button></td>
+                <td colspan="2">
+                    <button class="btn btn-danger extraction-button"><spring:message code="button.extraction" /></button>
+                    <div class="alert alert-danger date-picker-error">
+                        <span class="error-message"></span>
+                    </div>
+                </td>
             </tr>
         </table>
         <input type="hidden" id="statusMessageType" name="statusMessageType" value="" />
