@@ -35,7 +35,7 @@
 <script src="<c:url value='/js/jquery-ui/jquery-ui.js'/>"></script>
 
 <!-- jQuery CSS -->
-<link rel="stylesheet" href="<c:url value='/css/jquery-ui.css'/>">
+<link rel="stylesheet" href="<c:url value='/js/jquery-ui/jquery-ui.css'/>">
 
 <!-- Twitter Bootstrap -->
 <script src="<c:url value='/js/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
