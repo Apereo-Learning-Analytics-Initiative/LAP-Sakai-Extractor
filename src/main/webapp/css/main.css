@@ -13,8 +13,43 @@
  * permissions and limitations under the License.
  */
 
+.download-table,
+.extraction-table {
+    width: auto !important;
+}
+
+.extraction-button,
+.extraction-download-button {
+    text-transform: capitalize;
+    margin: 0 5px;
+}
+
+.extraction-dates-display {
+    width: 90%;
+    margin: 20px auto;
+}
+
+.date-picker-error {
+    width: auto;
+    display: none;
+}
+
+.form-fieldset {
+    width: 90%;
+    border: 3px solid #666;
+    margin: 20px auto;
+    padding: 0 20px 10px 20px;
+}
+
+.form-legend {
+    border: none;
+    width: auto;
+    margin-bottom: 2px;
+    padding: 5px;
+}
+
 .form-table {
-    margin: 0 0 2em 0;
+    margin: 0;
     float: left;
 }
 
@@ -28,38 +63,21 @@
     width: auto;
 }
 
-.form-fieldset {
-    width: 90%;
-    border: 3px solid #666;
-    margin: 20px auto;
-    padding: 20px;
-}
-
-.form-legend {
-    border: none;
-    width: auto;
-    padding: 5px;
-}
-
-.download-table, .extraction-table {
-    width: auto !important;
-}
-
-.extraction-download-button, .extraction-button {
-    text-transform: capitalize;
-    margin: 0 5px;
-}
-
-.date-picker-error {
-    width: auto;
+.no-extractions-exist {
+    color: #d43f3a;
     display: none;
+}
+
+label {
+    font-size: 1.2em;
 }
 
 label .statistics {
     color: #357ebd;
 }
 
-label .no-extractions-exist {
-    color: #d43f3a;
-    display: none;
+td,
+td input,
+td select {
+    vertical-align: middle !important;
 }

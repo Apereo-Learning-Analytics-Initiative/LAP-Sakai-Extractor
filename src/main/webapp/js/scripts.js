@@ -43,8 +43,8 @@ $(document).ready(function() {
 
         extractData(filterData, function(success, data) {
             var status = (success) ? "success" : "error";
-            $("#statusMessageType").val(status);
-            $("#statusMessage").val(data);
+            $("#status-message-type").val(status);
+            $("#status-message").val(data);
 
             $("#extraction-form").submit();
         });
@@ -79,10 +79,16 @@ $(document).ready(function() {
             dateFormat: "yy-mm-dd",
             constrainInput: true,
             maxDate: "+0d",
-            onClose: function() {checkDatePickerDates()}
+            onClose: function() {
+                checkDatePickerDates();
+            }
         });
     });
 
+    /**
+     * Validates the dates selected in the date picker
+     * Throws a warning if the end date is before the start date
+     */
     function checkDatePickerDates() {
         $(".extraction-button").show();
         $(".date-picker-error").hide();
@@ -93,7 +99,6 @@ $(document).ready(function() {
         if (startDate && endDate) {
             if (startDate > endDate) {
                 $(".extraction-button").hide();
-                $(".date-picker-error").html("Start date is after end date. Please correct before continuing.");
                 $(".date-picker-error").show();
             }
         }

@@ -44,12 +44,12 @@ public class MainController extends AbstractController {
         Map<String,Object> model = new HashMap<String,Object>();
 
         if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
-            if (request.getParameter("statusMessageType") != null && request.getParameter("statusMessage") != null) {
-                String messageType = request.getParameter("statusMessageType");
+            if (request.getParameter("status-message-type") != null && request.getParameter("status-message") != null) {
+                String messageType = request.getParameter("status-message-type");
                 if (StringUtils.equalsIgnoreCase("success", messageType)) {
-                    model.put("success", request.getParameter("statusMessage"));
+                    model.put("success", request.getParameter("status-message"));
                 } else {
-                    model.put("error", "There was an error processing the CSV files. Error: " + request.getParameter("statusMessage"));
+                    model.put("error", "There was an error processing the data extraction files. Error: " + request.getParameter("status-message"));
                 }
             }
         }

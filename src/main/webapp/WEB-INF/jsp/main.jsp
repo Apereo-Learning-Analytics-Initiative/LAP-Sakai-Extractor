@@ -39,7 +39,7 @@
 
 <h2><spring:message code="title" /></h2>
 
-<div class="instructions clear">
+<div class="instructions clear extraction-dates-display">
     <label><spring:message code="label.latest.data.extraction" /> <span id="latest-extraction-date" class="statistics"></span></label>
     <br />
     <label><spring:message code="label.next.data.extraction" /> <span id="next-extraction-date" class="statistics"></span></label>
@@ -52,7 +52,7 @@
                 <td><label for="extraction-date"><spring:message code="label.select.extraction" /></label></td>
                 <td>
                     <select id="extraction-date" name="extraction-date" class="form-control"></select>
-                    <label><span id="no-extractions-exist" class="no-extractions-exist"><spring:message code="label.no.extractions" /></span></label>
+                    <label class="no-extractions-exist">><span><spring:message code="label.no.extractions" /></span></label>
                 </td>
             </tr>
             <tr>
@@ -83,13 +83,13 @@
                 <td colspan="2">
                     <button class="btn btn-danger extraction-button"><spring:message code="button.extraction" /></button>
                     <div class="alert alert-danger date-picker-error">
-                        <span class="error-message"></span>
+                        <span class="error-message"><spring:message code="message.error.invalid.date.range" /></span>
                     </div>
                 </td>
             </tr>
         </table>
-        <input type="hidden" id="statusMessageType" name="statusMessageType" value="" />
-        <input type="hidden" id="statusMessage" name="statusMessage" value="" />
+        <input type="hidden" id="status-message-type" name="status-message-type" value="" />
+        <input type="hidden" id="status-message" name="status-message" value="" />
     </form>
 </fieldset>
 
