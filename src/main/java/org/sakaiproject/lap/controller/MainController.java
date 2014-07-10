@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.lap.service.ExtractorService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -44,17 +45,22 @@ public class MainController extends AbstractController {
         Map<String,Object> model = new HashMap<String,Object>();
 
         if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
-            if (request.getParameter("status-message-type") != null && request.getParameter("status-message") != null) {
-                String messageType = request.getParameter("status-message-type");
-                if (StringUtils.equalsIgnoreCase("success", messageType)) {
-                    model.put("success", request.getParameter("status-message"));
+            if (request.getParameter("status-type") != null) {
+                String statusType = request.getParameter("status-type");
+                if (StringUtils.equalsIgnoreCase("success", statusType)) {
+                    model.put("success", extractorService.getMessage("message.success.extraction.files.creation", new String[]{}));
                 } else {
-                    model.put("error", "There was an error processing the data extraction files. Error: " + request.getParameter("status-message"));
+                    model.put("error", extractorService.getMessage("message.error.extraction.files.creation", new String[]{request.getParameter("status-error-thrown")}));
                 }
             }
         }
 
         return new ModelAndView("main", model);
+    }
+
+    private ExtractorService extractorService;
+    public void setExtractorService(ExtractorService extractorService) {
+        this.extractorService = extractorService;
     }
 
 }

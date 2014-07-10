@@ -40,6 +40,25 @@ public class Constants {
         }
     };
 
+    /*
+     * Activity CSV headers
+     */
+    public final static String CSV_HEADER_ACTIVITY_1 = "ALTERNATIVE_ID";
+    public final static String CSV_HEADER_ACTIVITY_2 = "COURSE_ID";
+    public final static String CSV_HEADER_ACTIVITY_3 = "EVENT";
+    public final static String CSV_HEADER_ACTIVITY_4 = "EVENT_DATE";
+
+    /*
+     * Grades CSV headers
+     */
+    public final static String CSV_HEADER_GRADES_1 = "ALTERNATIVE_ID";
+    public final static String CSV_HEADER_GRADES_2 = "COURSE_ID";
+    public final static String CSV_HEADER_GRADES_3 = "GRADABLE_OBJECT";
+    public final static String CSV_HEADER_GRADES_4 = "CATEGORY";
+    public final static String CSV_HEADER_GRADES_5 = "MAX_POINTS";
+    public final static String CSV_HEADER_GRADES_6 = "EARNED_POINTS";
+    public final static String CSV_HEADER_GRADES_7 = "WEIGHT";
+    public final static String CSV_HEADER_GRADES_8 = "GRADE_DATE";
 
     public final static String MIME_TYPE_CSV = "text/csv";
     public final static String ENCODING_UTF8 = "UTF-8";

@@ -20,7 +20,6 @@
     <bean id="data" class="org.sakaiproject.lap.dao.Data" parent="database">
         <property name="dateService" ref="dateService" />
         <property name="fileService" ref="fileService" />
-        <property name="sql" ref="sql" />
     </bean>
 
     <bean id="dateService" class="org.sakaiproject.lap.service.DateService" init-method="init">
@@ -39,6 +38,7 @@
     <bean id="extractorService" class="org.sakaiproject.lap.service.ExtractorService">
         <property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
         <property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+        <property name="messageSource" ref="messageSource" />
     </bean>
 
     <bean id="fileService" class="org.sakaiproject.lap.service.FileService" init-method="init"></bean>
@@ -52,7 +52,5 @@
         <property name="data" ref="data" />
         <property name="dateService" ref="dateService" />
     </bean>
-
-    <bean id="sql" class="org.sakaiproject.lap.dao.Sql"></bean>
 
 </beans>

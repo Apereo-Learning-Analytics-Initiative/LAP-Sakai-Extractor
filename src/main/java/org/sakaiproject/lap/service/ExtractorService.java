@@ -20,6 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
+import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 
 /**
  * General methods for the application
@@ -59,6 +61,28 @@ public class ExtractorService {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get a translated string from a code and replacement args
+     * 
+     * @param code
+     * @param args
+     * @return the translated string
+     */
+    public String getMessage(String code, Object[] args) {
+        String msg;
+        try {
+            msg = messageSource.getMessage(code, args, null);
+        } catch (NoSuchMessageException e) {
+            msg = "Missing message for code: "+code;
+        }
+        return msg;
+    }
+
+    private MessageSource messageSource;
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
     }
 
     private SecurityService securityService;

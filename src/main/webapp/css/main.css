@@ -13,20 +13,25 @@
  * permissions and limitations under the License.
  */
 
-.download-table,
-.extraction-table {
-    width: auto !important;
+.activity-dates:hover,
+.activity-dates > td,
+.button-extraction:hover,
+.buttons-extraction-download > td:hover {
+    background: inherit !important;
 }
 
-.extraction-button,
-.extraction-download-button {
+.btn-primary {
+    background-color: #09c;
+}
+
+.btn-primary:hover {
+    background-color: #069;
+}
+
+.button-extraction > button,
+.buttons-extraction-download > td > button {
     text-transform: capitalize;
-    margin: 0 5px;
-}
-
-.extraction-dates-display {
-    width: 90%;
-    margin: 20px auto;
+    margin: 0 5px 0 0;
 }
 
 .date-picker-error {
@@ -34,46 +39,68 @@
     display: none;
 }
 
-.form-fieldset {
+.extraction-dates-display,
+fieldset.form {
     width: 90%;
-    border: 3px solid #666;
     margin: 20px auto;
+}
+
+fieldset.activity {
+    width: 100%;
+    border: 1px solid #666;
+    margin: 0 auto;
+    padding: 0 0 0 5px;
+}
+
+fieldset.form {
+    border: 3px solid #666;
     padding: 0 20px 10px 20px;
 }
 
-.form-legend {
-    border: none;
-    width: auto;
-    margin-bottom: 2px;
-    padding: 5px;
-}
-
-.form-table {
-    margin: 0;
-    float: left;
-}
-
-.form-table > tbody > tr > td {
-    border-top: #fff !important;
-}
-
-.form-table .form-control {
-    float: left;
-    display: inline;
-    width: auto;
-}
-
-.no-extractions-exist {
-    color: #d43f3a;
-    display: none;
+h2,
+label,
+legend {
+    color: #555;
 }
 
 label {
     font-size: 1.2em;
 }
 
+label.no-extractions-exist {
+    color: #d43f3a;
+    display: none;
+}
+
 label .statistics {
-    color: #357ebd;
+    color: #09c;
+}
+
+legend.form {
+    border: none;
+    width: auto;
+    margin-bottom: 2px;
+    padding: 5px;
+}
+
+table.download,
+table.extraction {
+    width: auto !important;
+}
+
+table.form {
+    margin: 0;
+    float: left;
+}
+
+table.form > tbody > tr > td {
+    border-top: #fff !important;
+}
+
+table.form .form-control {
+    float: left;
+    display: inline;
+    width: auto;
 }
 
 td,

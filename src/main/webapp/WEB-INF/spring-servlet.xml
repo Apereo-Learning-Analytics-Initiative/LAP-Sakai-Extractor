@@ -19,7 +19,9 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <!-- Sakai tool controllers -->
-    <bean id="mainController" class="org.sakaiproject.lap.controller.MainController"></bean>
+    <bean id="mainController" class="org.sakaiproject.lap.controller.MainController">
+        <property name="extractorService" ref="extractorService" />
+    </bean>
 
     <bean id="fileDownloadController" class="org.sakaiproject.lap.controller.FileDownloadController">
         <property name="data" ref="data" />

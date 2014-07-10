@@ -73,7 +73,7 @@ public class Data extends Database {
         PreparedStatement preparedStatement = null;
 
         try {
-            String query = sql.getSqlActivity(hasStartDate, hasEndDate);
+            String query = Sql.getSqlActivity(hasStartDate, hasEndDate);
 
             preparedStatement = createPreparedStatement(preparedStatement, query);
             preparedStatement.setString(1, "%" + criteria + "%");
@@ -132,7 +132,7 @@ public class Data extends Database {
         PreparedStatement preparedStatement = null;
 
         try {
-            String query = sql.getSqlGrades();
+            String query = Sql.getSqlGrades();
 
             preparedStatement = createPreparedStatement(preparedStatement, query);
             preparedStatement.setString(1, "%" + criteria + "%");
@@ -310,11 +310,6 @@ public class Data extends Database {
     private FileService fileService;
     public void setFileService(FileService fileService) {
         this.fileService = fileService;
-    }
-
-    private Sql sql;
-    public void setSql(Sql sql) {
-        this.sql = sql;
     }
 
 }

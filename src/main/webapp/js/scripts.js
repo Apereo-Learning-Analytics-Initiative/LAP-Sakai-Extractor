@@ -30,23 +30,25 @@ $(document).ready(function() {
     /**
      * Button click to download a file
      */
-    $("#extraction-download-buttons").on("click", "button", function() {
+    $(".buttons-extraction-download > td").on("click", "button", function() {
         $("#action").val(this.id);
-        $("#download-form").submit();
+        $("#form-download").submit();
     });
 
     /**
      * Button click to start a data extraction
      */
-    $(".extraction-button").click(function() {
-        var filterData = $("#extraction-form").serialize();
+    $(".button-extraction").on("click", "button", function() {
+        var filterData = $("#form-extraction").serialize();
 
-        extractData(filterData, function(success, data) {
+        extractData(filterData, function(success, errorThrown) {
             var status = (success) ? "success" : "error";
-            $("#status-message-type").val(status);
-            $("#status-message").val(data);
+            $("#status-type").val(status);
+            if (!success) {
+                $("#status-error-thrown").val(errorThrown);
+            }
 
-            $("#extraction-form").submit();
+            $("#form-extraction").submit();
         });
     });
 
@@ -63,7 +65,7 @@ $(document).ready(function() {
         });
 
         request.success(function(data, status, jqXHR) {
-            callback(true, "Data extraction files created successfully.");
+            callback(true, "");
         });
 
         request.fail(function(jqXHR, textStatus, errorThrown) {
@@ -90,7 +92,7 @@ $(document).ready(function() {
      * Throws a warning if the end date is before the start date
      */
     function checkDatePickerDates() {
-        $(".extraction-button").show();
+        $(".button-extraction > button").show();
         $(".date-picker-error").hide();
 
         var startDate = $("#start-date").datepicker("getDate");
@@ -98,7 +100,7 @@ $(document).ready(function() {
 
         if (startDate && endDate) {
             if (startDate > endDate) {
-                $(".extraction-button").hide();
+                $(".button-extraction > button").hide();
                 $(".date-picker-error").show();
             }
         }
@@ -114,16 +116,13 @@ $(document).ready(function() {
         async: false,
         success: (function(data, status, jqXHR) {
             $.map(data.latestExtractionDate, function(date, i) {
-                $("#latest-extraction-date").html(date.displayDate);
+                $(".latest-extraction-date").html(date.displayDate);
             });
-            $("#next-extraction-date").html(data.nextExtractionDate);
+            $(".next-extraction-date").html(data.nextExtractionDate);
             createExtractionListing(data.allExtractionDates);
             createDownloadButtons(data.availableFiles);
         }),
-        fail: (function(jqXHR, textStatus, errorThrown) {
-            $("#latest-extraction-date").html("Error getting data.");
-            $("#next-extraction-date").html("Error getting data.");
-        })
+        fail: (function(jqXHR, textStatus, errorThrown) {})
     });
 
     /**
@@ -139,7 +138,7 @@ $(document).ready(function() {
         // show the "no extractions" dialog if none exist
         if (!extractionsExist) {
             $("#extraction-date").hide();
-            $(".extraction-download-button").hide();
+            $(".buttons-extraction-download").hide();
             $(".no-extractions-exist").show();
         }
     }
@@ -149,10 +148,15 @@ $(document).ready(function() {
      */
     function createDownloadButtons(availableFiles) {
         $.each(availableFiles, function(key, value) {
-            $("#extraction-download-buttons")
+            $(".buttons-extraction-download > td")
                 .append(
-                    $("<button>", {id : key, class : "btn btn-primary extraction-download-button"})
-                        .text(key)
+                    $("<button>",
+                        {
+                            id : key,
+                            class : "btn btn-primary"
+                        }
+                    )
+                    .text(key)
                 );
         });
     }

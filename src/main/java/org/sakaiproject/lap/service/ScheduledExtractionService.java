@@ -42,7 +42,7 @@ public class ScheduledExtractionService implements Runnable {
     private boolean isManualExtraction = false;
 
     public void init() {
-        boolean scheduledExtractionEnabled = ServerConfigurationService.getBoolean("lap.scheduled.extraction.enabled", true);
+        boolean scheduledExtractionEnabled = ServerConfigurationService.getBoolean("lap.scheduled.extraction.enabled", false);
 
         if (scheduledExtractionEnabled) {
             List<String> scheduledRunTimes = dateService.getScheduledRunTimes();

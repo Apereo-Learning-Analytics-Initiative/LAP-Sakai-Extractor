@@ -14,6 +14,8 @@
  */
 package org.sakaiproject.lap.dao;
 
+import org.sakaiproject.lap.Constants;
+
 /**
  * Handles all the SQL strings
  * 
@@ -30,12 +32,12 @@ public class Sql {
      * @param hasEndDate has an end date?
      * @return the SQL string
      */
-    public String getSqlActivity(boolean hasStartDate, boolean hasEndDate) {
+    public static String getSqlActivity(boolean hasStartDate, boolean hasEndDate) {
         String sql = "SELECT " +
-                "suim.EID ALTERNATIVE_ID," +
-                "ss.SITE_ID COURSE_ID," +
-                "se.EVENT EVENT," +
-                "se.EVENT_DATE EVENT_DATE " +
+                "suim.EID " + Constants.CSV_HEADER_ACTIVITY_1 + "," +
+                "ss.SITE_ID " + Constants.CSV_HEADER_ACTIVITY_2 + "," +
+                "se.EVENT " + Constants.CSV_HEADER_ACTIVITY_3 + "," +
+                "se.EVENT_DATE " + Constants.CSV_HEADER_ACTIVITY_1 + " " +
             "FROM " +
                 "SAKAI_EVENT se " +
             "LEFT JOIN " +
@@ -67,16 +69,16 @@ public class Sql {
      * 
      * @return the SQL string
      */
-    public String getSqlGrades() {
+    public static String getSqlGrades() {
         String sql = "SELECT " +
-                "suim.EID ALTERNATIVE_ID," +
-                "ss.SITE_ID COURSE_ID," +
-                "go.NAME GRADABLE_OBJECT," +
-                "c.NAME CATEGORY," +
-                "go.POINTS_POSSIBLE MAX_POINTS," +
-                "gr.POINTS_EARNED EARNED_POINTS," +
-                "c.WEIGHT WEIGHT," +
-                "gr.DATE_RECORDED GRADE_DATE " +
+                "suim.EID " + Constants.CSV_HEADER_GRADES_1 + "," +
+                "ss.SITE_ID " + Constants.CSV_HEADER_GRADES_2 + "," +
+                "go.NAME " + Constants.CSV_HEADER_GRADES_3 + "," +
+                "c.NAME " + Constants.CSV_HEADER_GRADES_4 + "," +
+                "go.POINTS_POSSIBLE " + Constants.CSV_HEADER_GRADES_5 + "," +
+                "gr.POINTS_EARNED " + Constants.CSV_HEADER_GRADES_6 + "," +
+                "c.WEIGHT " + Constants.CSV_HEADER_GRADES_7 + "," +
+                "gr.DATE_RECORDED " + Constants.CSV_HEADER_GRADES_8 + " " +
             "FROM " +
                 "GB_GRADABLE_OBJECT_T go " +
             "LEFT JOIN " +

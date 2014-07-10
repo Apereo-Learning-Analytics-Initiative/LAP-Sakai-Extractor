@@ -40,56 +40,65 @@
 <h2><spring:message code="title" /></h2>
 
 <div class="instructions clear extraction-dates-display">
-    <label><spring:message code="label.latest.data.extraction" /> <span id="latest-extraction-date" class="statistics"></span></label>
+    <label><spring:message code="label.latest.data.extraction" /> <span class="latest-extraction-date statistics"><spring:message code="message.error.ajax.dates" /></span></label>
     <br />
-    <label><spring:message code="label.next.data.extraction" /> <span id="next-extraction-date" class="statistics"></span></label>
+    <label><spring:message code="label.next.data.extraction" /> <span class="next-extraction-date statistics"><spring:message code="message.error.ajax.dates" /></span></label>
 </div>
-<fieldset class="form-fieldset">
-    <legend class="form-legend"><spring:message code="legend.download" /></legend>
-    <form id="download-form" method="post" action="download.htm" target="_blank">
-        <table class="table table-hover form-table download-table">
+<fieldset class="form">
+    <legend class="form"><spring:message code="legend.download" /></legend>
+    <form id="form-download" method="post" action="download.htm" target="_blank">
+        <table class="table table-hover form download">
             <tr>
                 <td><label for="extraction-date"><spring:message code="label.select.extraction" /></label></td>
                 <td>
                     <select id="extraction-date" name="extraction-date" class="form-control"></select>
-                    <label class="no-extractions-exist">><span><spring:message code="label.no.extractions" /></span></label>
+                    <label class="no-extractions-exist"><spring:message code="label.no.extractions" /></label>
                 </td>
             </tr>
-            <tr>
-                <td id="extraction-download-buttons" colspan="2"></td>
+            <tr class="buttons-extraction-download">
+                <td colspan="2"></td>
             <tr>
         </table>
         <input type="hidden" id="action" name="action" value="" />
     </form>
 </fieldset>
-<fieldset class="form-fieldset">
-    <legend class="form-legend"><spring:message code="legend.extraction" /></legend>
-    <form id="extraction-form" method="post" action="main.htm">
+<fieldset class="form">
+    <legend class="form"><spring:message code="legend.extraction" /></legend>
+    <form id="form-extraction" method="post" action="main.htm">
         <spring:message code="placeholder.criteria" var="criteriaPlaceholder" />
-        <table class="table table-hover form-table extraction-table">
+        <table class="table table-hover form extraction">
             <tr>
                 <td><label for="criteria"><spring:message code="label.criteria" /></label></td>
                 <td><input type="text" id="criteria" name="criteria" value="" placeholder="${criteriaPlaceholder}" /></td>
             </tr>
-            <tr>
-                <td><label for="start-date"><spring:message code="label.start" /></label></td>
-                <td><input type="text" id="start-date" name="start-date" class="date-picker" /></td>
-            </tr>
-            <tr>
-                <td><label for="end-date"><spring:message code="label.end" /></label></td>
-                <td><input type="text" id="end-date" name="end-date" class="date-picker" /></td>
-            </tr>
-            <tr>
+            <tr class="activity-dates">
                 <td colspan="2">
-                    <button class="btn btn-danger extraction-button"><spring:message code="button.extraction" /></button>
+                    <fieldset class="activity">
+                        <legend class="form"><spring:message code="legend.activity.dates" /></legend>
+                        <table class="table table-hover form">
+                            <tr>
+                                <td><label for="start-date"><spring:message code="label.start" /></label></td>
+                                <td><input type="text" id="start-date" name="start-date" class="date-picker" readonly="true" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="end-date"><spring:message code="label.end" /></label></td>
+                                <td><input type="text" id="end-date" name="end-date" class="date-picker" readonly="true" /></td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                <td>
+            </tr>
+            <tr>
+                <td colspan="2" class="button-extraction">
+                    <button class="btn btn-danger"><spring:message code="button.extraction" /></button>
                     <div class="alert alert-danger date-picker-error">
                         <span class="error-message"><spring:message code="message.error.invalid.date.range" /></span>
                     </div>
                 </td>
             </tr>
         </table>
-        <input type="hidden" id="status-message-type" name="status-message-type" value="" />
-        <input type="hidden" id="status-message" name="status-message" value="" />
+        <input type="hidden" id="status-type" name="status-type" value="" />
+        <input type="hidden" id="status-error-thrown" name="status-error-thrown" value="" />
     </form>
 </fieldset>
 
