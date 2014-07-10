@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class Constants {
 
-    public final static String DEFAULT_CSV_STORAGE_DIRECTORY = "lap-data/";
+    public final static String DEFAULT_CSV_STORAGE_DIRECTORY = "lap-data" + System.getProperty("file.separator");
     public final static String ACTION_ACTIVITY = "activity";
     public final static String ACTION_GRADES = "grades";
     public final static String CSV_FILE_ACTIVITY = "activity.csv";
