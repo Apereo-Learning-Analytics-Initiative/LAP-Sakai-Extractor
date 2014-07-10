@@ -51,7 +51,7 @@ sakai.properties:
 # LAP Sakai Data Extractor
 
 # Enable scheduled data extraction
-# Default: true
+# Default: false
 #lap.scheduled.extraction.enabled=true
 
 # File system path to store data extraction files
