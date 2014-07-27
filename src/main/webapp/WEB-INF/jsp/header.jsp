@@ -31,15 +31,16 @@
 <script src="/library/js/headscripts.js" language="JavaScript" type="text/javascript"></script>
 
 <!-- jQuery -->
-<script src="<c:url value='/js/jquery.js'/>"></script>
-<script src="<c:url value='/js/jquery-ui/jquery-ui.js'/>"></script>
-
-<!-- jQuery CSS -->
-<link rel="stylesheet" href="<c:url value='/js/jquery-ui/jquery-ui.css'/>">
+<script src="<c:url value='/js/lib/jquery-1.11.1.min.js'/>"></script>
+<script src="<c:url value='/js/lib/jquery-ui/jquery-ui.min.js'/>"></script><!-- 1.11 -->
 
 <!-- Twitter Bootstrap -->
-<script src="<c:url value='/js/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
+<script src="<c:url value='/js/lib/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
 <link media="all" href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css" />
+
+<!-- jQuery CSS -->
+<link rel="stylesheet" href="<c:url value='/js/lib/jquery-ui/jquery-ui.min.css'/>">
+<link rel="stylesheet" href="<c:url value='/js/lib/jquery-ui/jquery-ui.theme.min.css'/>">
 
 <!-- Additional JavaScript -->
 <script src="<c:url value='/js/scripts.js'/>" language="JavaScript" type="text/javascript"></script>
