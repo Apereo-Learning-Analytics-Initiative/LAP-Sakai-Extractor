@@ -6,7 +6,6 @@
     <groupId>org.sakaiproject</groupId>
     <artifactId>master</artifactId>
     <version>11-SNAPSHOT</version>
-    <relativePath>../master/pom.xml</relativePath>
   </parent>
 
   <name>LAP Sakai Extractor</name>
@@ -17,7 +16,7 @@
     <name>Sakai Project</name>
     <url>http://sakaiproject.org/</url>
   </organization>
-  <inceptionYear>2008</inceptionYear>
+  <inceptionYear>2014</inceptionYear>
   <packaging>war</packaging>
 
   <dependencies>
@@ -142,7 +141,6 @@
         </includes>
       </resource>
     </resources>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
     <plugins>
       <!-- configure the war plugin to correctly use the standard maven structure -->
       <plugin>
@@ -150,7 +148,6 @@
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
-          <ouputDirectory>${project.build.directory}</ouputDirectory>
         </configuration>
       </plugin>
       <plugin>
