@@ -205,6 +205,24 @@
       </roles>
       <timezone>-5</timezone>
     </developer>
+    <developer>
+      <id>azeckoski</id>
+      <name>Aaron Zeckoski</name>
+      <email>azeckoski@vt.edu</email>
+      <url>http://tinyurl.com/azprofile</url>
+      <roles>
+        <role>Architect</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
   </developers>
+
+  <licenses>
+    <license>
+      <name>ECL 2.0</name>
+      <distribution>repo</distribution>
+      <url>http://www.osedu.org/licenses/ECL-2.0/</url>
+    </license>
+  </licenses>
 
 </project>
