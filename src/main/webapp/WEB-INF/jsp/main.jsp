@@ -22,8 +22,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp" />
 
-<div class="portletBody">
-
 <c:if test="${not empty(error)}">
     <div class="alert alert-danger">
         <a class="close" data-dismiss="alert">x</a>
@@ -101,7 +99,5 @@
         <input type="hidden" id="status-error-thrown" name="status-error-thrown" value="" />
     </form>
 </fieldset>
-
-</div>
 
 <jsp:directive.include file="/WEB-INF/jsp/footer.jsp" />

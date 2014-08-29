@@ -12,42 +12,43 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 // hack for MSIE browser look-up error
-$.browser={};
+lapjQuery.browser={};
 (function(){
-    $.browser.msie = false;
-    $.browser.version = 0;
+    lapjQuery.browser.msie = false;
+    lapjQuery.browser.version = 0;
     if(navigator.userAgent.match(/MSIE ([0-9]+)\./)){
-        $.browser.msie = true;
-        $.browser.version = RegExp.$1;
+        lapjQuery.browser.msie = true;
+        lapjQuery.browser.version = RegExp.$1;
     }
 })();
 
-$(document).ready(function() {
+lapjQuery(document).ready(function() {
     var url = "/direct/lap-sakai-extractor/";
 
     /**
      * Button click to download a file
      */
-    $(".buttons-extraction-download > td").on("click", "button", function() {
-        $("#action").val(this.id);
-        $("#form-download").submit();
+    lapjQuery(".buttons-extraction-download > td").on("click", "button", function() {
+        lapjQuery("#action").val(this.id);
+        lapjQuery("#form-download").submit();
     });
 
     /**
      * Button click to start a data extraction
      */
-    $(".button-extraction").on("click", "button", function() {
-        var filterData = $("#form-extraction").serialize();
+    lapjQuery(".button-extraction").on("click", "button", function() {
+        var filterData = lapjQuery("#form-extraction").serialize();
 
         extractData(filterData, function(success, errorThrown) {
             var status = (success) ? "success" : "error";
-            $("#status-type").val(status);
+            lapjQuery("#status-type").val(status);
             if (!success) {
-                $("#status-error-thrown").val(errorThrown);
+                lapjQuery("#status-error-thrown").val(errorThrown);
             }
 
-            $("#form-extraction").submit();
+            lapjQuery("#form-extraction").submit();
         });
     });
 
@@ -55,7 +56,7 @@ $(document).ready(function() {
      * POST request to run data extraction
      */
     function extractData(filterData, callback) {
-        var request = $.ajax({
+        var request = lapjQuery.ajax({
             type: "POST",
             url:  url + "extraction",
             data: filterData,
@@ -75,8 +76,8 @@ $(document).ready(function() {
     /**
      *  Date picker for activity date range on extraction
      */
-    $(function() {
-        $(".date-picker").datepicker({
+    lapjQuery(function() {
+        lapjQuery(".date-picker").datepicker({
             dateFormat: "yy-mm-dd",
             constrainInput: true,
             maxDate: "+0d",
@@ -91,16 +92,16 @@ $(document).ready(function() {
      * Throws a warning if the end date is before the start date
      */
     function checkDatePickerDates() {
-        $(".button-extraction > button").show();
-        $(".date-picker-error").hide();
+        lapjQuery(".button-extraction > button").show();
+        lapjQuery(".date-picker-error").hide();
 
-        var startDate = $("#start-date").datepicker("getDate");
-        var endDate = $("#end-date").datepicker("getDate");
+        var startDate = lapjQuery("#start-date").datepicker("getDate");
+        var endDate = lapjQuery("#end-date").datepicker("getDate");
 
         if (startDate && endDate) {
             if (startDate > endDate) {
-                $(".button-extraction > button").hide();
-                $(".date-picker-error").show();
+                lapjQuery(".button-extraction > button").hide();
+                lapjQuery(".date-picker-error").show();
             }
         }
     }
@@ -108,16 +109,16 @@ $(document).ready(function() {
     /**
      * GET request for the statistics from the server
      */
-    $.ajax({
+    lapjQuery.ajax({
         type: "GET",
         url:  url + "statistics",
         cache: false,
         async: false,
         success: (function(data, status, jqXHR) {
-            $.map(data.latestExtractionDate, function(date, i) {
-                $(".latest-extraction-date").html(date.displayDate);
+            lapjQuery.map(data.latestExtractionDate, function(date, i) {
+                lapjQuery(".latest-extraction-date").html(date.displayDate);
             });
-            $(".next-extraction-date").html(data.nextExtractionDate);
+            lapjQuery(".next-extraction-date").html(data.nextExtractionDate);
             createExtractionListing(data.allExtractionDates);
             createDownloadButtons(data.availableFiles);
         }),
@@ -129,16 +130,16 @@ $(document).ready(function() {
      */
     function createExtractionListing(allExtractionDates) {
         var extractionsExist = false;
-        $.each(allExtractionDates, function(key, value) {
-            $("#extraction-date").append($("<option>", {value : key}).text(value.displayDate));
+        lapjQuery.each(allExtractionDates, function(key, value) {
+            lapjQuery("#extraction-date").append(lapjQuery("<option>", {value : key}).text(value.displayDate));
             extractionsExist = true;
         });
 
         // show the "no extractions" dialog if none exist
         if (!extractionsExist) {
-            $("#extraction-date").hide();
-            $(".buttons-extraction-download").hide();
-            $(".no-extractions-exist").show();
+            lapjQuery("#extraction-date").hide();
+            lapjQuery(".buttons-extraction-download").hide();
+            lapjQuery(".no-extractions-exist").show();
         }
     }
 
@@ -146,10 +147,10 @@ $(document).ready(function() {
      * Creates the download button for each available file type
      */
     function createDownloadButtons(availableFiles) {
-        $.each(availableFiles, function(key, value) {
-            $(".buttons-extraction-download > td")
+        lapjQuery.each(availableFiles, function(key, value) {
+            lapjQuery(".buttons-extraction-download > td")
                 .append(
-                    $("<button>",
+                    lapjQuery("<button>",
                         {
                             id : key,
                             class : "btn btn-primary"

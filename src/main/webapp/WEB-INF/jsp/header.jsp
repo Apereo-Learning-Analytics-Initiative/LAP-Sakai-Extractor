@@ -24,35 +24,34 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link media="all" href="/library/skin/tool_base.css" rel="stylesheet" type="text/css" />
-<link media="all" href="/library/skin/neo-default/tool.css" rel="stylesheet" type="text/css" />
-
-<script src="/library/js/headscripts.js" language="JavaScript" type="text/javascript"></script>
-
-<!-- jQuery -->
-<script src="<c:url value='/js/lib/jquery-1.11.1.min.js'/>"></script>
-<script src="<c:url value='/js/lib/jquery-ui/jquery-ui.min.js'/>"></script><!-- 1.11 -->
-
-<!-- Twitter Bootstrap -->
-<script src="<c:url value='/js/lib/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
-<link media="all" href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css" />
-
-<!-- jQuery CSS -->
-<link rel="stylesheet" href="<c:url value='/js/lib/jquery-ui/jquery-ui.min.css'/>">
-<link rel="stylesheet" href="<c:url value='/js/lib/jquery-ui/jquery-ui.theme.min.css'/>">
-
-<!-- Additional JavaScript -->
-<script src="<c:url value='/js/scripts.js'/>" language="JavaScript" type="text/javascript"></script>
-
-<!-- Additional CSS -->
-<link media="all" href="<c:url value='/css/main.css'/>" rel="stylesheet" type="text/css" />
-
-<title><spring:message code="title" /></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link media="all" href="/library/skin/tool_base.css" rel="stylesheet" type="text/css" />
+    <link media="all" href="/library/skin/neo-default/tool.css" rel="stylesheet" type="text/css" />
+    
+    <script src="/library/js/headscripts.js" language="JavaScript" type="text/javascript"></script>
+    
+    <!-- jQuery -->
+    <script src="<c:url value='/js/lib/jquery-1.11.1.min.js'/>"></script>
+    <!-- Force this version of jQuery, due to Sakai forcing its 'latest' upon the app -->
+    <script>var lapjQuery = jQuery.noConflict();</script>
+    <script src="<c:url value='/js/lib/jquery-ui/jquery-ui.min.js'/>"></script><!-- 1.11 -->
+    
+    <!-- Twitter Bootstrap -->
+    <script src="<c:url value='/js/lib/bootstrap.min.js'/>" language="JavaScript" type="text/javascript"></script>
+    <link media="all" href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css" />
+    
+    <!-- jQuery CSS -->
+    <link rel="stylesheet" href="<c:url value='/js/lib/jquery-ui/jquery-ui.min.css'/>">
+    <link rel="stylesheet" href="<c:url value='/js/lib/jquery-ui/jquery-ui.theme.min.css'/>">
+    
+    <!-- Additional JavaScript -->
+    <script src="<c:url value='/js/scripts.js'/>" language="JavaScript" type="text/javascript"></script>
+    
+    <!-- Additional CSS -->
+    <link media="all" href="<c:url value='/css/main.css'/>" rel="stylesheet" type="text/css" />
+    
+    <title><spring:message code="title" /></title>
 </head>
 <body onload="<%=request.getAttribute("sakai.html.body.onload")%>">
-<!-- Hidden block to declare resource bundle variables for use in JS -->
-<div style="display: none;">
-  <!-- By convention, the id of the span must be "i18n_"+{message code}, the container div should be set to display:none;, use kaltura.i18n(key) in JS to lookup the message -->
-</div>
-<div class="portletBody">
+    <div class="portletBody">
+        <div class="lapBody">

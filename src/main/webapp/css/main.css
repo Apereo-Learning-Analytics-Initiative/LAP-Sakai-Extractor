@@ -12,6 +12,7 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+
 .activity-dates:hover,
 .activity-dates > td,
 .button-extraction:hover,
@@ -73,6 +74,10 @@ label.no-extractions-exist {
 
 label .statistics {
     color: #09c;
+}
+
+.lapBody {
+    font-size: 14px;
 }
 
 legend.form {
