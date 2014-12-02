@@ -25,6 +25,11 @@ lapjQuery.browser={};
 })();
 
 lapjQuery(document).ready(function() {
+    // don't cache ajax calls
+    $.ajaxSetup({
+        cache: false
+    });
+
     var url = "/direct/lap-sakai-extractor/";
 
     /**
@@ -121,6 +126,7 @@ lapjQuery(document).ready(function() {
             lapjQuery(".next-extraction-date").html(data.nextExtractionDate);
             createExtractionListing(data.allExtractionDates);
             createDownloadButtons(data.availableFiles);
+            toggleExtractionButtonDisplay(data.validFileSystem);
         }),
         fail: (function(jqXHR, textStatus, errorThrown) {})
     });
@@ -159,6 +165,17 @@ lapjQuery(document).ready(function() {
                     .text(key)
                 );
         });
+    }
+
+    /**
+     * Enables / disables extraction button
+     */
+    function toggleExtractionButtonDisplay(show) {
+        if (show) {
+            lapjQuery(".button-extraction > button").show();
+        } else {
+            lapjQuery(".button-extraction > button").hide();
+        }
     }
 
 });

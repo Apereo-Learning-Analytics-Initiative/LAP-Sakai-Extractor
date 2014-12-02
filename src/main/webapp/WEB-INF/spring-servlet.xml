@@ -21,6 +21,7 @@
     <!-- Sakai tool controllers -->
     <bean id="mainController" class="org.sakaiproject.lap.controller.MainController">
         <property name="extractorService" ref="extractorService" />
+        <property name="fileService" ref="fileService" />
     </bean>
 
     <bean id="fileDownloadController" class="org.sakaiproject.lap.controller.FileDownloadController">

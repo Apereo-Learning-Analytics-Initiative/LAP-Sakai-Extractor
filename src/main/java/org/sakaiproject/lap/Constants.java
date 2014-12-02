@@ -98,5 +98,6 @@ public class Constants {
     public final static String REST_MAP_KEY_NEXT_EXTRACTION_DATE = "nextExtractionDate";
     public final static String REST_MAP_KEY_ALL_EXTRACTION_DATES = "allExtractionDates";
     public final static String REST_MAP_KEY_AVAILABLE_FILES = "availableFiles";
+    public final static String REST_MAP_KEY_VALID_FILE_SYSTEM = "validFileSystem";
 
 }

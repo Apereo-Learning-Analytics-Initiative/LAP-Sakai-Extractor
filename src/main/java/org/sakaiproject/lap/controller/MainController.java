@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.lap.service.ExtractorService;
+import org.sakaiproject.lap.service.FileService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -43,6 +44,10 @@ public class MainController extends AbstractController {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String,Object> model = new HashMap<String,Object>();
 
+        if (!fileService.isValidFileSystem()) {
+            model.put("invalid", extractorService.getMessage("message.error.invalid.file.system", new String[]{fileService.getStoragePath()}));
+        }
+
         if (StringUtils.equalsIgnoreCase("POST", request.getMethod())) {
             if (request.getParameter("status-type") != null) {
                 String statusType = request.getParameter("status-type");
@@ -60,6 +65,11 @@ public class MainController extends AbstractController {
     private ExtractorService extractorService;
     public void setExtractorService(ExtractorService extractorService) {
         this.extractorService = extractorService;
+    }
+
+    private FileService fileService;
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
     }
 
 }

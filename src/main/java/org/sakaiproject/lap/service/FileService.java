@@ -39,11 +39,13 @@ public class FileService {
     private final Log log = LogFactory.getLog(FileService.class);
 
     private String storagePath = "";
+    private boolean validFileSystem = false;
 
     public void init() {
         storagePath = FileUtils.createStoragePath();
         // create the root directory
         createNewDirectory("", false);
+        setValidFileSystem();
     }
 
     /**
@@ -59,7 +61,7 @@ public class FileService {
         // if the directory does not exist, create it
         if (!newDirectory.exists()) {
             try{
-                newDirectory.mkdir();
+                this.validFileSystem = newDirectory.mkdir();
             } catch(Exception e){
                 log.error("Cannot create new directory: " + e, e);
             }
@@ -196,6 +198,27 @@ public class FileService {
 
     public String getStoragePath() {
         return storagePath;
+    }
+
+    public boolean isValidFileSystem() {
+        return validFileSystem;
+    }
+
+    public void setValidFileSystem(boolean validFileSystem) {
+        this.validFileSystem = validFileSystem;
+    }
+
+    /**
+     * Calculates whether the file system path in the configuration is valid
+     */
+    private void setValidFileSystem() {
+        try {
+            File directory = new File(storagePath);
+            this.validFileSystem = directory.exists();
+        } catch (Exception e) {
+            log.error("Configured file system path is invalid: " + e, e);
+            this.validFileSystem = false;
+        }
     }
 
 }

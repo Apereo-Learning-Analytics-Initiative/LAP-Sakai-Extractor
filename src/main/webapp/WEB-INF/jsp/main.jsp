@@ -22,6 +22,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp" />
 
+<c:if test="${not empty(invalid)}">
+    <div class="alert alert-danger">
+        <a class="close" data-dismiss="alert">x</a>
+        <span class="error-message">${invalid}</span>
+    </div>
+</c:if>
 <c:if test="${not empty(error)}">
     <div class="alert alert-danger">
         <a class="close" data-dismiss="alert">x</a>

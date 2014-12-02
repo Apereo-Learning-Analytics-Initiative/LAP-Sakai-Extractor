@@ -81,20 +81,28 @@ public class FileUtils {
         boolean getAll = StringUtils.isBlank(type);
 
         List<String> directories = new ArrayList<String>();
-        File fileDirectory = new File(directory);
 
-        for (File subDirectory : fileDirectory.listFiles()) {
-            // only store sub-directory names
-            if (subDirectory.isDirectory()) {
-                String directoryExtractionType = StringUtils.substring(subDirectory.getName(), subDirectory.getName().length() - 2);
-                if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, type)) {
-                    directories.add(subDirectory.getName());
+        try {
+            File fileDirectory = new File(directory);
+            File[] files = fileDirectory.listFiles();
+
+            if (files != null) {
+                for (File subDirectory : files) {
+                    // only store sub-directory names
+                    if (subDirectory.isDirectory()) {
+                        String directoryExtractionType = StringUtils.substring(subDirectory.getName(), subDirectory.getName().length() - 2);
+                        if (getAll || StringUtils.equalsIgnoreCase(directoryExtractionType, type)) {
+                            directories.add(subDirectory.getName());
+                        }
+                    }
                 }
             }
-        }
 
-        // sort the list, newest directories first
-        Collections.sort(directories, new DateComparatorLatestToEarliest());
+            // sort the list, newest directories first
+            Collections.sort(directories, new DateComparatorLatestToEarliest());
+        } catch (Exception e) {
+            // swallow exception (for now...)
+        }
 
         return directories;
     }

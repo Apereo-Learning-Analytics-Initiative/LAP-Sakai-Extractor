@@ -33,6 +33,7 @@ import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.lap.Constants;
 import org.sakaiproject.lap.dao.Data;
 import org.sakaiproject.lap.service.ExtractorService;
+import org.sakaiproject.lap.service.FileService;
 import org.sakaiproject.lap.util.DateUtils;
 import org.sakaiproject.lap.util.FileUtils;
 
@@ -157,6 +158,7 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
         responseData.put(Constants.REST_MAP_KEY_NEXT_EXTRACTION_DATE, nextExtractionDate);
         responseData.put(Constants.REST_MAP_KEY_ALL_EXTRACTION_DATES, allExtractionDates);
         responseData.put(Constants.REST_MAP_KEY_AVAILABLE_FILES, availableFiles);
+        responseData.put(Constants.REST_MAP_KEY_VALID_FILE_SYSTEM, fileService.isValidFileSystem());
 
         Gson gson = new Gson();
         String json = gson.toJson(responseData, HashMap.class);
@@ -180,6 +182,11 @@ public class ExtractorProvider extends AbstractEntityProvider implements EntityP
     private Data data;
     public void setData(Data data) {
         this.data = data;
+    }
+
+    private FileService fileService;
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
     }
 
 }

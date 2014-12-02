@@ -33,6 +33,7 @@
     <bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" class="org.sakaiproject.lap.provider.ExtractorProvider">
         <property name="data" ref="data" />
         <property name="extractorService" ref="extractorService" />
+        <property name="fileService" ref="fileService" />
     </bean>
 
     <bean id="extractorService" class="org.sakaiproject.lap.service.ExtractorService">
